@@ -3,7 +3,6 @@
 class Player :
     public GameObject
 {
-    int pImage_;
 public:
     //コンストラクタ
     Player(GameObject* parent);
@@ -17,7 +16,19 @@ public:
     //更新
     void Update() override;
 
+    void UpdateNormal();
+
+    void UpdateWalk();
+
     //描画
     void Draw() override;
+private:
+    int pImage_;
+    enum State_ {
+        S_Normal = 0,
+        S_Walk,
+    };
+
+    State state_;
 };
 

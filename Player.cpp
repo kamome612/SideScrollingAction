@@ -1,7 +1,7 @@
 #include "Player.h"
 
 namespace {
-	const XMFLOAT3 INITPOS = { 30,600,0 };
+	const XMFLOAT3 INITPOS = { 30,550,0 };
 }
 
 Player::Player(GameObject* parent)
@@ -9,6 +9,7 @@ Player::Player(GameObject* parent)
 {
 	//初期位置の調整(あとで値はnamespaceなどでやっとく)
 	transform_.position_ = INITPOS;
+	state_ = S_Stop;
 }
 
 Player::~Player()
@@ -26,6 +27,37 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	switch (state_){
+	case 0: 
+		UpdateNormal();
+		break;
+	case 1:
+		UpdateWalk();
+		break;
+	default:
+		break;
+	}
+}
+
+void Player::UpdateNormal()
+{
+	/*if (InputKey(KEY_INPUT_S)) {
+		tranform_.position_.x += 0.1;
+	}
+	if (InputKey(KEY_INPUT_A))
+	{
+		transform_.position_.x -= 0.1;
+	}*/
+}
+
+void Player::UpdateWalk()
+{
+	if (InputKey(KEY_INPUT_S)) {//Sキーを押すと右に進む
+		tranform_.position_.x += 0.1;
+	}
+	if (InputKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
+		transform_.position_.x -= 0.1;
+	}
 }
 
 void Player::Draw()

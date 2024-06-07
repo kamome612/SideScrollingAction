@@ -50,7 +50,9 @@
     <ClCompile Include="PlayScene.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -81,6 +83,8 @@
     <ClInclude Include="PlayScene.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Player.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

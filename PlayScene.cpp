@@ -9,8 +9,8 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 	//‰æ‘œ‚Ìƒ[ƒh(”wŒi)
-	pPict_ = LoadGraph("");//E‚Á‚Ä‚«‚½‰æ‘œ‚ªwindowƒTƒCƒY‚É‡‚Á‚Ä‚È‚©‚Á‚½(’T‚·‚±‚Æ)
-	assert(pPict_ > 0);
+	//pPict_ = LoadGraph("");//E‚Á‚Ä‚«‚½‰æ‘œ‚ªwindowƒTƒCƒY‚É‡‚Á‚Ä‚È‚©‚Á‚½(’T‚·‚±‚Æ)
+	//assert(pPict_ > 0);
 	Instantiate<Player>(this);
 }
 
