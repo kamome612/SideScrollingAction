@@ -135,7 +135,11 @@
     <ClCompile Include="Engine\RootObject.cpp" />
     <ClCompile Include="Engine\SceneManager.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\CsvReader.h" />
@@ -144,7 +148,11 @@
     <ClInclude Include="Engine\RootObject.h" />
     <ClInclude Include="Engine\SceneManager.h" />
     <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="GameOverScene.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayScene.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

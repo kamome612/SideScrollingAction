@@ -14,6 +14,12 @@
     <Filter Include="01Engine\ResourceManager">
       <UniqueIdentifier>{bedee914-5063-4c08-95bb-79c861b4969c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{f30621f4-a4ff-4190-9259-6f119457a963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\PlayScene">
+      <UniqueIdentifier>{2c5cf8ca-4eae-4300-a02e-28d184b7f98d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObject.cpp">
@@ -35,6 +41,16 @@
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="GameOverScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -56,5 +72,15 @@
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="GameOverScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h" />
   </ItemGroup>
 </Project>
