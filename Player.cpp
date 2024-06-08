@@ -1,15 +1,30 @@
 #include "Player.h"
+#include "Engine/time.h"
 
 namespace {
-	const XMFLOAT3 INITPOS = { 30,550,0 };
+	const XMFLOAT3 INITPOS = { 30,550,0 };//最初の位置
+	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),pImage_(-1)
+	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(133),gravity_(9.8 / 60.0f),
+	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false)
 {
 	//初期位置の調整(あとで値はnamespaceなどでやっとく)
 	transform_.position_ = INITPOS;
-	state_ = S_Stop;
+	state_ = S_Normal;
+}
+
+Player::Player(GameObject* parent, float _gravity)
+	:GameObject(parent, "Player"), pImage_(-1), walkSpeed_(133), jumpSpeed_(0.0f),
+	                               onGround_(true),prevSpaceKey_(false)
+{
+	// 初期位置の調整(あとで値はnamespaceなどでやっとく)
+    transform_.position_ = INITPOS;
+	state_ = S_Normal;
+
+	//ステージから受け取った重力のセット(後で受け渡し方は変えるかも)
+	gravity_ = _gravity;
 }
 
 Player::~Player()
@@ -41,23 +56,36 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
-	/*if (InputKey(KEY_INPUT_S)) {
-		tranform_.position_.x += 0.1;
+	if (CheckHitKey(KEY_INPUT_D)) {//Sキーを押すと右に進む
+		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
 	}
-	if (InputKey(KEY_INPUT_A))
-	{
-		transform_.position_.x -= 0.1;
-	}*/
+	if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
+		transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+	}
+
+	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
+		if (prevSpaceKey_ == false) {
+			if (onGround_) {
+				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
+				onGround_ = false;
+			}
+		}
+		prevSpaceKey_ = true;
+	}
+	else {
+		prevSpaceKey_ = false;
+	}
+	jumpSpeed_ += gravity_;//速度 += 加速度
+	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
+	if (transform_.position_.y > INITPOS.y) {
+		transform_.position_.y = INITPOS.y;
+		onGround_ = true;
+	}
 }
 
 void Player::UpdateWalk()
 {
-	if (InputKey(KEY_INPUT_S)) {//Sキーを押すと右に進む
-		tranform_.position_.x += 0.1;
-	}
-	if (InputKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
-		transform_.position_.x -= 0.1;
-	}
 }
 
 void Player::Draw()

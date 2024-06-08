@@ -6,6 +6,7 @@ class Player :
 public:
     //コンストラクタ
     Player(GameObject* parent);
+    Player(GameObject* parent, float _gravity);
 
     //デストラクタ
     ~Player();
@@ -24,9 +25,14 @@ public:
     void Draw() override;
 private:
     int pImage_;
-    enum State_ {
+    float walkSpeed_;
+    float gravity_;
+    float jumpSpeed_;
+    bool prevSpaceKey_;
+    bool onGround_;
+    enum State {
         S_Normal = 0,
-        S_Walk,
+        //S_Walk,
     };
 
     State state_;

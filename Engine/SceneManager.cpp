@@ -4,6 +4,7 @@
 #include "../TitleScene.h"
 #include "../PlayScene.h"
 #include "../GameOverScene.h"
+#include "time.h"
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)
@@ -14,6 +15,8 @@ SceneManager::SceneManager(GameObject * parent)
 //初期化
 void SceneManager::Initialize()
 {
+	//タイマーの初期化
+	Time::Init();
 	//最初のシーンを準備
 	currentSceneID_ = SCENE_ID_TITLE;
 	nextSceneID_ = currentSceneID_;
@@ -45,6 +48,7 @@ void SceneManager::Update()
 //描画
 void SceneManager::Draw()
 {
+	Time::Refresh();
 }
 
 //開放
