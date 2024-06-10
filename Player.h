@@ -17,9 +17,8 @@ public:
     //更新
     void Update() override;
 
+    //通常時の動作のアニメーションなどの更新
     void UpdateNormal();
-
-    void UpdateWalk();
 
     //描画
     void Draw() override;

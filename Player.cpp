@@ -10,7 +10,7 @@ Player::Player(GameObject* parent)
 	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(133),gravity_(9.8 / 60.0f),
 	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false)
 {
-	//初期位置の調整(あとで値はnamespaceなどでやっとく)
+	//初期位置の調整
 	transform_.position_ = INITPOS;
 	state_ = S_Normal;
 }
@@ -19,7 +19,7 @@ Player::Player(GameObject* parent, float _gravity)
 	:GameObject(parent, "Player"), pImage_(-1), walkSpeed_(133), jumpSpeed_(0.0f),
 	                               onGround_(true),prevSpaceKey_(false)
 {
-	// 初期位置の調整(あとで値はnamespaceなどでやっとく)
+	// 初期位置の調整
     transform_.position_ = INITPOS;
 	state_ = S_Normal;
 
@@ -47,7 +47,6 @@ void Player::Update()
 		UpdateNormal();
 		break;
 	case 1:
-		UpdateWalk();
 		break;
 	default:
 		break;
@@ -82,10 +81,6 @@ void Player::UpdateNormal()
 		transform_.position_.y = INITPOS.y;
 		onGround_ = true;
 	}
-}
-
-void Player::UpdateWalk()
-{
 }
 
 void Player::Draw()
