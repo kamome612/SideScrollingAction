@@ -3,7 +3,6 @@
 class TitleScene :
     public GameObject
 {
-	int tPict_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -20,5 +19,8 @@ public:
 
 	//開放
 	void Release() override;
+
+private:
+	int tPict_;
 };
 

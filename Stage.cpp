@@ -78,7 +78,8 @@ void Stage::Reset()
 	assert(ret);
 	width_ = csv.GetWidth();
 	height_ = csv.GetHeight();
-	Map_ = new int[width_ * height_];//CŒ¾Œê‚Å‚Ì“®“I“ñŽŸŒ³”z—ñ‚ÌŽæ‚è•û
+	int map = width_ * height_;
+	Map_ = new int[map];
 
 	for (int h = 0; h < height_; h++) {
 		if (csv.GetString(0, h) == "") {
@@ -98,12 +99,6 @@ void Stage::Reset()
 			{
 				Player* pplayer = GetParent()->FindGameObject<Player>();
 				pplayer->SetPosition(w * 32, h * 32);
-			}
-			break;
-			case 1://bird
-			{
-				/*Bird* pbird = Instantiate<Bird>(GetParent());
-				pbird->SetPosition(w * 32, h * 32);*/
 			}
 			break;
 			}
