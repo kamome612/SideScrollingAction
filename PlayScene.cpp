@@ -12,8 +12,13 @@ void PlayScene::Initialize()
 	//画像のロード(背景)
 	//pPict_ = LoadGraph("Assets\\Picture\\universe.jpg");//拾ってきた画像がwindowサイズに合ってなかった(探すこと)
 	//assert(pPict_ > 0);
-	Stage* pStage = Instantiate<Stage>(this);
-	pStage->Reset();
+	//Stage* pStage = Instantiate<Stage>(this);
+	//pStage->Reset();
+	Instantiate<Stage>(this);
+
+	//ステージを出しても表示されない
+	//ステージのReset()を呼ぶとエラーはく
+	//後々直す
 	Instantiate<Player>(this);
 }
 
