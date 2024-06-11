@@ -22,6 +22,9 @@ public:
 
     //描画
     void Draw() override;
+
+    //位置をセット
+    void SetPosition(int _x, int _y);
 private:
     int pImage_;
     float walkSpeed_;

@@ -89,3 +89,9 @@ void Player::Draw()
 	int y = (int)transform_.position_.y;
 	DrawGraph(x, y, pImage_, TRUE);
 }
+
+void Player::SetPosition(int _x, int _y)
+{
+	transform_.position_.x = _x;
+	transform_.position_.y = _y;
+}
