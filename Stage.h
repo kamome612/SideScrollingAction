@@ -14,7 +14,7 @@ public:
     void Draw() override;
 private:
     int sImage_;//ステージを作成するのに使う画像
-    int* Map_;//ステージの情報を入れる配列
+    int* map_;//ステージの情報を入れる配列
     int width_;
     int height_;
 };
