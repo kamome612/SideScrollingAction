@@ -2,20 +2,43 @@
 #include "Engine/GameObject.h"
 
 //ステージを管理するクラス
+namespace {
+	const int MAP_SIZE = 32;
+	const int MAP_WIDTH = 10;
+	const int MAP_HEIGHT = 8;
+}
+
 class Stage :
     public GameObject
 {
+	int MapData[MAP_HEIGHT][MAP_WIDTH] =
+	{
+		{ 18, 19, 255, 255, 18, 19, 255, 255, 18, 19 } ,
+		{ 34, 35, 255, 255, 34, 35, 255, 255, 34, 35 } ,
+		{ 255, 255, 18, 19, 255, 255, 18, 19,255, 255 } ,
+		{ 255, 255, 34, 35, 255, 255,34, 35, 255, 255 } ,
+		{ 18, 19, 255, 255, 18, 19, 255,255, 18, 19 } ,
+		{ 34, 35, 255, 255,34, 35, 255, 255, 34, 35 } ,
+		{ 255, 255, 18, 19, 255, 255, 18, 19, 255, 255 } ,
+		{ 255, 255, 34, 35,255, 255, 34, 35, 255, 255 }
+	};
+
+	int hImage_;
 public:
-    Stage(GameObject* parent);
-    Stage(GameObject* parent, int _number);
-    ~Stage();
-    void Reset();
-    void Update() override;
-    void Draw() override;
-private:
-    int sImage_;//ステージを作成するのに使う画像
-    int* map_;//ステージの情報を入れる配列
-    int width_;
-    int height_;
+	//コンストラクタ
+	Stage();
+
+    //デストラクタ
+	~Stage();
+
+	//初期化
+	void Initialize() override;
+
+    //更新
+	void Update() override;
+    
+	//描画
+	void Draw()override;
+
 };
 
