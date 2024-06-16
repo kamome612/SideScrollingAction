@@ -11,22 +11,12 @@ namespace {
 class Stage :
     public GameObject
 {
-	/*int MapData[MAP_HEIGHT][MAP_WIDTH] =
-	{
-		{ 16, 17, 255, 255, 16, 17, 255, 255, 16, 17 } ,
-		{ 32, 33, 255, 255, 32, 33, 255, 255, 32, 33 } ,
-		{ 255, 255, 16, 17, 255, 255, 16, 17,255, 255 } ,
-		{ 255, 255, 32, 33, 255, 255, 32, 33, 255, 255 } ,
-		{ 16, 17, 255, 255, 16, 17, 255,255, 16, 17 } ,
-		{ 32, 33, 255, 255, 32, 33, 255,255, 32, 33 } ,
-		{ 255, 255, 16, 17, 255, 255, 16, 17, 255, 255 } ,
-		{ 255, 255, 32, 33, 255, 255, 32, 33, 255, 255 }
-	};*/
-
+private:
 	int hImage_;
 	int* map_;
 	int width_;
 	int height_;
+	bool IsWallBlock(int x, int y);
 public:
 	//コンストラクタ
 	Stage(GameObject* parent);
@@ -42,6 +32,41 @@ public:
     
 	//描画
 	void Draw()override;
+
+	//マップの状態をリセットする
+	void Reset();
+
+	/// <summary>
+	/// 右側の点が当たっているか調べる
+	/// </summary>
+	/// <param name="x">X座標</param>
+	/// <param name="y">Y座標</param>
+	/// <returns>めりこんだ量(ドット)</returns>
+	int CollisionRight(int x, int y);
+
+	/// <summary>
+	/// 左側の点が当たっているか調べる
+	/// </summary>
+	/// <param name="x">X座標</param>
+	/// <param name="y">Y座標</param>
+	/// <returns>めり込んだ量(ドット)</returns>
+	int CollisionLight(int x, int y);
+
+	/// <summary>
+	/// 下の点が当たっているか調べる
+	/// </summary>
+	/// <param name="x">X座標</param>
+	/// <param name="y">Y座標</param>
+	/// <returns>めり込んだ量(ドット)</returns>
+	int CollisionDown(int x, int y);
+
+	/// <summary>
+	/// 上の点が当たっているか調べる
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <returns></returns>
+	int CollisionUp(int x, int y);
 
 };
 

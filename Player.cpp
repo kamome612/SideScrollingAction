@@ -1,13 +1,15 @@
 #include "Player.h"
 #include "Engine/time.h"
+#include "Camera.h"
+#include "Stage.h"
 
 namespace {
-	const XMFLOAT3 INITPOS = { 30,550,0 };//最初の位置
+	const XMFLOAT3 INITPOS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(133),gravity_(9.8 / 60.0f),
+	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(9.8 / 60.0f),
 	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false)
 {
 	//初期位置の調整
@@ -16,7 +18,7 @@ Player::Player(GameObject* parent)
 }
 
 Player::Player(GameObject* parent, float _gravity)
-	:GameObject(parent, "Player"), pImage_(-1), walkSpeed_(133), jumpSpeed_(0.0f),
+	:GameObject(parent, "Player"), pImage_(-1), walkSpeed_(150), jumpSpeed_(0.0f),
 	                               onGround_(true),prevSpaceKey_(false)
 {
 	// 初期位置の調整
@@ -55,11 +57,24 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
+	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (CheckHitKey(KEY_INPUT_D)) {//Sキーを押すと右に進む
 		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
+		int hitX = transform_.position_.x + 50;
+		int hitY = transform_.position_.y + 63;
+		if (pStage != nullptr) {
+			int push = pStage->CollisionRight(hitX, hitY);
+			transform_.position_.x -= push;
+		}
 	}
 	if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+		/*int hitX = transform_.position_.x + 50;
+		int hitY = transform_.position_.y + 63;
+		if (pStage != nullptr) {
+			int push = pStage->CollisionRight(hitX, hitY);
+			transform_.position_.x += push;
+		}*/
 	}
 
 	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
@@ -81,12 +96,24 @@ void Player::UpdateNormal()
 		transform_.position_.y = INITPOS.y;
 		onGround_ = true;
 	}
+
+	//ここでカメラ位置の調整
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	int x = (int)transform_.position_.x - cam->GetValue();
+	if (x > 400) {
+		x = 400;
+		cam->SetValue((int)transform_.position_.x - x);
+	}
 }
 
 void Player::Draw()
 {
 	int x = (int)transform_.position_.x;
 	int y = (int)transform_.position_.y;
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		x -= cam->GetValue();
+	}
 	DrawGraph(x, y, pImage_, TRUE);
 }
 
