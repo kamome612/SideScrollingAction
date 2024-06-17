@@ -125,7 +125,7 @@ int Stage::CollisionUp(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//“–‚½‚Á‚Ä‚¢‚é‚Ì‚ÅA‚ß‚è‚ñ‚¾—Ê‚ğ•Ô‚·
-		return y % 32 + 1;
+		return y % 32 - 1;
 	}
 	else
 		return 0;
@@ -146,6 +146,5 @@ bool Stage::IsWallBlock(int x, int y)
 	case 35:
 		return true;
 	}
-	return false;
 	return false;
 }

@@ -58,7 +58,7 @@ void Player::Update()
 void Player::UpdateNormal()
 {
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
-	if (CheckHitKey(KEY_INPUT_D)) {//Sキーを押すと右に進む
+	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
 		int hitX = transform_.position_.x + 50;
 		int hitY = transform_.position_.y + 63;
@@ -69,12 +69,6 @@ void Player::UpdateNormal()
 	}
 	if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
-		/*int hitX = transform_.position_.x + 50;
-		int hitY = transform_.position_.y + 63;
-		if (pStage != nullptr) {
-			int push = pStage->CollisionRight(hitX, hitY);
-			transform_.position_.x += push;
-		}*/
 	}
 
 	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
@@ -91,6 +85,21 @@ void Player::UpdateNormal()
 	}
 	jumpSpeed_ += gravity_;//速度 += 加速度
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
+	if (pStage != nullptr) {
+		//(50,64)と(14,64)も見る
+		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + 64);
+		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + 64);
+		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
+		if (push >= 1) {
+			transform_.position_.y -= push - 1;
+			jumpSpeed_ = 0.0f;
+			onGround_ = true;
+		}
+		else {
+			onGround_ = false;
+		}
+	}
 
 	if (transform_.position_.y > INITPOS.y) {
 		transform_.position_.y = INITPOS.y;

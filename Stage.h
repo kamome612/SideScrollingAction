@@ -3,9 +3,8 @@
 
 //ステージを管理するクラス
 namespace {
+	const int MAP_NUM = 3;
 	const int MAP_SIZE = 32;
-	const int MAP_WIDTH = 10;
-	const int MAP_HEIGHT = 8;
 }
 
 class Stage :
