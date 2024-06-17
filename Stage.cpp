@@ -60,9 +60,9 @@ void Stage::Reset()
 
 	//csvから読み込み
 	CsvReader csv;
-	bool ret = csv.Load("Assets/Image/testStage2.csv");
+	bool ret = csv.Load("Assets/Image/stage1.csv");
 	assert(ret);
-	width_ = csv.GetWidth();
+	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
 	map_ = new int[height_ * width_];
 
@@ -72,23 +72,24 @@ void Stage::Reset()
 			break;
 		}
 		for (int w = 0; w < width_; w++) {
-			map_[h * width_ + w] = csv.GetValue(w, h);
+			map_[h * width_ + w] = csv.GetInt(w, h);
 		}
 	}
 
-	////Mapデータの中で0があれば、Playerの座標を0の位置にする
-	//for (int h = 0; h < height_; h++) {
-	//	for (int w = 0; w < width_; w++) {
-	//		switch (csv.GetValue(w, h + height_ + 1))
-	//		{
-	//		case 0://player
-	//		{
-	//			Player* pPlayer = GetParent()->FindGameObject<Player>();
-	//			pPlayer->SetPosition(w * 32, h * 32);
-	//			break;
-	//		}
-	//	}
-	//}
+	//Mapデータの中で0があれば、Playerの座標を0の位置にする
+	for (int h = 0; h < height_; h++) {
+		for (int w = 0; w < width_; w++) {
+			switch (csv.GetInt(w, h + height_ + 1))
+			{
+			case 0://player
+			{
+				Player* pPlayer = GetParent()->FindGameObject<Player>();
+				pPlayer->SetPosition(w * 32, h * 32);
+				break;
+			}
+			}
+		}
+	}
 }
 
 int Stage::CollisionRight(int x, int y)
@@ -101,7 +102,7 @@ int Stage::CollisionRight(int x, int y)
 		return 0;
 }
 
-int Stage::CollisionLight(int x, int y)
+int Stage::CollisionLeft(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す

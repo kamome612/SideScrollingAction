@@ -49,7 +49,7 @@ public:
 	/// <param name="x">X座標</param>
 	/// <param name="y">Y座標</param>
 	/// <returns>めり込んだ量(ドット)</returns>
-	int CollisionLight(int x, int y);
+	int CollisionLeft(int x, int y);
 
 	/// <summary>
 	/// 下の点が当たっているか調べる

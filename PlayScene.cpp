@@ -17,8 +17,8 @@ void PlayScene::Initialize()
 	//pStage->Reset();
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
-	pStage->Reset();
 	Instantiate<Player>(this);
+	pStage->Reset();
 }
 
 void PlayScene::Update()

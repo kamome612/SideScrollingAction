@@ -68,7 +68,15 @@ void Player::UpdateNormal()
 		}
 	}
 	if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
-		transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+		if (transform_.position_.x > 0) {//左画面端で止まるように
+			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+			int hitX = transform_.position_.x - 50;
+			int hitY = transform_.position_.y + 63;
+			if (pStage != nullptr) {
+				int push = pStage->CollisionLeft(hitX, hitY);
+				transform_.position_.x -= push;
+			}
+		}
 	}
 
 	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
@@ -112,6 +120,10 @@ void Player::UpdateNormal()
 	if (x > 400) {
 		x = 400;
 		cam->SetValue((int)transform_.position_.x - x);
+	}
+	if (x < 0) {
+		x = 0;
+		cam->SetValue((int)transform_.position_.x + x);
 	}
 }
 
