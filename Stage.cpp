@@ -58,15 +58,15 @@ void Stage::Reset()
 		map_ = nullptr;
 	}
 
-	static const std::string folder = "Assets/Image/bgchar";
+	static const std::string folder = "Assets/Image/";
 	
 	//‰æ‘œ‚Ì“Ç‚İ‚İ
 	std::string n = std::to_string(mapNo_);
-	hImage_ = LoadGraph((folder + n + ".png").c_str());
+	hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	assert(hImage_ > 0);
 	//csv‚©‚ç“Ç‚İ‚İ
 	CsvReader csv;
-	bool ret = csv.Load((folder + n + ".csv").c_str());
+	bool ret = csv.Load((folder +"stage"+ n + ".csv").c_str());
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
