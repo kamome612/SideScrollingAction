@@ -17,18 +17,6 @@ Player::Player(GameObject* parent)
 	state_ = S_Normal;
 }
 
-Player::Player(GameObject* parent, float _gravity)
-	:GameObject(parent, "Player"), pImage_(-1), walkSpeed_(150), jumpSpeed_(0.0f),
-	                               onGround_(true),prevSpaceKey_(false)
-{
-	// 初期位置の調整
-    transform_.position_ = INITPOS;
-	state_ = S_Normal;
-
-	//ステージから受け取った重力のセット(後で受け渡し方は変えるかも)
-	gravity_ = _gravity;
-}
-
 Player::~Player()
 {
 	if (pImage_ > 0)
@@ -158,4 +146,9 @@ void Player::SetPosition(float _x, float _y)
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
 	ground_ = _y;
+}
+
+void Player::SetGravity(float _gravity)
+{
+	gravity_ = _gravity;
 }

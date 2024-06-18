@@ -6,7 +6,6 @@ class Player :
 public:
     //コンストラクタ
     Player(GameObject* parent);
-    Player(GameObject* parent, float _gravity);
 
     //デストラクタ
     ~Player();
@@ -25,6 +24,9 @@ public:
 
     //位置をセット
     void SetPosition(float _x, float _y);
+
+    //重力のセット
+    void SetGravity(float _gravity);
 private:
     int pImage_;
     float walkSpeed_;

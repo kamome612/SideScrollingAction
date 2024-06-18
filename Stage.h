@@ -15,6 +15,7 @@ private:
 	int* map_;
 	int width_;
 	int height_;
+	int mapNo_;
 	bool IsWallBlock(int x, int y);
 public:
 	//コンストラクタ

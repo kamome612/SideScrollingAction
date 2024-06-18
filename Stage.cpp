@@ -4,7 +4,7 @@
 #include "Camera.h"
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0)
+	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),mapNo_(1)
 {
 }
 
@@ -20,9 +20,9 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
-	hImage_ = LoadGraph("Assets/Image/bgchar.png");
-	assert(hImage_ > 0);
+	////‰æ‘œ‚Ì“Ç‚İ‚İ
+	//hImage_ = LoadGraph("Assets/Image/bgchar.png");
+	//assert(hImage_ > 0);
 	map_ = nullptr;
 }
 
@@ -58,9 +58,15 @@ void Stage::Reset()
 		map_ = nullptr;
 	}
 
+	static const std::string folder = "Assets/Image/bgchar";
+	
+	//‰æ‘œ‚Ì“Ç‚İ‚İ
+	std::string n = std::to_string(mapNo_);
+	hImage_ = LoadGraph((folder + n + ".png").c_str());
+	assert(hImage_ > 0);
 	//csv‚©‚ç“Ç‚İ‚İ
 	CsvReader csv;
-	bool ret = csv.Load("Assets/Image/stage1.csv");
+	bool ret = csv.Load((folder + n + ".csv").c_str());
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
