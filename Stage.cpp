@@ -106,7 +106,7 @@ int Stage::CollisionLeft(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//“–‚½‚Á‚Ä‚¢‚é‚Ì‚ÅA‚ß‚è‚ñ‚¾—Ê‚ğ•Ô‚·
-		return x % 32 + 1;
+		return x % 32 - 1;
 	}
 	else
 		return 0;

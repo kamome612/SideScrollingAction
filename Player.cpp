@@ -9,7 +9,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(9.8 / 60.0f),
+	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(9.8f / 60.0f),
 	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false)
 {
 	//初期位置の調整
@@ -70,11 +70,11 @@ void Player::UpdateNormal()
 	if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		if (transform_.position_.x > 0) {//左画面端で止まるように
 			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
-			int hitX = transform_.position_.x - 50;
+			int hitX = transform_.position_.x + 10;
 			int hitY = transform_.position_.y + 63;
 			if (pStage != nullptr) {
 				int push = pStage->CollisionLeft(hitX, hitY);
-				transform_.position_.x -= push;
+				transform_.position_.x += push;
 			}
 		}
 	}
@@ -91,7 +91,7 @@ void Player::UpdateNormal()
 	else {
 		prevSpaceKey_ = false;
 	}
-	jumpSpeed_ += gravity_;//速度 += 加速度
+	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	if (pStage != nullptr) {
@@ -107,6 +107,21 @@ void Player::UpdateNormal()
 		else {
 			onGround_ = false;
 		}
+	}
+
+	if (pStage != nullptr) {
+		//(50,64)と(14,64)も見る
+		int pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
+		int pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
+		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
+		if (push >= 1) {
+			transform_.position_.y += push + 1;
+			jumpSpeed_ = 0.0f;
+			onGround_ = true;
+		}
+		/*else {
+			onGround_ = false;
+		}*/
 	}
 
 	if (transform_.position_.y > INITPOS.y) {
@@ -138,8 +153,9 @@ void Player::Draw()
 	DrawGraph(x, y, pImage_, TRUE);
 }
 
-void Player::SetPosition(int _x, int _y)
+void Player::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
+	ground_ = _y;
 }

@@ -24,14 +24,16 @@ public:
     void Draw() override;
 
     //位置をセット
-    void SetPosition(int _x, int _y);
+    void SetPosition(float _x, float _y);
 private:
     int pImage_;
     float walkSpeed_;
     float gravity_;
     float jumpSpeed_;
+    float ground_;
     bool prevSpaceKey_;
     bool onGround_;
+    float time_ = 0.0;
     enum State {
         S_Normal = 0,
         //S_Walk,
