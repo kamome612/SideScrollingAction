@@ -106,7 +106,7 @@ int Stage::CollisionLeft(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//“–‚½‚Á‚Ä‚¢‚é‚Ì‚ÅA‚ß‚è‚ñ‚¾—Ê‚ğ•Ô‚·
-		return x % 32 - 1;
+		return x % 32 - 28;
 	}
 	else
 		return 0;
@@ -126,7 +126,7 @@ int Stage::CollisionUp(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//“–‚½‚Á‚Ä‚¢‚é‚Ì‚ÅA‚ß‚è‚ñ‚¾—Ê‚ğ•Ô‚·
-		return y % 32 - 1;
+		return y % 32 - 25;
 	}
 	else
 		return 0;
