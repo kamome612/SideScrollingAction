@@ -68,7 +68,7 @@ void Player::UpdateNormal()
 	}
 
 	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
-		if (prevSpaceKey_ == false) {
+		if (prevSpaceKey_ == false) {//前回のフレームでspaceを押してないときだけ
 			if (onGround_) {
 				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
 				onGround_ = false;
@@ -112,6 +112,7 @@ void Player::UpdateNormal()
 		}*/
 	}
 
+	//地面より下にいかないように
 	if (transform_.position_.y > INITPOS.y) {
 		transform_.position_.y = INITPOS.y;
 		onGround_ = true;

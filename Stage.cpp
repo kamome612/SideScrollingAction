@@ -62,11 +62,13 @@ void Stage::Reset()
 	
 	//‰æ‘œ‚Ì“Ç‚İ‚İ
 	std::string n = std::to_string(mapNo_);
-	hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
+	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
+	hImage_ = LoadGraph("Assets/Image/spritesheet_ground.png");
 	assert(hImage_ > 0);
 	//csv‚©‚ç“Ç‚İ‚İ
 	CsvReader csv;
-	bool ret = csv.Load((folder +"stage"+ n + ".csv").c_str());
+	//bool ret = csv.Load((folder +"stage"+ n + ".csv").c_str());
+	bool ret = csv.Load("Assets/Image/testStage.csv");
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
@@ -143,14 +145,20 @@ bool Stage::IsWallBlock(int x, int y)
 	int chipX = x / 32;
 	int chipY = y / 32;
 	switch (map_[chipY * width_ + chipX]) {
+	case 0:
+	case 1:
+	case 10:
+	case 11:
 	case 16:
 	case 17:
-	case 18:
-	case 19:
+	case 26:
+	case 27:
 	case 32:
 	case 33:
 	case 34:
 	case 35:
+	case 64:
+	case 65:
 		return true;
 	}
 	return false;
