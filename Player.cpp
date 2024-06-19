@@ -26,7 +26,7 @@ Player::~Player()
 void Player::Initialize()
 {
 	//とりあえず今はaoiを出しとく(後で変える)
-	pImage_ = LoadGraph("Assets\\Image\\chara.png");
+	pImage_ = LoadGraph("Assets\\Image\\aoi.png");
 	assert(pImage_ >= 0);
 }
 
@@ -48,6 +48,10 @@ void Player::UpdateNormal()
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
+		if (++frameCounter_ >= 8) {
+			animFrame_ = (animFrame_ + 1) % 4;
+			frameCounter_ = 0;
+		}
 		int hitX = transform_.position_.x + 50;
 		int hitY = transform_.position_.y + 63;
 		if (pStage != nullptr) {
@@ -55,9 +59,13 @@ void Player::UpdateNormal()
 			transform_.position_.x -= push;
 		}
 	}
-	if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
+	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		if (transform_.position_.x > 0) {//左画面端で止まるように
 			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+			if (++frameCounter_ >= 8) {
+				animFrame_ = (animFrame_ + 1) % 4;
+				frameCounter_ = 0;
+			}
 			int hitX = transform_.position_.x + 10;
 			int hitY = transform_.position_.y + 63;
 			if (pStage != nullptr) {
@@ -65,6 +73,10 @@ void Player::UpdateNormal()
 				transform_.position_.x += push;
 			}
 		}
+	}
+	else {
+		animFrame_ = 0;
+		frameCounter_ = 0;
 	}
 
 	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
@@ -139,7 +151,7 @@ void Player::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	DrawGraph(x, y, pImage_, TRUE);
+	DrawRectGraph(x, y, animFrame_ * 64, animType_ * 64, 64, 64, pImage_, TRUE);
 }
 
 void Player::SetPosition(float _x, float _y)

@@ -36,11 +36,14 @@ private:
     bool prevSpaceKey_;
     bool onGround_;
     float time_ = 0.0;
+    int animType_;//èÛãµ
+    int animFrame_;//ÉRÉ}
+    int frameCounter_;
+
     enum State {
         S_Normal = 0,
         //S_Walk,
     };
-
     State state_;
 };
 

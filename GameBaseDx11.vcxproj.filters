@@ -57,6 +57,7 @@
       <Filter>01Engine</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="Meteorite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -95,5 +96,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="Meteorite.h" />
   </ItemGroup>
 </Project>
