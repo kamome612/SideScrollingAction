@@ -2,9 +2,11 @@
 #include "Engine/time.h"
 #include "Camera.h"
 #include "Stage.h"
+#include "Meteorite.h"
+#include "PlayScene.h"
 
 namespace {
-	const XMFLOAT3 INITPOS = { 30,575,0 };//最初の位置
+	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
 }
 
@@ -14,14 +16,15 @@ Player::Player(GameObject* parent)
 	                             time_(0.0f),animType_(0),animFrame_(0)
 {
 	//初期位置の調整
-	transform_.position_ = INITPOS;
+	transform_.position_ = INIT_POS;
 	state_ = S_Normal;
 }
 
 Player::~Player()
 {
-	if (pImage_ > 0)
+	if (pImage_ > 0) {
 		DeleteGraph(pImage_);
+	}
 }
 
 void Player::Initialize()
@@ -47,6 +50,11 @@ void Player::Update()
 void Player::UpdateNormal()
 {
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
+
+	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+	if (!scene->canMove())
+		return;
+
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
 		if (++frameCounter_ >= 8) {
@@ -108,27 +116,31 @@ void Player::UpdateNormal()
 		else {
 			onGround_ = false;
 		}
-	}
 
-	if (pStage != nullptr) {
 		//(50,64)と(14,64)も見る
-		int pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
-		int pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
-		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
+		pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
+		pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
+		push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
 			jumpSpeed_ = 0.0f;
 			onGround_ = true;
 		}
-		else {
-			onGround_ = false;
-		}
 	}
 
 	//地面より下にいかないように
-	if (transform_.position_.y > INITPOS.y) {
-		transform_.position_.y = INITPOS.y;
+	/*if (transform_.position_.y > INIT_POS.y) {
+		transform_.position_.y = INIT_POS.y;
 		onGround_ = true;
+	}*/
+
+	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
+	for (Meteorite* pMeteo : pMeteos) {
+		if (pMeteo->CollideCircle(transform_.position_.x + 32.0f, transform_.position_.y + 32.0f, 20.0f)) {
+			//scene->StartDead();
+			//ここに爆発のエフェクト入れれたらいいな...
+			pMeteo->KillMe();
+		}
 	}
 
 	//ここでカメラ位置の調整
@@ -152,8 +164,8 @@ void Player::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	//DrawGraph(x, y, pImage_, TRUE);
 	DrawRectGraph(x, y, animFrame_ * 64, animType_ * 64, 64, 64, pImage_, TRUE);
+	DrawCircle(transform_.position_.x + 32.0f, transform_.position_.y + 32.0f, 20.0f,GetColor(0,0,255), FALSE);
 }
 
 void Player::SetPosition(float _x, float _y)

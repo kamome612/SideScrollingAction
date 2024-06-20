@@ -15,6 +15,7 @@ void PlayScene::Initialize()
 	//assert(pPict_ > 0);
 	//Stage* pStage = Instantiate<Stage>(this);
 	//pStage->Reset();
+	state_ = S_Play;
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
 	Instantiate<Player>(this);

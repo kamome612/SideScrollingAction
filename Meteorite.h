@@ -24,5 +24,8 @@ public:
 	//位置のセッター
 	void SetPosition(float _x, float _y);
 
+	//円の当たり判定をする
+	bool CollideCircle(float x, float y, float r);
+
 };
 

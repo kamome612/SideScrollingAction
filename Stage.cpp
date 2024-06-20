@@ -4,6 +4,10 @@
 #include "Camera.h"
 #include "Meteorite.h"
 
+namespace {
+	const int CHIP_SIZE = 32;
+}
+
 Stage::Stage(GameObject* parent)
 	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),mapNo_(1)
 {
@@ -46,7 +50,9 @@ void Stage::Draw()
 	for (int h = 0; h < height_; h++) {
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
-			DrawRectGraph(w * 32-scroll, h * 32, 32 * (chip % 16), 32 * (chip / 16), 32, 32, hImage_, TRUE, FALSE);
+			DrawRectGraph(w * CHIP_SIZE-scroll, h * CHIP_SIZE, 
+				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
+				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 		}
 	}
 }
@@ -69,7 +75,7 @@ void Stage::Reset()
 	//csvから読み込み
 	CsvReader csv;
 	//bool ret = csv.Load((folder +"stage"+ n + ".csv").c_str());
-	bool ret = csv.Load("Assets/Image/testStage1.csv");
+	bool ret = csv.Load("Assets/Image/test.csv");
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
@@ -93,12 +99,13 @@ void Stage::Reset()
 			case 0://player
 			{
 				Player* sPlayer = GetParent()->FindGameObject<Player>();
-				sPlayer->SetPosition(w * 32, h * 32);
+				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
 			case 15://Meteorite
-				Meteorite * sMeteo = GetParent()->FindGameObject<Meteorite>();
-				sMeteo->SetPosition(w * 32, h * 32);
+				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
+				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
 			}
 		}
 	}
@@ -108,7 +115,7 @@ int Stage::CollisionRight(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		return x % 32 + 1;
+		return x % CHIP_SIZE + 1;
 	}
 	else
 		return 0;
@@ -118,7 +125,7 @@ int Stage::CollisionLeft(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		return x % 32 - 28;
+		return x % CHIP_SIZE - 28;
 	}
 	else
 		return 0;
@@ -128,7 +135,7 @@ int Stage::CollisionDown(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		return y % 32 + 1;
+		return y % CHIP_SIZE + 1;
 	}
 	else
 		return 0;
@@ -138,7 +145,7 @@ int Stage::CollisionUp(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		return y % 32 - 25;
+		return y % CHIP_SIZE - 25;
 	}
 	else
 		return 0;
@@ -146,8 +153,8 @@ int Stage::CollisionUp(int x, int y)
 
 bool Stage::IsWallBlock(int x, int y)
 {
-	int chipX = x / 32;
-	int chipY = y / 32;
+	int chipX = x / CHIP_SIZE;
+	int chipY = y / CHIP_SIZE;
 	switch (map_[chipY * width_ + chipX]) {
 	case 0:
 	case 1:
