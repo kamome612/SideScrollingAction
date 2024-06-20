@@ -35,7 +35,7 @@ private:
     float ground_;
     bool prevSpaceKey_;
     bool onGround_;
-    float time_ = 0.0;
+    float time_;
     int animType_;//ó‹µ
     int animFrame_;//ƒRƒ}
     int frameCounter_;

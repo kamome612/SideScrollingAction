@@ -10,7 +10,8 @@ namespace {
 
 Player::Player(GameObject* parent)
 	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(9.8f / 60.0f),
-	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false)
+	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false),
+	                             time_(0.0f),animType_(0),animFrame_(0)
 {
 	//‰ŠúˆÊ’u‚Ì’²®
 	transform_.position_ = INITPOS;
@@ -119,9 +120,9 @@ void Player::UpdateNormal()
 			jumpSpeed_ = 0.0f;
 			onGround_ = true;
 		}
-		/*else {
+		else {
 			onGround_ = false;
-		}*/
+		}
 	}
 
 	//’n–Ê‚æ‚è‰º‚É‚¢‚©‚È‚¢‚æ‚¤‚É
@@ -151,6 +152,7 @@ void Player::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
+	//DrawGraph(x, y, pImage_, TRUE);
 	DrawRectGraph(x, y, animFrame_ * 64, animType_ * 64, 64, 64, pImage_, TRUE);
 }
 

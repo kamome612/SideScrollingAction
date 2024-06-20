@@ -23,3 +23,9 @@ void Meteorite::Draw()
 {
 	DrawGraph(transform_.position_.x, transform_.position_.y, mImage_, TRUE);
 }
+
+void Meteorite::SetPosition(float _x, float _y)
+{
+	transform_.position_.x = _x;
+	transform_.position_.y = _y;
+}

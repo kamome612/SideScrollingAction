@@ -2,6 +2,7 @@
 #include "Engine/CsvReader.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Meteorite.h"
 
 Stage::Stage(GameObject* parent)
 	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),mapNo_(1)
@@ -68,7 +69,7 @@ void Stage::Reset()
 	//csv‚©‚ç“Ç‚Ýž‚Ý
 	CsvReader csv;
 	//bool ret = csv.Load((folder +"stage"+ n + ".csv").c_str());
-	bool ret = csv.Load("Assets/Image/testStage.csv");
+	bool ret = csv.Load("Assets/Image/testStage1.csv");
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
@@ -91,10 +92,13 @@ void Stage::Reset()
 			{
 			case 0://player
 			{
-				Player* pPlayer = GetParent()->FindGameObject<Player>();
-				pPlayer->SetPosition(w * 32, h * 32);
+				Player* sPlayer = GetParent()->FindGameObject<Player>();
+				sPlayer->SetPosition(w * 32, h * 32);
 				break;
 			}
+			case 15://Meteorite
+				Meteorite * sMeteo = GetParent()->FindGameObject<Meteorite>();
+				sMeteo->SetPosition(w * 32, h * 32);
 			}
 		}
 	}
@@ -151,8 +155,6 @@ bool Stage::IsWallBlock(int x, int y)
 	case 11:
 	case 16:
 	case 17:
-	case 26:
-	case 27:
 	case 32:
 	case 33:
 	case 34:

@@ -21,5 +21,8 @@ public:
 	//描画
 	void Draw()override;
 
+	//位置のセッター
+	void SetPosition(float _x, float _y);
+
 };
 
