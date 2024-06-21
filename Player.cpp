@@ -8,10 +8,13 @@
 namespace {
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
+	const float INIT_GRAVITY = 274 / 60.0f;
+	//重力メモ:月...1.62,火星...3.71,太陽274
+
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(9.8f / 60.0f),
+	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(INIT_GRAVITY),
 	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false),
 	                             time_(0.0f),animType_(0),animFrame_(0)
 {
@@ -128,11 +131,11 @@ void Player::UpdateNormal()
 		}
 	}
 
-	//地面より下にいかないように
-	/*if (transform_.position_.y > INIT_POS.y) {
-		transform_.position_.y = INIT_POS.y;
-		onGround_ = true;
-	}*/
+	////地面より下にいかないように
+	//if (transform_.position_.y > INIT_POS.y) {
+	//	transform_.position_.y = INIT_POS.y;
+	//	onGround_ = true;
+	//}
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
@@ -165,7 +168,7 @@ void Player::Draw()
 		x -= cam->GetValue();
 	}
 	DrawRectGraph(x, y, animFrame_ * 64, animType_ * 64, 64, 64, pImage_, TRUE);
-	DrawCircle(transform_.position_.x + 32.0f, transform_.position_.y + 32.0f, 20.0f,GetColor(0,0,255), FALSE);
+	DrawCircle(x + 32.0f, y + 32.0f, 20.0f,GetColor(0,0,255), FALSE);
 }
 
 void Player::SetPosition(float _x, float _y)

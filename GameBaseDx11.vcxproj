@@ -144,6 +144,7 @@
     <ClCompile Include="Engine\SceneManager.cpp" />
     <ClCompile Include="Engine\time.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="Meteorite.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Engine\SceneManager.h" />
     <ClInclude Include="Engine\time.h" />
     <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="Explosion.h" />
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="Meteorite.h" />
     <ClInclude Include="Player.h" />

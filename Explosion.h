@@ -1,16 +1,20 @@
 #pragma once
 #include "Engine/GameObject.h"
-class Meteorite :
+class Explosion :
     public GameObject
 {
 private:
-	int mImage_;
+	int eImage_;
+	int animFrame_;
+	int animColumn_;
+	int animLine_;
+	float exTime_;
 public:
 	//コンストラクタ
-	Meteorite(GameObject* parent);
+	Explosion(GameObject* parent);
 
 	//デストラクタ
-	~Meteorite();
+	~Explosion();
 
 	//初期化
 	void Initialize() override;
@@ -20,11 +24,8 @@ public:
 
 	//描画
 	void Draw()override;
-
-	//位置のセッター
+	
+	//位置をセット
 	void SetPosition(float _x, float _y);
-
-	//円の当たり判定をする
-	bool CollideCircle(float x, float y, float r);
 };
 
