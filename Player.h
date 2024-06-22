@@ -38,11 +38,10 @@ private:
     float time_;        //タイム
     int animType_;//状況
     int animFrame_;//コマ
-    int frameCounter_; 
+    int frameCounter_;
 
     enum State {
-        S_Normal = 0,
-        //S_Walk,
+        S_Normal = 0,a
     };
     State state_;
 };

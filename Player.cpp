@@ -4,11 +4,12 @@
 #include "Stage.h"
 #include "Meteorite.h"
 #include "PlayScene.h"
+#include "Explosion.h"
 
 namespace {
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 274 / 60.0f;
+	const float INIT_GRAVITY = 9.8/ 60.0f;
 	//重力メモ:月...1.62,火星...3.71,太陽274
 
 }
@@ -53,16 +54,15 @@ void Player::Update()
 void Player::UpdateNormal()
 {
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
-
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())
 		return;
 
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
-		if (++frameCounter_ >= 8) {
+		if (time_ > 0.2f) {
 			animFrame_ = (animFrame_ + 1) % 4;
-			frameCounter_ = 0;
+			time_ = 0.0f;
 		}
 		int hitX = transform_.position_.x + 50;
 		int hitY = transform_.position_.y + 63;
@@ -74,9 +74,9 @@ void Player::UpdateNormal()
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		if (transform_.position_.x > 0) {//左画面端で止まるように
 			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
-			if (++frameCounter_ >= 8) {
+			if (time_ > 0.4f) {
 				animFrame_ = (animFrame_ + 1) % 4;
-				frameCounter_ = 0;
+				time_ = 0.0f;
 			}
 			int hitX = transform_.position_.x + 10;
 			int hitY = transform_.position_.y + 63;
@@ -127,15 +127,8 @@ void Player::UpdateNormal()
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
 			jumpSpeed_ = 0.0f;
-			onGround_ = true;
 		}
 	}
-
-	////地面より下にいかないように
-	//if (transform_.position_.y > INIT_POS.y) {
-	//	transform_.position_.y = INIT_POS.y;
-	//	onGround_ = true;
-	//}
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
@@ -143,6 +136,8 @@ void Player::UpdateNormal()
 			//scene->StartDead();
 			//ここに爆発のエフェクト入れれたらいいな...
 			pMeteo->KillMe();
+			Explosion* pEx = Instantiate<Explosion>(GetParent());
+			pEx->SetPosition(transform_.position_.x, transform_.position_.y - 32.0f);
 		}
 	}
 
@@ -157,6 +152,9 @@ void Player::UpdateNormal()
 		x = 0;
 		cam->SetValue((int)transform_.position_.x + x);
 	}
+
+	//アニメーションに使うタイムの更新
+	time_ += Time::DeltaTime();
 }
 
 void Player::Draw()

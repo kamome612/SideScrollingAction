@@ -26,6 +26,7 @@ Meteorite::~Meteorite()
 
 void Meteorite::Initialize()
 {
+	//‰æ‘œ‚Ì“Ç‚Ýž‚Ý
 	mImage_ = LoadGraph("Assets/Image/meteo.png");
 	assert(mImage_ > 0);
 	transform_.position_ = INIT_POS;
@@ -51,7 +52,7 @@ void Meteorite::Update()
 		KillMe();
 		return;
 	}
-	bool isGround = pStage->CollisionDown(transform_.position_.x, transform_.position_.y+ CHIP_SIZE/2);
+	bool isGround = pStage->CollisionDown(transform_.position_.x, transform_.position_.y+ CHIP_SIZE/1.5);
 	if (isGround) {
 		KillMe();
 		Explosion*mEx = Instantiate<Explosion>(GetParent());
@@ -70,6 +71,8 @@ void Meteorite::Draw()
 		x -= cam->GetValue();
 	}
 	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
+
+	//“–‚½‚è”»’è‚ð‰ÂŽ‹‰»‚·‚é‚½‚ß—p
 	DrawCircle(x + CHIP_SIZE/4, y + CHIP_SIZE/2, 24.0f, GetColor(0, 0, 255), FALSE);
 }
 

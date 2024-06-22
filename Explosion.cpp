@@ -24,7 +24,7 @@ void Explosion::Initialize()
 
 void Explosion::Update()
 {
-	if (exTime_ > 0.02) {
+	if (exTime_ > 0.01) {
 		animColumn_++;
 		exTime_ = 0.0;
 		if (animColumn_ == 8) {
@@ -33,6 +33,10 @@ void Explosion::Update()
 		}
 	}
 	exTime_ += Time::DeltaTime();
+	
+	if (animLine_ == 8) {
+		KillMe();
+	}
 }
 
 void Explosion::Draw()
@@ -43,7 +47,7 @@ void Explosion::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	DrawRectGraph(x - CHIP_SIZE/3, y -CHIP_SIZE/3, animFrame_ * CHIP_SIZE, animLine_ * CHIP_SIZE,
+	DrawRectGraph(x - CHIP_SIZE/3, y -CHIP_SIZE/5, animFrame_ * CHIP_SIZE, animLine_ * CHIP_SIZE,
 		          CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
 	
 }
