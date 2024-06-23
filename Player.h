@@ -36,7 +36,8 @@ private:
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
-    bool prevSpaceKey_; //ひとつ前のフレームでspaceKeyを押したか
+    bool prevSpaceKey_; //ひとつ前のフレームでspaceキーを押したか
+    bool prevAttackKey_;//ひとつ前のフレームでEキーを押したから
     bool onGround_;     //地面の上にいるか
     float time_;        //タイム
     int animType_;//状況

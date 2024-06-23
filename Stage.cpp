@@ -34,8 +34,10 @@ void Stage::Initialize()
 void Stage::Update()
 {
 	//R押されたらリセット
-	if (CheckHitKey(KEY_INPUT_R))
+	if (CheckHitKey(KEY_INPUT_R)) {
+		ChangeStage();
 		Reset();
+	}
 }
 
 void Stage::Draw()
@@ -74,8 +76,8 @@ void Stage::Reset()
 	assert(hImage_ > 0);
 	//csvから読み込み
 	CsvReader csv;
-	//bool ret = csv.Load((folder +"stage"+ n + ".csv").c_str());
-	bool ret = csv.Load("Assets/Image/test.csv");
+	//bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
+	bool ret = csv.Load("Assets/Image/testStage2.csv");
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
@@ -100,6 +102,10 @@ void Stage::Reset()
 			{
 				Player* sPlayer = GetParent()->FindGameObject<Player>();
 				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				//とりあえずのマップ変更用
+				if (mapNo_ == 2) {
+					sPlayer->SetGravity(1.62 / 120.0f);
+				}
 				break;
 			}
 			case 15://Meteorite
@@ -155,20 +161,49 @@ bool Stage::IsWallBlock(int x, int y)
 {
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
-	switch (map_[chipY * width_ + chipX]) {
-	case 0:
-	case 1:
-	case 10:
-	case 11:
-	case 16:
-	case 17:
-	case 32:
-	case 33:
-	case 34:
-	case 35:
-	case 64:
-	case 65:
-		return true;
+	if (mapNo_ == 1) {
+		switch (map_[chipY * width_ + chipX]) {
+		case 0:
+		case 1:
+		case 10:
+		case 11:
+		case 16:
+		case 17:
+		case 32:
+		case 33:
+		case 34:
+		case 35:
+		case 64:
+		case 65:
+
+		case 26:
+		case 27:
+		case 132:
+		case 133:
+		case 148:
+		case 149:
+		case 164:
+		case 165:
+		case 180:
+		case 181:
+		case 196:
+		case 197:
+		case 212:
+		case 213:
+		case 292:
+		case 293:
+		case 308:
+		case 309:
+		case 324:
+		case 325:
+		case 340:
+		case 341:
+		case 356:
+		case 357:
+		case 372:
+		case 373:
+			return true;
+		}
+		return false;
 	}
-	return false;
 }

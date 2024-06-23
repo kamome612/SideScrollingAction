@@ -36,6 +36,8 @@ public:
 	//マップの状態をリセットする
 	void Reset();
 
+	void ChangeStage() { mapNo_++; }
+
 	/// <summary>
 	/// 右側の点が当たっているか調べる
 	/// </summary>

@@ -8,9 +8,10 @@
 #include "AttackSkill.h"
 
 namespace {
+	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 9.8/ 60.0f;
+	const float INIT_GRAVITY = 9.8/ 120.0f;
 	//重力メモ:月...1.62,火星...3.71,太陽274
 
 }
@@ -18,7 +19,7 @@ namespace {
 Player::Player(GameObject* parent)
 	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(INIT_GRAVITY),
 	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false),
-	                             time_(0.0f),animType_(0),animFrame_(0)
+	                             time_(0.0f),animType_(0),animFrame_(0),prevAttackKey_(false)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -55,8 +56,8 @@ void Player::Update()
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
 		//(50,64)と(14,64)も見る
-		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + 64);
-		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + 64);
+		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + CHIP_SIZE);
+		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y -= push - 1;
@@ -79,12 +80,11 @@ void Player::Update()
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
-		if (pMeteo->CollideCircle(transform_.position_.x + 32.0f, transform_.position_.y + 32.0f, 20.0f)) {
-			//scene->StartDead();
-			//ここに爆発のエフェクト入れれたらいいな...
+		if (pMeteo->CollideCircle(transform_.position_.x + CHIP_SIZE/2, 
+			                      transform_.position_.y + CHIP_SIZE/2, 20.0f)) {
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
-			pEx->SetPosition(transform_.position_.x, transform_.position_.y - 32.0f);
+			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
 		}
 	}
 
@@ -103,6 +103,7 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
+	animType_ = 0;
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())
@@ -157,8 +158,14 @@ void Player::UpdateNormal()
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	if (CheckHitKey(KEY_INPUT_E)) {
-		time_ = 0.0f;
-		state_ = S_Attack;
+		if (prevAttackKey_ == false) {
+			time_ = 0.0f;
+			state_ = S_Attack;
+		}
+		prevAttackKey_ = true;
+	}
+	else {
+		prevAttackKey_ = false;
 	}
 
 	//if (pStage != nullptr) {
@@ -215,8 +222,9 @@ void Player::UpdateNormal()
 void Player::UpdateAttack()
 {
 	animType_ = 1;
-	if (animFrame_ + 1 == 3) {
-		animType_ = 0;
+	if (animFrame_ + 1 == 3)
+	{
+		time_ = 0.0f;
 		state_ = S_Normal;
 	}
 	if (time_ > 0.3f) {
@@ -225,7 +233,9 @@ void Player::UpdateAttack()
 	}
 	if (animFrame_ == 2) {
 		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
-		attack->SetPosition(transform_.position_.x + 64.0f, transform_.position_.y + 64.0f/2.0f);
+		int x = (int)transform_.position_.x;
+		int y = (int)transform_.position_.y;
+		attack->SetPosition(transform_.position_.x + CHIP_SIZE, transform_.position_.y);
 	}
 	time_ += Time::DeltaTime();
 }
@@ -238,8 +248,8 @@ void Player::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	DrawRectGraph(x, y, animFrame_ * 64, animType_ * 64, 64, 64, pImage_, TRUE);
-	DrawCircle(x + 32.0f, y + 32.0f, 20.0f,GetColor(0,0,255), FALSE);
+	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
+	DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 }
 
 void Player::SetPosition(float _x, float _y)

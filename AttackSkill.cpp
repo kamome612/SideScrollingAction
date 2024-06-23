@@ -2,9 +2,10 @@
 #include "Engine/time.h"
 #include "Meteorite.h"
 #include "Explosion.h"
+#include "Camera.h"
 
 namespace {
-	const float SPEED_ = 150;
+	const float SPEED_ = 300;
 }
 
 AttackSkill::AttackSkill(GameObject* parent)
@@ -38,20 +39,24 @@ void AttackSkill::Update()
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
 		if (pMeteo->CollideCircle(transform_.position_.x, transform_.position_.y, 24.0f)) {
-			//scene->StartDead();
-			//ここに爆発のエフェクト入れれたらいいな...
 			pMeteo->KillMe();
-			Explosion* pEx = Instantiate<Explosion>(GetParent());
-			pEx->SetPosition(transform_.position_.x, transform_.position_.y - 32.0f);
 			KillMe();
+			Explosion* pEx = Instantiate<Explosion>(GetParent());
+			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
 		}
 	}
 }
 
 void AttackSkill::Draw()
 {
-	DrawRotaGraph(transform_.position_.x, transform_.position_.y,1.0,0.78, aImage_, TRUE);
-	DrawCircle(transform_.position_.x, transform_.position_.y, 24.0f, GetColor(0, 0, 255), FALSE);
+	int x = (int)transform_.position_.x;
+	int y = (int)transform_.position_.y;
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		x -= cam->GetValue();
+	}
+	DrawRotaGraph(x,y,1.0,0.78, aImage_, TRUE);
+	DrawCircle(x,y, 24.0f, GetColor(0, 0, 255), FALSE);
 }
 
 void AttackSkill::SetPosition(float _x, float _y)
