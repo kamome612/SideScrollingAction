@@ -5,6 +5,7 @@
 #include "Meteorite.h"
 #include "PlayScene.h"
 #include "Explosion.h"
+#include "AttackSkill.h"
 
 namespace {
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
@@ -45,67 +46,13 @@ void Player::Update()
 		UpdateNormal();
 		break;
 	case 1:
+		UpdateAttack();
 		break;
 	default:
 		break;
 	}
-}
 
-void Player::UpdateNormal()
-{
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
-	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-	if (!scene->canMove())
-		return;
-
-	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
-		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
-		if (time_ > 0.2f) {
-			animFrame_ = (animFrame_ + 1) % 4;
-			time_ = 0.0f;
-		}
-		int hitX = transform_.position_.x + 50;
-		int hitY = transform_.position_.y + 63;
-		if (pStage != nullptr) {
-			int push = pStage->CollisionRight(hitX, hitY);
-			transform_.position_.x -= push;
-		}
-	}
-	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
-		if (transform_.position_.x > 0) {//左画面端で止まるように
-			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
-			if (time_ > 0.4f) {
-				animFrame_ = (animFrame_ + 1) % 4;
-				time_ = 0.0f;
-			}
-			int hitX = transform_.position_.x + 10;
-			int hitY = transform_.position_.y + 63;
-			if (pStage != nullptr) {
-				int push = pStage->CollisionLeft(hitX, hitY);
-				transform_.position_.x += push;
-			}
-		}
-	}
-	else {
-		animFrame_ = 0;
-		frameCounter_ = 0;
-	}
-
-	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
-		if (prevSpaceKey_ == false) {//前回のフレームでspaceを押してないときだけ
-			if (onGround_) {
-				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
-				onGround_ = false;
-			}
-		}
-		prevSpaceKey_ = true;
-	}
-	else {
-		prevSpaceKey_ = false;
-	}
-	jumpSpeed_ += gravity_;//速度 += 重力
-	transform_.position_.y += jumpSpeed_; //座標 += 速度
-
 	if (pStage != nullptr) {
 		//(50,64)と(14,64)も見る
 		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + 64);
@@ -152,8 +99,134 @@ void Player::UpdateNormal()
 		x = 0;
 		cam->SetValue((int)transform_.position_.x + x);
 	}
+}
+
+void Player::UpdateNormal()
+{
+	Stage* pStage = GetParent()->FindGameObject<Stage>();
+	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+	if (!scene->canMove())
+		return;
+
+	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
+		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
+		if (time_ > 0.2f) {
+			animFrame_ = (animFrame_ + 1) % 4;
+			time_ = 0.0f;
+		}
+		int hitX = transform_.position_.x + 50;
+		int hitY = transform_.position_.y + 63;
+		if (pStage != nullptr) {
+			int push = pStage->CollisionRight(hitX, hitY);
+			transform_.position_.x -= push;
+		}
+	}
+	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
+		if (transform_.position_.x > 0) {//左画面端で止まるように
+			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+			if (time_ > 0.2f) {
+				animFrame_ = (animFrame_ + 1) % 4;
+				time_ = 0.0f;
+			}
+			int hitX = transform_.position_.x + 10;
+			int hitY = transform_.position_.y + 63;
+			if (pStage != nullptr) {
+				int push = pStage->CollisionLeft(hitX, hitY);
+				transform_.position_.x += push;
+			}
+		}
+	}
+	else {
+		animFrame_ = 0;
+		frameCounter_ = 0;
+	}
+
+	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
+		if (prevSpaceKey_ == false) {//前回のフレームでspaceを押してないときだけ
+			if (onGround_) {
+				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
+				onGround_ = false;
+			}
+		}
+		prevSpaceKey_ = true;
+	}
+	else {
+		prevSpaceKey_ = false;
+	}
+	jumpSpeed_ += gravity_;//速度 += 重力
+	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
+	if (CheckHitKey(KEY_INPUT_E)) {
+		time_ = 0.0f;
+		state_ = S_Attack;
+	}
+
+	//if (pStage != nullptr) {
+	//	//(50,64)と(14,64)も見る
+	//	int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + 64);
+	//	int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + 64);
+	//	int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
+	//	if (push >= 1) {
+	//		transform_.position_.y -= push - 1;
+	//		jumpSpeed_ = 0.0f;
+	//		onGround_ = true;
+	//	}
+	//	else {
+	//		onGround_ = false;
+	//	}
+
+	//	//(50,64)と(14,64)も見る
+	//	pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
+	//	pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
+	//	push = max(pushR, pushL);//２つの足元のめり込みの大きい方
+	//	if (push >= 1) {
+	//		transform_.position_.y += push + 1;
+	//		jumpSpeed_ = 0.0f;
+	//	}
+	//}
+
+	//std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
+	//for (Meteorite* pMeteo : pMeteos) {
+	//	if (pMeteo->CollideCircle(transform_.position_.x + 32.0f, transform_.position_.y + 32.0f, 20.0f)) {
+	//		//scene->StartDead();
+	//		//ここに爆発のエフェクト入れれたらいいな...
+	//		pMeteo->KillMe();
+	//		Explosion* pEx = Instantiate<Explosion>(GetParent());
+	//		pEx->SetPosition(transform_.position_.x, transform_.position_.y - 32.0f);
+	//	}
+	//}
+
+	////ここでカメラ位置の調整
+	//Camera* cam = GetParent()->FindGameObject<Camera>();
+	//int x = (int)transform_.position_.x - cam->GetValue();
+	//if (x > 400) {
+	//	x = 400;
+	//	cam->SetValue((int)transform_.position_.x - x);
+	//}
+	//if (x < 0) {
+	//	x = 0;
+	//	cam->SetValue((int)transform_.position_.x + x);
+	//}
 
 	//アニメーションに使うタイムの更新
+	time_ += Time::DeltaTime();
+}
+
+void Player::UpdateAttack()
+{
+	animType_ = 1;
+	if (animFrame_ + 1 == 3) {
+		animType_ = 0;
+		state_ = S_Normal;
+	}
+	if (time_ > 0.3f) {
+		animFrame_ = (animFrame_ + 1) % 3;
+		time_ = 0.0f;
+	}
+	if (animFrame_ == 2) {
+		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
+		attack->SetPosition(transform_.position_.x + 64.0f, transform_.position_.y + 64.0f/2.0f);
+	}
 	time_ += Time::DeltaTime();
 }
 

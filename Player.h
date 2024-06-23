@@ -19,6 +19,9 @@ public:
     //通常時の動作のアニメーションなどの更新
     void UpdateNormal();
 
+    //攻撃時のアニメーションなどの更新
+    void UpdateAttack();
+
     //描画
     void Draw() override;
 
@@ -41,7 +44,8 @@ private:
     int frameCounter_;
 
     enum State {
-        S_Normal = 0,a
+        S_Normal = 0,
+        S_Attack,
     };
     State state_;
 };
