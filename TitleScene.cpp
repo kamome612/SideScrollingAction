@@ -9,7 +9,7 @@ TitleScene::TitleScene(GameObject* parent)
 void TitleScene::Initialize()
 {
 	//‰æ‘œ‚Ìƒ[ƒh
-	tPict_ = LoadGraph("Assets\\Picture\\title.png");
+	tPict_ = LoadGraph("Assets\\Picture\\title.jpg");
 	assert(tPict_ >= 0);
 }
 

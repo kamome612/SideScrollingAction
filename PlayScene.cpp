@@ -24,6 +24,12 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+	switch (state_) {
+	case S_Ready:UpdateReady(); break;
+	case S_Play:UpdatePlay(); break;
+	case S_Clear: UpdateClear(); break;
+	case S_GameOver: UpdateGameOver(); break;
+	}
 }
 
 void PlayScene::Draw()
@@ -33,4 +39,36 @@ void PlayScene::Draw()
 
 void PlayScene::Release()
 {
+}
+
+void PlayScene::StartReady()
+{
+	state_ = S_Ready;
+}
+
+void PlayScene::UpdateReady()
+{
+}
+
+void PlayScene::StartPlay()
+{
+	state_ = S_Play;
+}
+
+void PlayScene::UpdatePlay()
+{
+}
+
+void PlayScene::UpdateClear()
+{
+}
+
+void PlayScene::StartGameOver()
+{
+	state_ = S_GameOver;
+}
+
+void PlayScene::UpdateGameOver()
+{
+
 }

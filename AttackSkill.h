@@ -3,8 +3,6 @@
 class AttackSkill :
     public GameObject
 {
-private:
-    int aImage_;
 public:
     //コンストラクタ
     AttackSkill(GameObject* parent);
@@ -23,5 +21,7 @@ public:
 
     //位置をセット
     void SetPosition(float _x, float _y);
+private:
+    int aImage_;
 };
 

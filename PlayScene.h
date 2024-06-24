@@ -3,17 +3,6 @@
 class PlayScene :
     public GameObject
 {
-private:
-	//背景(ステージのほうで表示することにするかも)
-	int pPict_;
-	enum State {
-		//S_Ready=0, //始まるまで待つ(Readyなどを表示予定)
-		S_Play,    //プレイ中
-		S_Clear,   //ゲームクリア(ボタン押されるまで待つ予定)
-		S_Dead,    //ゲームオーバー(ボタン押されるまで待つ予定)
-	};
-
-	State state_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -32,5 +21,27 @@ public:
 	void Release() override;
 
 	bool canMove() { return state_ == S_Play; }
+
+private:
+	//背景(ステージのほうで表示することにするかも)
+	int pPict_;
+	enum State {
+		S_Select = 0,
+		S_Ready, //始まるまで待つ(Readyなどを表示予定)
+		S_Play,    //プレイ中
+		S_Clear,   //ゲームクリア(ボタン押されるまで待つ予定)
+		S_GameOver,    //ゲームオーバー(ボタン押されるまで待つ予定)
+	};
+
+	State state_;
+
+	void StartReady();
+	void UpdateReady();
+	void StartPlay();
+	void UpdatePlay();
+	void UpdateClear();
+	void UpdateGameOver();
+public:
+	void StartGameOver();
 };
 

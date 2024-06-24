@@ -48,6 +48,7 @@ void Stage::Update()
 		}
 	}*/
 
+	//R‰Ÿ‚³‚ê‚½‚çƒŠƒZƒbƒg
 	if (mapNo_ < 2) {
 		if (CheckHitKey(KEY_INPUT_R)) {
 			ChangeStage();
@@ -83,17 +84,17 @@ void Stage::Reset()
 		map_ = nullptr;
 	}
 
-	static const std::string folder = "Assets/Image/";
+	static const std::string folder = "Assets/Stage/";
 	
 	//‰æ‘œ‚Ì“Ç‚İ‚İ
 	std::string n = std::to_string(mapNo_);
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
-	hImage_ = LoadGraph("Assets/Image/spritesheet_ground.png");
+	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
 	assert(hImage_ > 0);
 	//csv‚©‚ç“Ç‚İ‚İ
 	CsvReader csv;
 	bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
-	//bool ret = csv.Load("Assets/Image/testStage2.csv");
+	//bool ret = csv.Load("Assets/Stage/testStage2.csv");
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();

@@ -3,12 +3,6 @@
 class Explosion :
     public GameObject
 {
-private:
-	int eImage_;
-	int animFrame_;
-	int animColumn_;
-	int animLine_;
-	float exTime_;
 public:
 	//コンストラクタ
 	Explosion(GameObject* parent);
@@ -27,5 +21,12 @@ public:
 	
 	//位置をセット
 	void SetPosition(float _x, float _y);
+
+private:
+	int eImage_;
+	int animFrame_;
+	int animColumn_;
+	int animLine_;
+	float exTime_;
 };
 

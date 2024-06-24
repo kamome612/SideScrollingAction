@@ -42,6 +42,10 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+	if (!scene->canMove())
+		return;
+
 	switch (state_){
 	case 0: 
 		UpdateNormal();
@@ -52,6 +56,8 @@ void Player::Update()
 	default:
 		break;
 	}
+	//アニメーションに使うタイムの更新
+	time_ += Time::DeltaTime();
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
@@ -86,6 +92,7 @@ void Player::Update()
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
 			KillMe();
+			scene->StartGameOver();
 		}
 	}
 
@@ -106,9 +113,6 @@ void Player::UpdateNormal()
 {
 	animType_ = 0;//歩くモーション
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
-	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-	if (!scene->canMove())
-		return;
 
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
@@ -170,56 +174,6 @@ void Player::UpdateNormal()
 	else {
 		prevAttackKey_ = false;
 	}
-
-	//if (pStage != nullptr) {
-	//	//(50,64)と(14,64)も見る
-	//	int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + 64);
-	//	int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + 64);
-	//	int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
-	//	if (push >= 1) {
-	//		transform_.position_.y -= push - 1;
-	//		jumpSpeed_ = 0.0f;
-	//		onGround_ = true;
-	//	}
-	//	else {
-	//		onGround_ = false;
-	//	}
-
-	//	//(50,64)と(14,64)も見る
-	//	pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
-	//	pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
-	//	push = max(pushR, pushL);//２つの足元のめり込みの大きい方
-	//	if (push >= 1) {
-	//		transform_.position_.y += push + 1;
-	//		jumpSpeed_ = 0.0f;
-	//	}
-	//}
-
-	//std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
-	//for (Meteorite* pMeteo : pMeteos) {
-	//	if (pMeteo->CollideCircle(transform_.position_.x + 32.0f, transform_.position_.y + 32.0f, 20.0f)) {
-	//		//scene->StartDead();
-	//		//ここに爆発のエフェクト入れれたらいいな...
-	//		pMeteo->KillMe();
-	//		Explosion* pEx = Instantiate<Explosion>(GetParent());
-	//		pEx->SetPosition(transform_.position_.x, transform_.position_.y - 32.0f);
-	//	}
-	//}
-
-	////ここでカメラ位置の調整
-	//Camera* cam = GetParent()->FindGameObject<Camera>();
-	//int x = (int)transform_.position_.x - cam->GetValue();
-	//if (x > 400) {
-	//	x = 400;
-	//	cam->SetValue((int)transform_.position_.x - x);
-	//}
-	//if (x < 0) {
-	//	x = 0;
-	//	cam->SetValue((int)transform_.position_.x + x);
-	//}
-
-	//アニメーションに使うタイムの更新
-	time_ += Time::DeltaTime();
 }
 
 void Player::UpdateAttack()
@@ -240,7 +194,6 @@ void Player::UpdateAttack()
 		int y = (int)transform_.position_.y;
 		attack->SetPosition(transform_.position_.x + CHIP_SIZE, transform_.position_.y);
 	}
-	time_ += Time::DeltaTime();
 }
 
 void Player::Draw()

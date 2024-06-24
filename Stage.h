@@ -10,14 +10,6 @@ namespace {
 class Stage :
     public GameObject
 {
-private:
-	int hImage_;
-	int* map_;
-	int width_;
-	int height_;
-	int mapNo_;
-	bool IsWallBlock(int x, int y);
-	bool prevResetKey_;
 public:
 	//コンストラクタ
 	Stage(GameObject* parent);
@@ -71,5 +63,13 @@ public:
 	/// <returns></returns>
 	int CollisionUp(int x, int y);
 
+private:
+	int hImage_;
+	int* map_;
+	int width_;
+	int height_;
+	int mapNo_;
+	bool IsWallBlock(int x, int y);
+	bool prevResetKey_;
 };
 

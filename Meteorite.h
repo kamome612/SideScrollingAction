@@ -3,8 +3,6 @@
 class Meteorite :
     public GameObject
 {
-private:
-	int mImage_;
 public:
 	//コンストラクタ
 	Meteorite(GameObject* parent);
@@ -26,5 +24,7 @@ public:
 
 	//円の当たり判定をする
 	bool CollideCircle(float x, float y, float r);
+private:
+	int mImage_;
 };
 
