@@ -10,8 +10,8 @@
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
-	const float JUMP_HEIGHT = 64.0f * 4.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 9.8/ 120.0f;
+	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
+	const float INIT_GRAVITY = 9.8/ 90.0f;
 	//重力メモ:月...1.62,火星...3.71,太陽274
 
 }
@@ -37,7 +37,7 @@ void Player::Initialize()
 {
 	//とりあえず今はaoiを出しとく(後で変える)
 	pImage_ = LoadGraph("Assets\\Image\\aoi.png");
-	assert(pImage_ >= 0);
+	assert(pImage_ >= 0); 
 }
 
 void Player::Update()
@@ -85,6 +85,7 @@ void Player::Update()
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
+			KillMe();
 		}
 	}
 
@@ -103,7 +104,7 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
-	animType_ = 0;
+	animType_ = 0;//歩くモーション
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())
@@ -158,11 +159,13 @@ void Player::UpdateNormal()
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	if (CheckHitKey(KEY_INPUT_E)) {
-		if (prevAttackKey_ == false) {
-			time_ = 0.0f;
-			state_ = S_Attack;
+		if (onGround_) {
+			if (prevAttackKey_ == false) {
+				time_ = 0.0f;
+				state_ = S_Attack;
+			}
+			prevAttackKey_ = true;
 		}
-		prevAttackKey_ = true;
 	}
 	else {
 		prevAttackKey_ = false;
@@ -221,7 +224,7 @@ void Player::UpdateNormal()
 
 void Player::UpdateAttack()
 {
-	animType_ = 1;
+	animType_ = 1;//仮だけど攻撃モーション
 	if (animFrame_ + 1 == 3)
 	{
 		time_ = 0.0f;

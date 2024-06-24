@@ -17,6 +17,7 @@ private:
 	int height_;
 	int mapNo_;
 	bool IsWallBlock(int x, int y);
+	bool prevResetKey_;
 public:
 	//コンストラクタ
 	Stage(GameObject* parent);
@@ -36,7 +37,7 @@ public:
 	//マップの状態をリセットする
 	void Reset();
 
-	void ChangeStage() { mapNo_++; }
+	void ChangeStage() { mapNo_ = 2; }
 
 	/// <summary>
 	/// 右側の点が当たっているか調べる

@@ -9,7 +9,8 @@ namespace {
 }
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),mapNo_(1)
+	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),
+	                            mapNo_(1),prevResetKey_(false)
 {
 }
 
@@ -34,9 +35,24 @@ void Stage::Initialize()
 void Stage::Update()
 {
 	//R押されたらリセット
-	if (CheckHitKey(KEY_INPUT_R)) {
-		ChangeStage();
-		Reset();
+	/*if (mapNo_ < 2) {
+		if (CheckHitKey(KEY_INPUT_R)) {
+			if (prevResetKey_ == false) {
+				ChangeStage();
+				Reset();
+			}
+			prevResetKey_ = true;
+		}
+		else {
+			prevResetKey_ = false;
+		}
+	}*/
+
+	if (mapNo_ < 2) {
+		if (CheckHitKey(KEY_INPUT_R)) {
+			ChangeStage();
+			Reset();
+		}
 	}
 }
 
@@ -76,8 +92,8 @@ void Stage::Reset()
 	assert(hImage_ > 0);
 	//csvから読み込み
 	CsvReader csv;
-	//bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
-	bool ret = csv.Load("Assets/Image/testStage2.csv");
+	bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
+	//bool ret = csv.Load("Assets/Image/testStage2.csv");
 	assert(ret);
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
@@ -104,7 +120,7 @@ void Stage::Reset()
 				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				//とりあえずのマップ変更用
 				if (mapNo_ == 2) {
-					sPlayer->SetGravity(1.62 / 120.0f);
+					sPlayer->SetGravity(1.62 / 90.0f);
 				}
 				break;
 			}
@@ -161,7 +177,7 @@ bool Stage::IsWallBlock(int x, int y)
 {
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
-	if (mapNo_ == 1) {
+	//if (mapNo_ == 1) {
 		switch (map_[chipY * width_ + chipX]) {
 		case 0:
 		case 1:
@@ -175,7 +191,7 @@ bool Stage::IsWallBlock(int x, int y)
 		case 35:
 		case 64:
 		case 65:
-
+	    //月の方のマップチップ
 		case 26:
 		case 27:
 		case 132:
@@ -205,5 +221,5 @@ bool Stage::IsWallBlock(int x, int y)
 			return true;
 		}
 		return false;
-	}
+	//}
 }
