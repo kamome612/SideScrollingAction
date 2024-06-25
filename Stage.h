@@ -1,5 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Player.h"
+#include "Meteorite.h"
 
 //ステージを管理するクラス
 namespace {

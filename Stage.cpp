@@ -79,21 +79,13 @@ void Stage::Draw()
 
 void Stage::StageSet()
 {
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	cam->SetValue(0);
 	//マップの中になにか入ってたら消す
 	if (map_ != nullptr) {
 		delete[] map_;
 		map_ = nullptr;
 	}
-
-	/*if (sPlayer_ != nullptr) {
-		delete sPlayer_;
-		sPlayer_ = nullptr;
-	}
-
-	if (sMeteo_ != nullptr) {
-		delete sMeteo_;
-		sMeteo_ = nullptr;
-	}*/
 
 	static const std::string folder = "Assets/Stage/";
 
@@ -129,7 +121,7 @@ void Stage::StageSet()
 			case 0://player
 			{
 				Player* sPlayer = GetParent()->FindGameObject<Player>();
-				//sPlayer_ = Instantiate<Player>(this);
+				//Player* sPlayer = Instantiate<Player>(this);
 				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				//とりあえずのマップ変更用
 				switch (mapNo_)
@@ -146,7 +138,7 @@ void Stage::StageSet()
 				break;
 			}
 			case 15://Meteorite
-				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
+				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
 				//sMeteo_ = Instantiate<Meteorite>(this);
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
@@ -163,9 +155,14 @@ void Stage::StageReset()
 		map_ = nullptr;
 	}
 
-	/*Player* sPlayer = GetParent()->FindGameObject<Player>();
-	if (sPlayer != nullptr) {
-		delete sPlayer;
+	/*if (sPlayer_ != nullptr) {
+		delete sPlayer_;
+		sPlayer_ = nullptr;
+	}
+
+	if (sMeteo_ != nullptr) {
+		delete sMeteo_;
+		sMeteo_ = nullptr;
 	}*/
 
 	static const std::string folder = "Assets/Stage/";
@@ -199,7 +196,7 @@ void Stage::StageReset()
 		for (int w = 0; w < width_; w++) {
 			switch (csv.GetInt(w, h + height_ + 1))
 			{
-			case 0://player
+			case 0://Player
 			{
 				Player* sPlayer = GetParent()->FindGameObject<Player>();
 				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);

@@ -7,7 +7,7 @@
 #include "Engine/SceneManager.h"
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f)
+	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
 	                                , prevResetKey_(false), prevChangeKey_(false)
 {
 }
@@ -20,17 +20,18 @@ void PlayScene::Initialize()
 	//Stage* pStage = Instantiate<Stage>(this);
 	//pStage->Reset();
 	//state_ = S_Play;
+	StartSelect();
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
 	Player* pPlayer = Instantiate<Player>(this);
 	pStage->StageSet();
 	Instantiate<Banner>(this);
-	StartReady();
 }
 
 void PlayScene::Update()
 {
 	switch (state_) {
+	case S_Select:UpdateSelect(); break;
 	case S_Ready:UpdateReady(); break;
 	case S_Play:UpdatePlay(); break;
 	case S_Clear: UpdateClear(); break;
@@ -49,15 +50,21 @@ void PlayScene::Release()
 
 void PlayScene::StartSelect()
 {
-	state_ = S_Select();
+	state_ = S_Select;
 }
 
 void PlayScene::UpdateSelect()
 {
+	StartReady();
 }
 
 void PlayScene::StartReady()
 {
+	/*Instantiate<Camera>(this);
+	Stage* pStage = Instantiate<Stage>(this);
+	Player* pPlayer = Instantiate<Player>(this);
+	pStage->StageSet();
+	Instantiate<Banner>(this);*/
 	state_ = S_Ready;
 	timer_ = 2.0f;//Ready‚Ì•\Ž¦ŽžŠÔ
 	Banner* pBanner = FindGameObject<Banner>();
@@ -88,6 +95,7 @@ void PlayScene::UpdatePlay()
 	if (CheckHitKey(KEY_INPUT_R)) {
 		
 		if (!prevResetKey_) {
+			
 			pStage->StageSet();
 			StartReady();
 		}
