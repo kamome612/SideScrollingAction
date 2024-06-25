@@ -2,9 +2,12 @@
 #include "Player.h"
 #include "Stage.h"
 #include "Camera.h"
+#include "Banner.h"
+#include "Engine/time.h"
+#include "Engine/SceneManager.h"
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent,"PlayScene"),pPict_(-1)
+	:GameObject(parent,"PlayScene"),pPict_(-1),timer_(0.0f)
 {
 }
 
@@ -15,11 +18,11 @@ void PlayScene::Initialize()
 	//assert(pPict_ > 0);
 	//Stage* pStage = Instantiate<Stage>(this);
 	//pStage->Reset();
-	state_ = S_Play;
+	state_ = S_Ready;
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
 	Instantiate<Player>(this);
-	pStage->Reset();
+	pStage->StageSet();
 }
 
 void PlayScene::Update()
@@ -41,22 +44,53 @@ void PlayScene::Release()
 {
 }
 
+void PlayScene::StartSelect()
+{
+	state_ = S_Select();
+}
+
+void PlayScene::UpdateSelect()
+{
+}
+
 void PlayScene::StartReady()
 {
 	state_ = S_Ready;
+	timer_ = 2.0f;//Ready‚Ì•\¦ŠÔ
+	Banner* pBanner = FindGameObject<Banner>();
+	pBanner->View(Banner::ViewID::V_Start);
+	//Player‚Ì‰Šú‰»
+	//“G‚Ì‰Šú‰»
 }
 
 void PlayScene::UpdateReady()
 {
+	timer_ -= Time::DeltaTime();
+	if (timer_ <= 0.0f) {
+		StartPlay();
+		timer_ = 0.0f;
+	}
 }
 
 void PlayScene::StartPlay()
 {
 	state_ = S_Play;
+	Banner* pBanner = FindGameObject<Banner>();
+	pBanner->View(Banner::ViewID::V_Nothing);
 }
 
 void PlayScene::UpdatePlay()
 {
+	Stage* pStage = FindGameObject<Stage>();
+	if (CheckHitKey(KEY_INPUT_R)) {
+		pStage->StageReset();
+		state_ = S_Ready;
+	}
+	if (CheckHitKey(KEY_INPUT_C)) {
+		pStage->ChangeStage();
+		state_ = S_Ready;
+	}
+
 }
 
 void PlayScene::UpdateClear()
@@ -66,9 +100,14 @@ void PlayScene::UpdateClear()
 void PlayScene::StartGameOver()
 {
 	state_ = S_GameOver;
+	Banner* pBanner = FindGameObject<Banner>();
+	pBanner->View(Banner::ViewID::V_GameOver);
 }
 
 void PlayScene::UpdateGameOver()
 {
-
+	if (CheckHitKey(KEY_INPUT_SPACE)) {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+	}
 }

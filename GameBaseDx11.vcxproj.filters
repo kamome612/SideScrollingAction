@@ -60,6 +60,7 @@
     <ClCompile Include="Meteorite.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="AttackSkill.cpp" />
+    <ClCompile Include="Banner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -101,5 +102,7 @@
     <ClInclude Include="Meteorite.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="AttackSkill.h" />
+    <ClInclude Include="Banner.h" />
+    <ClInclude Include="Ease.h" />
   </ItemGroup>
 </Project>

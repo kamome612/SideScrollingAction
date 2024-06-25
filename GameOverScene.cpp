@@ -1,12 +1,14 @@
 #include "GameOverScene.h"
 
 GameOverScene::GameOverScene(GameObject* parent)
-	:GameObject(parent,"GameOverScene")
+	:GameObject(parent,"GameOverScene"),gPict_(0)
 {
 }
 
 void GameOverScene::Initialize()
 {
+	gPict_ = LoadGraph("Assets/Picture/gameover.png");
+	assert(gPict_ > 0);
 }
 
 void GameOverScene::Update()
@@ -15,8 +17,12 @@ void GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
+	DrawGraph(0, 0, gPict_, TRUE);
 }
 
 void GameOverScene::Release()
 {
+	if (gPict_ > 0) {
+		DeleteGraph(gPict_);
+	}
 }

@@ -27,14 +27,16 @@ private:
 	int pPict_;
 	enum State {
 		S_Select = 0,
-		S_Ready, //始まるまで待つ(Readyなどを表示予定)
+		S_Ready,   //始まるまで待つ(Readyなどを表示予定)
 		S_Play,    //プレイ中
 		S_Clear,   //ゲームクリア(ボタン押されるまで待つ予定)
-		S_GameOver,    //ゲームオーバー(ボタン押されるまで待つ予定)
+		S_GameOver,//ゲームオーバー(ボタン押されるまで待つ予定)
 	};
 
 	State state_;
+	float timer_;
 
+	void UpdateSelect();
 	void StartReady();
 	void UpdateReady();
 	void StartPlay();
@@ -42,6 +44,7 @@ private:
 	void UpdateClear();
 	void UpdateGameOver();
 public:
+	void StartSelect();
 	void StartGameOver();
 };
 

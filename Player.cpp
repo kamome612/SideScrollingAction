@@ -61,7 +61,6 @@ void Player::Update()
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
-		//(50,64)‚Æ(14,64)‚àŒ©‚é
 		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + CHIP_SIZE);
 		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//‚Q‚Â‚Ì‘«Œ³‚Ì‚ß‚è‚İ‚Ì‘å‚«‚¢•û
@@ -74,7 +73,6 @@ void Player::Update()
 			onGround_ = false;
 		}
 
-		//(50,64)‚Æ(14,64)‚àŒ©‚é
 		pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
 		pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
 		push = max(pushR, pushL);//‚Q‚Â‚Ì‘«Œ³‚Ì‚ß‚è‚İ‚Ì‘å‚«‚¢•û

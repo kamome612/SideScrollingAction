@@ -48,13 +48,13 @@ void Stage::Update()
 		}
 	}*/
 
-	//R押されたらリセット
-	if (mapNo_ < 2) {
-		if (CheckHitKey(KEY_INPUT_R)) {
-			ChangeStage();
-			Reset();
-		}
-	}
+	////R押されたらリセット
+	//if (mapNo_ < 2) {
+	//	if (CheckHitKey(KEY_INPUT_R)) {
+	//		ChangeStage();
+	//		StageSet();
+	//	}
+	//}
 }
 
 void Stage::Draw()
@@ -76,7 +76,73 @@ void Stage::Draw()
 	}
 }
 
-void Stage::Reset()
+void Stage::StageSet()
+{
+	//マップの中になにか入ってたら消す
+	if (map_ != nullptr) {
+		delete[] map_;
+		map_ = nullptr;
+	}
+
+	static const std::string folder = "Assets/Stage/";
+
+	//画像の読み込み
+	std::string n = std::to_string(mapNo_);
+	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
+	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
+	assert(hImage_ > 0);
+	//csvから読み込み
+	CsvReader csv;
+	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
+	//bool ret = csv.Load("Assets/Stage/testStage2.csv");
+	assert(ret);
+	width_ = csv.GetWidth(0);
+	height_ = csv.GetHeight();
+	map_ = new int[height_ * width_];
+
+	for (int h = 0; h < height_; h++) {
+		if (csv.GetString(0, h) == "") {
+			height_ = h;
+			break;
+		}
+		for (int w = 0; w < width_; w++) {
+			map_[h * width_ + w] = csv.GetInt(w, h);
+		}
+	}
+
+	//Mapデータの中で0があれば、Playerの座標を0の位置にする
+	for (int h = 0; h < height_; h++) {
+		for (int w = 0; w < width_; w++) {
+			switch (csv.GetInt(w, h + height_ + 1))
+			{
+			case 0://player
+			{
+				Player* sPlayer = GetParent()->FindGameObject<Player>();
+				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				//とりあえずのマップ変更用
+				switch (mapNo_)
+				{
+				case 2:
+					sPlayer->SetGravity(1.62 / 90.0f);
+					break;
+				case 3:
+					sPlayer->SetGravity(3.71 / 90.0f);
+					break;
+				default:
+					break;
+				}
+				break;
+			}
+			case 15://Meteorite
+				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
+				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
+		}
+	}
+}
+
+void Stage::StageReset()
 {
 	//マップの中になにか入ってたら消す
 	if (map_ != nullptr) {
@@ -119,11 +185,6 @@ void Stage::Reset()
 			{
 				Player* sPlayer = GetParent()->FindGameObject<Player>();
 				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				//とりあえずのマップ変更用
-				if (mapNo_ == 2) {
-					sPlayer->SetGravity(1.62 / 90.0f);
-				}
-				break;
 			}
 			case 15://Meteorite
 				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());

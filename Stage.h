@@ -26,10 +26,13 @@ public:
 	//描画
 	void Draw()override;
 
-	//マップの状態をリセットする
-	void Reset();
+	//マップをセットする
+	void StageSet();
 
-	void ChangeStage() { mapNo_ = 2; }
+	//マップの状態をリセットする
+	void StageReset();
+
+	void ChangeStage() { mapNo_++; }
 
 	/// <summary>
 	/// 右側の点が当たっているか調べる
