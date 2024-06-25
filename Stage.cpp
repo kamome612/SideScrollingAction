@@ -1,8 +1,8 @@
 #include "Stage.h"
 #include "Engine/CsvReader.h"
 #include "Player.h"
-#include "Camera.h"
 #include "Meteorite.h"
+#include "Camera.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -18,6 +18,7 @@ Stage::~Stage()
 {
 	if (hImage_ < 0) {
 		DeleteGraph(hImage_);
+		hImage_ = -1;
 	}
 	if (map_ != nullptr) {
 		delete[] map_;
@@ -48,13 +49,13 @@ void Stage::Update()
 		}
 	}*/
 
-	////R押されたらリセット
-	//if (mapNo_ < 2) {
-	//	if (CheckHitKey(KEY_INPUT_R)) {
-	//		ChangeStage();
-	//		StageSet();
-	//	}
-	//}
+	//R押されたらリセット
+	/*if (mapNo_ < 2) {
+		if (CheckHitKey(KEY_INPUT_R)) {
+			ChangeStage();
+			StageSet();
+		}
+	}*/
 }
 
 void Stage::Draw()
@@ -83,6 +84,16 @@ void Stage::StageSet()
 		delete[] map_;
 		map_ = nullptr;
 	}
+
+	/*if (sPlayer_ != nullptr) {
+		delete sPlayer_;
+		sPlayer_ = nullptr;
+	}
+
+	if (sMeteo_ != nullptr) {
+		delete sMeteo_;
+		sMeteo_ = nullptr;
+	}*/
 
 	static const std::string folder = "Assets/Stage/";
 
@@ -118,6 +129,7 @@ void Stage::StageSet()
 			case 0://player
 			{
 				Player* sPlayer = GetParent()->FindGameObject<Player>();
+				//sPlayer_ = Instantiate<Player>(this);
 				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				//とりあえずのマップ変更用
 				switch (mapNo_)
@@ -135,6 +147,7 @@ void Stage::StageSet()
 			}
 			case 15://Meteorite
 				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
+				//sMeteo_ = Instantiate<Meteorite>(this);
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
@@ -149,6 +162,11 @@ void Stage::StageReset()
 		delete[] map_;
 		map_ = nullptr;
 	}
+
+	/*Player* sPlayer = GetParent()->FindGameObject<Player>();
+	if (sPlayer != nullptr) {
+		delete sPlayer;
+	}*/
 
 	static const std::string folder = "Assets/Stage/";
 	
@@ -254,8 +272,6 @@ bool Stage::IsWallBlock(int x, int y)
 		case 64:
 		case 65:
 	    //月の方のマップチップ
-		case 26:
-		case 27:
 		case 132:
 		case 133:
 		case 148:
@@ -278,8 +294,6 @@ bool Stage::IsWallBlock(int x, int y)
 		case 341:
 		case 356:
 		case 357:
-		case 372:
-		case 373:
 			return true;
 		}
 		return false;

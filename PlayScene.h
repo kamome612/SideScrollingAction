@@ -35,6 +35,8 @@ private:
 
 	State state_;
 	float timer_;
+	bool prevResetKey_;
+	bool prevChangeKey_;
 
 	void UpdateSelect();
 	void StartReady();

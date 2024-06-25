@@ -21,6 +21,7 @@ Meteorite::~Meteorite()
 {
 	if (mImage_ > 0) {
 		DeleteGraph(mImage_);
+		mImage_ = -1;
 	}
 }
 

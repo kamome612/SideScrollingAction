@@ -2,20 +2,22 @@
 #include "Ease.h"
 
 Banner::Banner(GameObject* scene)
-	:GameObject(scene,"Banner"),gameOverTime_(0.0f),gameOverY(200),
+	:GameObject(scene,"Banner"),bImage_(-1),gameOverTime_(0.0f),gameOverY(200),
 	                            transparency_(0.0f),view_(V_Start)
 {
 }
 
 Banner::~Banner()
 {
-	if (bImage_ > 0)
+	if (bImage_ > 0) {
 		DeleteGraph(bImage_);
+		bImage_ = -1;
+	}
 }
 
 void Banner::Initialize()
 {
-	bImage_ = LoadGraph("Assets/font.png");
+	bImage_ = LoadGraph("Assets/Image/font.png");
 	assert(bImage_ > 0);
 }
 

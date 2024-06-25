@@ -12,6 +12,7 @@ namespace {
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f;
+	const float MAX_POS = 400;
 	//重力メモ:月...1.62,火星...3.71,太陽274
 
 }
@@ -30,6 +31,7 @@ Player::~Player()
 {
 	if (pImage_ > 0) {
 		DeleteGraph(pImage_);
+		pImage_ = -1;
 	}
 }
 
@@ -97,8 +99,8 @@ void Player::Update()
 	//ここでカメラ位置の調整
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int x = (int)transform_.position_.x - cam->GetValue();
-	if (x > 400) {
-		x = 400;
+	if (x > MAX_POS) {
+		x = MAX_POS;
 		cam->SetValue((int)transform_.position_.x - x);
 	}
 	if (x < 0) {
@@ -203,6 +205,7 @@ void Player::Draw()
 		x -= cam->GetValue();
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
+	//当たり判定を見るよう
 	DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 }
 

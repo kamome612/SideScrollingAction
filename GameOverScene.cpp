@@ -1,7 +1,7 @@
 #include "GameOverScene.h"
 
 GameOverScene::GameOverScene(GameObject* parent)
-	:GameObject(parent,"GameOverScene"),gPict_(0)
+	:GameObject(parent,"GameOverScene"),gPict_(-1)
 {
 }
 
@@ -24,5 +24,6 @@ void GameOverScene::Release()
 {
 	if (gPict_ > 0) {
 		DeleteGraph(gPict_);
+		gPict_ = -1;
 	}
 }

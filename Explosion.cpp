@@ -14,6 +14,10 @@ Explosion::Explosion(GameObject* parent)
 
 Explosion::~Explosion()
 {
+	if (eImage_ > 0) {
+		DeleteGraph(eImage_);
+		eImage_ = -1;
+	}
 }
 
 void Explosion::Initialize()

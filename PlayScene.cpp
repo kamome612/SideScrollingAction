@@ -7,7 +7,8 @@
 #include "Engine/SceneManager.h"
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent,"PlayScene"),pPict_(-1),timer_(0.0f)
+	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f)
+	                                , prevResetKey_(false), prevChangeKey_(false)
 {
 }
 
@@ -18,11 +19,13 @@ void PlayScene::Initialize()
 	//assert(pPict_ > 0);
 	//Stage* pStage = Instantiate<Stage>(this);
 	//pStage->Reset();
-	state_ = S_Ready;
+	//state_ = S_Play;
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
-	Instantiate<Player>(this);
+	Player* pPlayer = Instantiate<Player>(this);
 	pStage->StageSet();
+	Instantiate<Banner>(this);
+	StartReady();
 }
 
 void PlayScene::Update()
@@ -67,8 +70,8 @@ void PlayScene::UpdateReady()
 {
 	timer_ -= Time::DeltaTime();
 	if (timer_ <= 0.0f) {
-		StartPlay();
 		timer_ = 0.0f;
+		StartPlay();
 	}
 }
 
@@ -83,13 +86,26 @@ void PlayScene::UpdatePlay()
 {
 	Stage* pStage = FindGameObject<Stage>();
 	if (CheckHitKey(KEY_INPUT_R)) {
-		pStage->StageReset();
-		state_ = S_Ready;
+		
+		if (!prevResetKey_) {
+			pStage->StageSet();
+			StartReady();
+		}
+		prevResetKey_ = true;
 	}
+	else
+		prevResetKey_ = false;
+
 	if (CheckHitKey(KEY_INPUT_C)) {
-		pStage->ChangeStage();
-		state_ = S_Ready;
+		if (!prevChangeKey_) {
+			pStage->ChangeStage();
+			pStage->StageSet();
+			StartReady();
+		}
+		prevChangeKey_ = true;
 	}
+	else
+		prevChangeKey_ = false;
 
 }
 
