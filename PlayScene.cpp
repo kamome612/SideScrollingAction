@@ -95,7 +95,6 @@ void PlayScene::UpdatePlay()
 	if (CheckHitKey(KEY_INPUT_R)) {
 		
 		if (!prevResetKey_) {
-			
 			pStage->StageSet();
 			StartReady();
 		}
