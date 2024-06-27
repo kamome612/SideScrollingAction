@@ -64,6 +64,8 @@ void Stage::StageSet()
 		map_ = nullptr;
 	}
 
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	cam->SetValue(0);
 	static const std::string folder = "Assets/Stage/";
 
 	//‰æ‘œ‚Ì“Ç‚İ‚İ
@@ -250,12 +252,8 @@ bool Stage::IsWallBlock(int x, int y)
 		case 213:
 		case 292:
 		case 293:
-		case 308:
-		case 309:
 		case 324:
 		case 325:
-		case 340:
-		case 341:
 		case 356:
 		case 357:
 			return true;
