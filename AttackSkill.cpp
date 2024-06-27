@@ -28,21 +28,19 @@ void AttackSkill::Initialize()
 
 void AttackSkill::Update()
 {
-	if (transform_.position_.y > -30) {//画面外に出ていなければ
-		transform_.position_.x += SPEED_ * Time::DeltaTime();
-		transform_.position_.y -= SPEED_ * Time::DeltaTime();
-	}
-	else {
+	if (transform_.position_.y < -30) {//画面外に出ていれば消す
 		KillMe();
 	}
+	transform_.position_.x += SPEED_ * Time::DeltaTime();
+	transform_.position_.y -= SPEED_ * Time::DeltaTime();
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
 		if (pMeteo->CollideCircle(transform_.position_.x, transform_.position_.y, 24.0f)) {
 			pMeteo->KillMe();
-			KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
+			KillMe();
 		}
 	}
 }

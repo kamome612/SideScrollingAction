@@ -181,18 +181,16 @@ void Player::UpdateAttack()
 	animType_ = 1;//‰¼‚¾‚¯‚ÇUŒ‚ƒ‚[ƒVƒ‡ƒ“
 	if (animFrame_ + 1 == 3)
 	{
+		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
+		int x = (int)transform_.position_.x;
+		int y = (int)transform_.position_.y;
+		attack->SetPosition(x + CHIP_SIZE, y);
 		time_ = 0.0f;
 		state_ = S_Normal;
 	}
 	if (time_ > 0.3f) {
 		animFrame_ = (animFrame_ + 1) % 3;
 		time_ = 0.0f;
-	}
-	if (animFrame_ == 2) {
-		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
-		int x = (int)transform_.position_.x;
-		int y = (int)transform_.position_.y;
-		attack->SetPosition(transform_.position_.x + CHIP_SIZE, transform_.position_.y);
 	}
 }
 

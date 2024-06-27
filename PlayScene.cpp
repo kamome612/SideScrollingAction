@@ -60,11 +60,6 @@ void PlayScene::UpdateSelect()
 
 void PlayScene::StartReady()
 {
-	/*Instantiate<Camera>(this);
-	Stage* pStage = Instantiate<Stage>(this);
-	Player* pPlayer = Instantiate<Player>(this);
-	pStage->StageSet();
-	Instantiate<Banner>(this);*/
 	state_ = S_Ready;
 	timer_ = 2.0f;//Ready‚Ì•\Ž¦ŽžŠÔ
 	Banner* pBanner = FindGameObject<Banner>();
@@ -93,7 +88,6 @@ void PlayScene::UpdatePlay()
 {
 	Stage* pStage = FindGameObject<Stage>();
 	if (CheckHitKey(KEY_INPUT_R)) {
-		
 		if (!prevResetKey_) {
 			pStage->StageSet();
 			StartReady();
@@ -113,7 +107,6 @@ void PlayScene::UpdatePlay()
 	}
 	else
 		prevChangeKey_ = false;
-
 }
 
 void PlayScene::UpdateClear()
