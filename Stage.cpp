@@ -10,7 +10,7 @@ namespace {
 
 Stage::Stage(GameObject* parent)
 	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),
-	                            mapNo_(1),prevResetKey_(false)
+	                            mapNo_(1),prevResetKey_(false),gPict_(-1)
 {
 }
 
@@ -19,6 +19,11 @@ Stage::~Stage()
 	if (hImage_ < 0) {
 		DeleteGraph(hImage_);
 		hImage_ = -1;
+	}
+
+	if (gPict_ < 0) {
+		DeleteGraph(gPict_);
+		gPict_ = -1;
 	}
 	if (map_ != nullptr) {
 		delete[] map_;
@@ -39,6 +44,13 @@ void Stage::Update()
 
 void Stage::Draw()
 {
+	if (mapNo_ == 1) {
+		DrawGraph(5, -250, gPict_, TRUE);
+	}
+	else if (mapNo_ == 2) {
+		DrawGraph(0, 0, gPict_, TRUE);
+	}
+
 	int scroll = 0;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
@@ -73,11 +85,17 @@ void Stage::StageSet()
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
 	assert(hImage_ > 0);
+
+	//バックグランドの画像読み込み
+	gPict_ = LoadGraph(("Assets/Picture/background" + n + ".png").c_str());
+	assert(gPict_ > 0);
+
 	//csvから読み込み
 	CsvReader csv;
 	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
 	//bool ret = csv.Load("Assets/Stage/testStage2.csv");
 	assert(ret);
+
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
 	map_ = new int[height_ * width_];
@@ -91,6 +109,7 @@ void Stage::StageSet()
 			map_[h * width_ + w] = csv.GetInt(w, h);
 		}
 	}
+	
 
 	//Mapデータの中で0があれば、Playerの座標を0の位置にする
 	for (int h = 0; h < height_; h++) {

@@ -70,6 +70,7 @@ public:
 
 private:
 	int hImage_;
+	int gPict_;
 	int* map_;
 	int width_;
 	int height_;
