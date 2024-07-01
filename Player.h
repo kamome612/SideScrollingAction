@@ -19,6 +19,11 @@ public:
     //通常時の動作のアニメーションなどの更新
     void UpdateNormal();
 
+    //こっちに変えるかも
+    void UpdateNormal2();
+    int CharMove(float* _x, float* _y, float *_downSP,
+        float _moveX, float _moveY, char*_jumpFlag,Stage _pStage);
+
     //攻撃時のアニメーションなどの更新
     void UpdateAttack();
 
@@ -32,7 +37,7 @@ public:
     void SetGravity(float _gravity);
 private:
     int pImage_; //プレイヤーの画像
-    float walkSpeed_; //歩く速さ(後でnamespaceの方に入れるかも)
+    //float walkSpeed_; //歩く速さ(後でnamespaceの方に入れるかも)
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ

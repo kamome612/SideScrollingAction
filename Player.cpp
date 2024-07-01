@@ -13,12 +13,13 @@ namespace {
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f;
 	const float MAX_POS = 400;
+	const int SPEED = 150;
 	//重力メモ:月...1.62,火星...3.71,太陽274
 
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),pImage_(-1),walkSpeed_(150),gravity_(INIT_GRAVITY),
+	:GameObject(parent,"Player"),pImage_(-1),gravity_(INIT_GRAVITY),
 	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false),
 	                             time_(0.0f),animType_(0),animFrame_(0),prevAttackKey_(false)
 {
@@ -114,8 +115,14 @@ void Player::UpdateNormal()
 	animType_ = 0;//歩くモーション
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
+	//移動量とその初期化
+	float moveX, moveY;
+	moveX = 0.0f;
+	moveY = 0.0f;
+
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
-		transform_.position_.x += walkSpeed_ * Time::DeltaTime();
+		moveX += SPEED * Time::DeltaTime();
+		transform_.position_.x += moveX;
 		if (time_ > 0.2f) {
 			animFrame_ = (animFrame_ + 1) % 4;
 			time_ = 0.0f;
@@ -129,7 +136,8 @@ void Player::UpdateNormal()
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		if (transform_.position_.x > 0) {//左画面端で止まるように
-			transform_.position_.x -= walkSpeed_ * Time::DeltaTime();
+			moveY -= SPEED * Time::DeltaTime();
+			transform_.position_.x -= moveY;
 			if (time_ > 0.2f) {
 				animFrame_ = (animFrame_ + 1) % 4;
 				time_ = 0.0f;
@@ -174,6 +182,122 @@ void Player::UpdateNormal()
 	else {
 		prevAttackKey_ = false;
 	}
+}
+
+void Player::UpdateNormal2()
+{
+	animType_ = 0;//歩くモーション
+	Stage* pStage = GetParent()->FindGameObject<Stage>();
+
+	//移動量とその初期化
+	float moveX, moveY;
+	moveX = 0.0f;
+	moveY = 0.0f;
+
+	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
+		moveX += SPEED * Time::DeltaTime();
+	}
+	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
+		if (transform_.position_.x > 0) {//左画面端で止まるように
+			moveY -= SPEED * Time::DeltaTime();
+		}
+	}
+	else {
+		animFrame_ = 0;
+		frameCounter_ = 0;
+	}
+
+	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
+		if (prevSpaceKey_ == false) {//前回のフレームでspaceを押してないときだけ
+			if (onGround_) {
+				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
+				onGround_ = false;
+			}
+		}
+		prevSpaceKey_ = true;
+	}
+	else {
+		prevSpaceKey_ = false;
+	}
+	jumpSpeed_ += gravity_;//速度 += 重力
+	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
+	if (CheckHitKey(KEY_INPUT_E)) {
+		if (onGround_) {
+			if (prevAttackKey_ == false) {
+				time_ = 0.0f;
+				state_ = S_Attack;
+			}
+			prevAttackKey_ = true;
+		}
+	}
+	else {
+		prevAttackKey_ = false;
+	}
+}
+
+int Player::CharMove(float* _x, float* _y, float *_downSP, 
+	float _moveX, float _moveY, char* _jumpFlag,Stage _pStage)
+{
+	float Dummy = 0.0F;
+
+	// キャラクタの左上、右上、左下、右下部分が当たり判定のある
+	// マップに衝突しているか調べ、衝突していたら補正する
+
+	// 先ず上下移動成分だけでチェック
+	// 左下のチェック、もしブロックの上辺に着いていたら落下を止める
+	if (_pStage.StageHitCheck(*_x, *_y + CHIP_SIZE, &Dummy, &_moveY) == 3)
+		*_downSP = 0.0F;
+
+	// 右下のチェック、もしブロックの上辺に着いていたら落下を止める
+	if (_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y + CHIP_SIZE, &Dummy, &_moveY) == 3)
+		*_downSP = 0.0F;
+
+	// 左上のチェック、もしブロックの下辺に当たっていたら落下させる
+	if (_pStage.StageHitCheck(*_x, *_y, &Dummy, &_moveY) == 4)
+		*_downSP *= -1.0F;
+
+	// 右上のチェック、もしブロックの下辺に当たっていたら落下させる
+	if (_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y, &Dummy, &_moveY) == 4)
+		*_downSP *= -1.0F;
+
+	// 上下移動成分を加算
+	*_y += _moveY;
+
+	// 後に左右移動成分だけでチェック
+	// 左下のチェック
+    _pStage.StageHitCheck(*_x, *_y + CHIP_SIZE, &_moveX, &Dummy);
+
+	// 右下のチェック
+	_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y + CHIP_SIZE, &_moveX, &Dummy);
+
+	// 左上のチェック
+	_pStage.StageHitCheck(*_x, *_y, &_moveX, &Dummy);
+
+	// 右上のチェック
+	_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y - CHIP_SIZE, &_moveX, &Dummy);
+
+		// 左右移動成分を加算
+		*_x += _moveX;
+
+	// 接地判定
+	{
+		// キャラクタの左下と右下の下に地面があるか調べる
+		if (_pStage.GetChipParam(*_x - CHIP_SIZE * 0.5F, *_y + CHIP_SIZE * 0.5F + 1.0F) == 0 &&
+			_pStage.GetChipParam(*_y + CHIP_SIZE * 0.5F, *_y + CHIP_SIZE * 0.5F + 1.0F) == 0)
+		{
+			// 足場が無かったらジャンプ中にする
+			*_jumpFlag = TRUE;
+		}
+		else
+		{
+			// 足場が在ったら接地中にする
+			*_jumpFlag = FALSE;
+		}
+	}
+
+	// 終了
+	return 0;
 }
 
 void Player::UpdateAttack()
