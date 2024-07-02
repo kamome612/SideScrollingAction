@@ -35,7 +35,7 @@ void Meteorite::Initialize()
 
 void Meteorite::Update()
 {
-	Stage* pStage = GetParent()->FindGameObject<Stage>();
+	Stage* mStage = GetParent()->FindGameObject<Stage>();
 
 	//スクロールに合わせて動くように
 	int x = (int)transform_.position_.x;
@@ -55,9 +55,10 @@ void Meteorite::Update()
 		return;
 	}
 
-	bool isGround = pStage->CollisionDown(transform_.position_.x, transform_.position_.y+ CHIP_SIZE/1.5);
+	bool isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y+ CHIP_SIZE/1.5);
 	if (isGround) {//地面に当たったらさようなら
 		KillMe();
+		mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
 		Explosion*mEx = Instantiate<Explosion>(GetParent());
 		mEx->SetPosition(transform_.position_.x, transform_.position_.y);
 	}
@@ -79,6 +80,7 @@ void Meteorite::Draw()
 
 	//当たり判定を可視化するため用
 	DrawCircle(x + CHIP_SIZE/4, y + CHIP_SIZE/2, 24.0f, GetColor(0, 0, 255), FALSE);
+	DrawPixel(transform_.position_.x, transform_.position_.y + CHIP_SIZE /1.5, GetColor(0, 0, 0));
 }
 
 void Meteorite::SetPosition(float _x, float _y)

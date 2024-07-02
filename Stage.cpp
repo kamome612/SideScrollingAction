@@ -8,6 +8,7 @@ namespace {
 	const int CHIP_SIZE = 32;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
+	const int CHIP_NULL = 255;
 }
 
 Stage::Stage(GameObject* parent)
@@ -240,6 +241,23 @@ int Stage::CollisionUp(int x, int y)
 		return 0;
 }
 
+void Stage::BreakGround(int x, int y)
+{
+	int chipX = x / CHIP_SIZE;
+	int chipY = y / CHIP_SIZE;
+
+	//destructionChip:‰ó‚·Šî€‚Ìƒ`ƒbƒv‚ÌêŠ
+	int desChip = chipY * width_ + chipX;
+	//destructionRamge:‰ó‚·”ÍˆÍ
+	int desRange = 3;
+	for (int i = 0; i <= desRange; i++) {
+		map_[desChip + i] = CHIP_NULL;
+		if (i > 0 && i < desRange) {
+			map_[desChip + width_ + i] = CHIP_NULL;
+		}
+	}
+}
+
 bool Stage::IsWallBlock(int x, int y)
 {
 	int chipX = x / CHIP_SIZE;
@@ -247,6 +265,8 @@ bool Stage::IsWallBlock(int x, int y)
 	switch (map_[chipY * width_ + chipX]) {
 	case 0:
 	case 1:
+	case 2:
+	case 3:
 	case 10:
 	case 11:
 	case 16:
