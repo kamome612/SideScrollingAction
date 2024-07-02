@@ -37,6 +37,7 @@ void Meteorite::Update()
 {
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
+	//スクロールに合わせて動くように
 	int x = (int)transform_.position_.x;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
@@ -44,21 +45,24 @@ void Meteorite::Update()
 	}
 
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-	if (!scene->canMove())
+	if (!scene->canMove())//canMoveなら動かす
 		return;
 
-	if (x > SCREEN_WIDTH)
+	if (x > SCREEN_WIDTH)//画面外(右側)にいるならなにもしない
 		return;
 	else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
 		KillMe();
 		return;
 	}
+
 	bool isGround = pStage->CollisionDown(transform_.position_.x, transform_.position_.y+ CHIP_SIZE/1.5);
-	if (isGround) {
+	if (isGround) {//地面に当たったらさようなら
 		KillMe();
 		Explosion*mEx = Instantiate<Explosion>(GetParent());
 		mEx->SetPosition(transform_.position_.x, transform_.position_.y);
 	}
+
+	//移動の処理
 	transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
 	transform_.position_.y += MOVE_SPEED * Time::DeltaTime();
 }

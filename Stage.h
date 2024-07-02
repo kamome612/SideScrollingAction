@@ -68,8 +68,7 @@ public:
 	/// <returns></returns>
 	int CollisionUp(int x, int y);
 
-	int GetChipParam(float _x, float _y);
-	int StageHitCheck(float x, float y, float* moveX, float* moveY);
+	void BreakGround(int x, int y);
 
 private:
 	int hImage_;

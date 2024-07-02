@@ -240,135 +240,45 @@ int Stage::CollisionUp(int x, int y)
 		return 0;
 }
 
-//仮で作る
-int Stage::StageHitCheck(float x, float y, float* moveX, float* moveY)
-{
-	//afterX,afterY
-	float afX, afY;
-
-	// 移動量を足す
-	afX = x + *moveX;
-	afY = y + *moveY;
-
-	// 当たり判定のあるブロックに当たっているかチェック
-	if (GetChipParam(afX, afY) == 1)
-	{
-		//blockのleftX,topY,rightX,bottomYの座標
-		float blx, bty, brx, bby;
-
-		// 当たっていたら壁から離す処理を行う
-
-		// ブロックの上下左右の座標を算出
-		blx = (float)((int)afX / CHIP_SIZE) * CHIP_SIZE;        // 左辺の X 座標
-		brx = (float)((int)afX / CHIP_SIZE + 1) * CHIP_SIZE;    // 右辺の X 座標
-
-		bty = (float)((int)afY / CHIP_SIZE) * CHIP_SIZE;        // 上辺の Y 座標
-		bby = (float)((int)afY / CHIP_SIZE + 1) * CHIP_SIZE;    // 下辺の Y 座標
-
-		// 上辺に当たっていた場合
-		if (*moveY > 0.0F)
-		{
-			// 移動量を補正する
-			*moveY = bty - y - 1.0F;
-
-			// 上辺に当たったと返す
-			return 3;
-		}
-
-		// 下辺に当たっていた場合
-		if (*moveY < 0.0F)
-		{
-			// 移動量を補正する
-			*moveY = bby - y + 1.0F;
-
-			// 下辺に当たったと返す
-			return 4;
-		}
-
-		// 左辺に当たっていた場合
-		if (*moveX > 0.0F)
-		{
-			// 移動量を補正する
-			*moveX = blx - x - 1.0F;
-
-			// 左辺に当たったと返す
-			return 1;
-		}
-
-		// 右辺に当たっていた場合
-		if (*moveX < 0.0F)
-		{
-			// 移動量を補正する
-			*moveX = brx - x + 1.0F;
-
-			// 右辺に当たったと返す
-			return 2;
-		}
-
-		// ここに来たら適当な値を返す
-		return 4;
-	}
-
-	// どこにも当たらなかったと返す
-	return 0;
-}
-
-
 bool Stage::IsWallBlock(int x, int y)
 {
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
-	//if (mapNo_ == 1) {
-		switch (map_[chipY * width_ + chipX]) {
-		case 0:
-		case 1:
-		case 10:
-		case 11:
-		case 16:
-		case 17:
-		case 32:
-		case 33:
-		case 34:
-		case 35:
-		case 64:
-		case 65:
-	    //月の方のマップチップ
-		case 132:
-		case 133:
-		case 148:
-		case 149:
-		case 164:
-		case 165:
-		case 180:
-		case 181:
-		case 196:
-		case 197:
-		case 212:
-		case 213:
-		case 292:
-		case 293:
-		case 324:
-		case 325:
-		case 356:
-		case 357:
-			return true;
-		}
-		return false;
-	//}
-}
-
-// マップチップの値を取得する関数
-int Stage::GetChipParam(float _x, float _y)
-{
-	int x, y;
-
-	// 整数値へ変換
-	x = (int)_x / CHIP_SIZE;
-	y = (int)_y / CHIP_SIZE;
-
-	// マップからはみ出ていたら 0 を返す
-	if (x >= MAP_WIDTH || y >= MAP_HEIGHT || x < 0 || y < 0) return 0;
-
-	// 指定の座標に該当するマップの情報を返す
-	return map_[y * width_  + x];
+	switch (map_[chipY * width_ + chipX]) {
+	case 0:
+	case 1:
+	case 10:
+	case 11:
+	case 16:
+	case 17:
+	case 32:
+	case 33:
+	case 48:
+	case 49:
+	case 34:
+	case 35:
+	case 64:
+	case 65:
+		//月の方のマップチップ
+	case 132:
+	case 133:
+	case 148:
+	case 149:
+	case 164:
+	case 165:
+	case 180:
+	case 181:
+	case 196:
+	case 197:
+	case 212:
+	case 213:
+	case 292:
+	case 293:
+	case 324:
+	case 325:
+	case 356:
+	case 357:
+		return true;
+	}
+	return false;
 }

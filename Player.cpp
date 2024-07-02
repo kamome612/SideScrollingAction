@@ -20,8 +20,9 @@ namespace {
 
 Player::Player(GameObject* parent)
 	:GameObject(parent,"Player"),pImage_(-1),gravity_(INIT_GRAVITY),
-	                             jumpSpeed_(0.0f), onGround_(true), prevSpaceKey_(false),
-	                             time_(0.0f),animType_(0),animFrame_(0),prevAttackKey_(false)
+	                             jumpSpeed_(0.0f), onGround_(true),
+	                             time_(0.0f),animType_(0),animFrame_(0),
+	                             prevAttackKey_(false)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -122,7 +123,7 @@ void Player::UpdateNormal()
 
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		moveX += SPEED * Time::DeltaTime();
-		transform_.position_.x += moveX;
+		transform_.position_.x += moveX;//移動量
 		if (time_ > 0.2f) {
 			animFrame_ = (animFrame_ + 1) % 4;
 			time_ = 0.0f;
@@ -136,8 +137,8 @@ void Player::UpdateNormal()
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		if (transform_.position_.x > 0) {//左画面端で止まるように
-			moveY -= SPEED * Time::DeltaTime();
-			transform_.position_.x -= moveY;
+			moveX += SPEED * Time::DeltaTime();//移動量
+			transform_.position_.x -= moveX;
 			if (time_ > 0.2f) {
 				animFrame_ = (animFrame_ + 1) % 4;
 				time_ = 0.0f;
@@ -155,18 +156,13 @@ void Player::UpdateNormal()
 		frameCounter_ = 0;
 	}
 
-	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
-		if (prevSpaceKey_ == false) {//前回のフレームでspaceを押してないときだけ
-			if (onGround_) {
-				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
-				onGround_ = false;
-			}
+	if (onGround_) {//地面にいるか
+		if (CheckHitKey(KEY_INPUT_SPACE)) {//SPACEキーを押すとジャンプ
+			jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
+			onGround_ = false;//地面にいない
 		}
-		prevSpaceKey_ = true;
 	}
-	else {
-		prevSpaceKey_ = false;
-	}
+
 	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
@@ -199,7 +195,7 @@ void Player::UpdateNormal2()
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		if (transform_.position_.x > 0) {//左画面端で止まるように
-			moveY -= SPEED * Time::DeltaTime();
+			moveX -= SPEED * Time::DeltaTime();
 		}
 	}
 	else {
@@ -207,20 +203,21 @@ void Player::UpdateNormal2()
 		frameCounter_ = 0;
 	}
 
-	if (CheckHitKey(KEY_INPUT_SPACE)) {//SPASEキーを押すとジャンプ
-		if (prevSpaceKey_ == false) {//前回のフレームでspaceを押してないときだけ
-			if (onGround_) {
-				jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
-				onGround_ = false;
-			}
+	if (onGround_) {//地面にいるときだけ
+		if (CheckHitKey(KEY_INPUT_SPACE)) {//SPACEキーを押すとジャンプ
+			jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
+			onGround_ = false;
 		}
-		prevSpaceKey_ = true;
 	}
-	else {
-		prevSpaceKey_ = false;
-	}
-	jumpSpeed_ += gravity_;//速度 += 重力
-	transform_.position_.y += jumpSpeed_; //座標 += 速度
+	//落下処理
+	jumpSpeed_ += gravity_;
+
+	//落下速度に移動量を加える
+	moveY = jumpSpeed_;
+
+	//移動量をもとにキャラクタの座標を移動
+	CharMove(&transform_.position_.x, &transform_.position_.y,
+		&jumpSpeed_, moveX, moveY, &onGround_);
 
 	if (CheckHitKey(KEY_INPUT_E)) {
 		if (onGround_) {
@@ -237,8 +234,9 @@ void Player::UpdateNormal2()
 }
 
 int Player::CharMove(float* _x, float* _y, float *_downSP, 
-	float _moveX, float _moveY, char* _jumpFlag,Stage _pStage)
+	float _moveX, float _moveY, bool* _jumpFlag)
 {
+	Stage pStage = GetParent()->FindGameObject<Stage>();
 	float Dummy = 0.0F;
 
 	// キャラクタの左上、右上、左下、右下部分が当たり判定のある
@@ -246,19 +244,19 @@ int Player::CharMove(float* _x, float* _y, float *_downSP,
 
 	// 先ず上下移動成分だけでチェック
 	// 左下のチェック、もしブロックの上辺に着いていたら落下を止める
-	if (_pStage.StageHitCheck(*_x, *_y + CHIP_SIZE, &Dummy, &_moveY) == 3)
+	if (pStage.StageHitCheck(*_x, *_y + CHIP_SIZE, &Dummy, &_moveY) == 3)
 		*_downSP = 0.0F;
 
 	// 右下のチェック、もしブロックの上辺に着いていたら落下を止める
-	if (_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y + CHIP_SIZE, &Dummy, &_moveY) == 3)
+	if (pStage.StageHitCheck(*_x + CHIP_SIZE, *_y + CHIP_SIZE, &Dummy, &_moveY) == 3)
 		*_downSP = 0.0F;
 
 	// 左上のチェック、もしブロックの下辺に当たっていたら落下させる
-	if (_pStage.StageHitCheck(*_x, *_y, &Dummy, &_moveY) == 4)
+	if (pStage.StageHitCheck(*_x, *_y, &Dummy, &_moveY) == 4)
 		*_downSP *= -1.0F;
 
 	// 右上のチェック、もしブロックの下辺に当たっていたら落下させる
-	if (_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y, &Dummy, &_moveY) == 4)
+	if (pStage.StageHitCheck(*_x + CHIP_SIZE, *_y, &Dummy, &_moveY) == 4)
 		*_downSP *= -1.0F;
 
 	// 上下移動成分を加算
@@ -266,35 +264,33 @@ int Player::CharMove(float* _x, float* _y, float *_downSP,
 
 	// 後に左右移動成分だけでチェック
 	// 左下のチェック
-    _pStage.StageHitCheck(*_x, *_y + CHIP_SIZE, &_moveX, &Dummy);
+    pStage.StageHitCheck(*_x, *_y + CHIP_SIZE, &_moveX, &Dummy);
 
 	// 右下のチェック
-	_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y + CHIP_SIZE, &_moveX, &Dummy);
+	pStage.StageHitCheck(*_x + CHIP_SIZE, *_y + CHIP_SIZE, &_moveX, &Dummy);
 
 	// 左上のチェック
-	_pStage.StageHitCheck(*_x, *_y, &_moveX, &Dummy);
+	pStage.StageHitCheck(*_x, *_y, &_moveX, &Dummy);
 
 	// 右上のチェック
-	_pStage.StageHitCheck(*_x + CHIP_SIZE, *_y - CHIP_SIZE, &_moveX, &Dummy);
+	pStage.StageHitCheck(*_x + CHIP_SIZE, *_y - CHIP_SIZE, &_moveX, &Dummy);
 
 		// 左右移動成分を加算
 		*_x += _moveX;
 
 	// 接地判定
+	// キャラクタの左下と右下の下に地面があるか調べる
+	if (pStage.GetChipParam(*_x - CHIP_SIZE * 0.5F, *_y + CHIP_SIZE * 0.5F + 1.0F) == 0 &&
+		pStage.GetChipParam(*_y + CHIP_SIZE * 0.5F, *_y + CHIP_SIZE * 0.5F + 1.0F) == 0)
 	{
-		// キャラクタの左下と右下の下に地面があるか調べる
-		if (_pStage.GetChipParam(*_x - CHIP_SIZE * 0.5F, *_y + CHIP_SIZE * 0.5F + 1.0F) == 0 &&
-			_pStage.GetChipParam(*_y + CHIP_SIZE * 0.5F, *_y + CHIP_SIZE * 0.5F + 1.0F) == 0)
-		{
-			// 足場が無かったらジャンプ中にする
-			*_jumpFlag = TRUE;
-		}
+		// 足場が無かったらジャンプ中にする
+		*_jumpFlag = TRUE;
+	}
 		else
 		{
 			// 足場が在ったら接地中にする
 			*_jumpFlag = FALSE;
 		}
-	}
 
 	// 終了
 	return 0;

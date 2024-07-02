@@ -21,8 +21,9 @@ public:
 
     //こっちに変えるかも
     void UpdateNormal2();
+
     int CharMove(float* _x, float* _y, float *_downSP,
-        float _moveX, float _moveY, char*_jumpFlag,Stage _pStage);
+        float _moveX, float _moveY, bool*_jumpFlag);
 
     //攻撃時のアニメーションなどの更新
     void UpdateAttack();
@@ -41,7 +42,6 @@ private:
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
-    bool prevSpaceKey_; //ひとつ前のフレームでspaceキーを押したか
     bool prevAttackKey_;//ひとつ前のフレームでEキーを押したから
     bool onGround_;     //地面の上にいるか
     float time_;        //タイム
