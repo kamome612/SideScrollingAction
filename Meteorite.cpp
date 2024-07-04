@@ -7,6 +7,7 @@
 
 namespace {
 	static const int SCREEN_WIDTH = 1280;
+	//const int CHIP_SIZE = 256;
 	const int CHIP_SIZE = 128;
 	const int MOVE_SPEED = 100;
 	const XMFLOAT3 INIT_POS = { 0,0,0 };
@@ -28,7 +29,7 @@ Meteorite::~Meteorite()
 void Meteorite::Initialize()
 {
 	//‰æ‘œ‚Ì“Ç‚Ýž‚Ý
-	mImage_ = LoadGraph("Assets/Image/meteo.png");
+	mImage_ = LoadGraph("Assets/Image/meteo2.png");
 	assert(mImage_ > 0);
 	transform_.position_ = INIT_POS;
 }
