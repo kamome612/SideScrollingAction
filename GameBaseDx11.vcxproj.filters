@@ -41,9 +41,6 @@
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp" />
-    <ClCompile Include="GameOverScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -56,11 +53,22 @@
     <ClCompile Include="Engine\time.cpp">
       <Filter>01Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="Meteorite.cpp" />
-    <ClCompile Include="Explosion.cpp" />
-    <ClCompile Include="AttackSkill.cpp" />
     <ClCompile Include="Banner.cpp" />
+    <ClCompile Include="ResultScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorite.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Explosion.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackSkill.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -82,9 +90,6 @@
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="TestScene.h" />
-    <ClInclude Include="GameOverScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -98,11 +103,22 @@
       <Filter>01Engine</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Stage.h" />
-    <ClInclude Include="Meteorite.h" />
-    <ClInclude Include="Explosion.h" />
-    <ClInclude Include="AttackSkill.h" />
     <ClInclude Include="Banner.h" />
     <ClInclude Include="Ease.h" />
+    <ClInclude Include="ResultScene.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorite.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackSkill.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

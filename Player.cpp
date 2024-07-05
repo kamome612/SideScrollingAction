@@ -49,6 +49,11 @@ void Player::Update()
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())
 		return;
+	if (CheckHitKey(KEY_INPUT_O)) {
+		int tmp = (int)transform_.position_.x;
+		int tmp2 = (int)transform_.position_.y;
+		printfDx("(%d,%d)", tmp,tmp2);
+	}
 
 	switch (state_){
 	case 0: 
@@ -143,7 +148,7 @@ void Player::UpdateNormal()
 				animFrame_ = (animFrame_ + 1) % 4;
 				time_ = 0.0f;
 			}
-			int hitX = transform_.position_.x + 10;
+			int hitX = transform_.position_.x + 12;
 			int hitY = transform_.position_.y + 63;
 			if (pStage != nullptr) {
 				int push = pStage->CollisionLeft(hitX, hitY);

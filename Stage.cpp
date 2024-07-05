@@ -12,9 +12,16 @@ namespace {
 }
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent,"Stage"),hImage_(-1),width_(0),height_(0),
-	                            mapNo_(1),prevResetKey_(false),gPict_(-1)
+	:GameObject(parent,"Stage")
 {
+	hImage_ = -1;
+	width_ = 0;
+	height_ = 0;
+	mapNo_ = 1;
+	prevResetKey_ = false;
+	gPict_ = -1;
+	meteoHitCount_ = 0;
+	map_ = nullptr;
 }
 
 Stage::~Stage()
@@ -35,9 +42,6 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	////画像の読み込み
-	//hImage_ = LoadGraph("Assets/Image/bgchar.png");
-	//assert(hImage_ > 0);
 	map_ = nullptr;
 }
 
@@ -78,6 +82,13 @@ void Stage::StageSet()
 		delete[] map_;
 		map_ = nullptr;
 	}
+	//プレイヤーと隕石がステージのリセットやセット時に消されるように
+	if (Player* sPlayer = GetParent()->FindGameObject<Player>()) {
+		sPlayer->KillMe();
+	}
+	if (Meteorite* sMeteo = GetParent()->FindGameObject<Meteorite>()) {
+		sMeteo->KillMe();
+	}
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	cam->SetValue(0);
@@ -99,12 +110,14 @@ void Stage::StageSet()
 	bool ret = csv.Load("Assets/Stage/testStage.csv");
 	assert(ret);
 
+	//csvで読んだステージの横と縦を取る
 	width_ = csv.GetWidth(0);
 	height_ = csv.GetHeight();
+
 	map_ = new int[height_ * width_];
 
 	for (int h = 0; h < height_; h++) {
-		if (csv.GetString(0, h) == "") {
+		if (csv.GetString(0, h) == "") {//空行を飛ばす
 			height_ = h;
 			break;
 		}
@@ -121,9 +134,9 @@ void Stage::StageSet()
 			{
 			case 0://player
 			{
-				Player* sPlayer = GetParent()->FindGameObject<Player>();
-				//sPlayer_ = Instantiate<Player>(this);
-				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				//Player* sPlayer = GetParent()->FindGameObject<Player>();
+				Player* sPlayer = Instantiate<Player>(GetParent());
+				sPlayer ->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				//とりあえずのマップ変更用
 				switch (mapNo_)
 				{
@@ -148,58 +161,59 @@ void Stage::StageSet()
 	}
 }
 
-void Stage::StageReset()
-{
-	//マップの中になにか入ってたら消す
-	if (map_ != nullptr) {
-		delete[] map_;
-		map_ = nullptr;
-	}
-
-	static const std::string folder = "Assets/Stage/";
-	
-	//画像の読み込み
-	std::string n = std::to_string(mapNo_);
-	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
-	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
-	assert(hImage_ > 0);
-	//csvから読み込み
-	CsvReader csv;
-	bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
-	//bool ret = csv.Load("Assets/Stage/testStage2.csv");
-	assert(ret);
-	width_ = csv.GetWidth(0);
-	height_ = csv.GetHeight();
-	map_ = new int[height_ * width_];
-
-	for (int h = 0; h < height_; h++) {
-		if (csv.GetString(0, h) == "") {
-			height_ = h;
-			break;
-		}
-		for (int w = 0; w < width_; w++) {
-			map_[h * width_ + w] = csv.GetInt(w, h);
-		}
-	}
-
-	//Mapデータの中で0があれば、Playerの座標を0の位置にする
-	for (int h = 0; h < height_; h++) {
-		for (int w = 0; w < width_; w++) {
-			switch (csv.GetInt(w, h + height_ + 1))
-			{
-			case 0://player
-			{
-				Player* sPlayer = GetParent()->FindGameObject<Player>();
-				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-			}
-			case 15://Meteorite
-				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
-				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				break;
-			}
-		}
-	}
-}
+//void Stage::StageReset()
+//{
+//	//マップの中になにか入ってたら消す
+//	if (map_ != nullptr) {
+//		delete[] map_;
+//		map_ = nullptr;
+//	}
+//
+//	static const std::string folder = "Assets/Stage/";
+//	
+//	//画像の読み込み
+//	std::string n = std::to_string(mapNo_);
+//	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
+//	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
+//	assert(hImage_ > 0);
+//	//csvから読み込み
+//	CsvReader csv;
+//	bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
+//	//bool ret = csv.Load("Assets/Stage/testStage2.csv");
+//	assert(ret);
+//	width_ = csv.GetWidth(0);
+//	height_ = csv.GetHeight();
+//	map_ = new int[height_ * width_];
+//
+//	for (int h = 0; h < height_; h++) {
+//		if (csv.GetString(0, h) == "") {
+//			height_ = h;
+//			break;
+//		}
+//		for (int w = 0; w < width_; w++) {
+//			map_[h * width_ + w] = csv.GetInt(w, h);
+//		}
+//	}
+//
+//	//Mapデータの中で0があれば、Playerの座標を0の位置にする
+//	for (int h = 0; h < height_; h++) {
+//		for (int w = 0; w < width_; w++) {
+//			switch (csv.GetInt(w, h + height_ + 1))
+//			{
+//			case 0://player
+//			{
+//				//Player* sPlayer = GetParent()->FindGameObject<Player>();
+//				Player* sPlayer = Instantiate<Player>(GetParent());
+//				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+//			}
+//			case 15://Meteorite
+//				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
+//				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+//				break;
+//			}
+//		}
+//	}
+//}
 
 int Stage::CollisionRight(int x, int y)
 {
@@ -215,7 +229,8 @@ int Stage::CollisionLeft(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		return x % CHIP_SIZE - 28;
+		//return x % CHIP_SIZE - 28;
+		return (CHIP_SIZE - x % CHIP_SIZE) + 1;
 	}
 	else
 		return 0;
@@ -243,14 +258,20 @@ int Stage::CollisionUp(int x, int y)
 
 void Stage::BreakGround(int x, int y)
 {
+	//隕石の当たった回数を増やす
+	meteoHitCount_ += 1;
+
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
 
 	//destructionChip:壊す基準のチップの場所
 	int desChip = chipY * width_ + chipX;
-	//destructionRamge:壊す範囲
+	//destructionRange:壊す範囲
 	int desRange = 5;
+
+	//隕石が当たったところらへんを壊す
 	for (int i = 0; i <= desRange; i++) {
+		map_[desChip - width_ + i] = CHIP_NULL;
 		map_[desChip + i] = CHIP_NULL;
 		if (i > 0 && i < desRange) {
 			map_[desChip + width_ + i] = CHIP_NULL;
@@ -260,25 +281,24 @@ void Stage::BreakGround(int x, int y)
 
 bool Stage::IsWallBlock(int x, int y)
 {
+	//地面などの当たり判定のあるチップなのか(ステージごとに変えてもあり)
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
 	switch (map_[chipY * width_ + chipX]) {
-	case 0:
-	case 1:
-	case 2:
-	case 3:
-	case 10:
-	case 11:
-	case 16:
-	case 17:
-	case 32:
-	case 33:
-	case 48:
-	case 49:
-	case 34:
-	case 35:
-	case 64:
-	case 65:
+	case 2://土の左上
+	case 3://土の右上
+	case 18://土の左下
+	case 19://土の右下
+	case 32://地面の左上
+	case 33://地面の右上
+	case 48://地面の左下
+	case 49://地面の右下
+	case 160://浮いてる足場(右)の左上
+	case 161://浮いてる足場(右)の右上
+	case 192://浮いてる足場(中央)の左上
+	case 193://浮いてる足場(中央)の右上
+	case 224://浮いてる足場(左)の左上
+	case 225://浮いてる足場(左)の右上
 		//月の方のマップチップ
 	case 132:
 	case 133:

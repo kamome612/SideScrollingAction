@@ -147,10 +147,10 @@
     <ClCompile Include="Engine\time.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Explosion.cpp" />
-    <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="Meteorite.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -168,10 +168,10 @@
     <ClInclude Include="Engine\time.h" />
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Explosion.h" />
-    <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="Meteorite.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="ResultScene.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />

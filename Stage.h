@@ -68,7 +68,11 @@ public:
 	/// <returns></returns>
 	int CollisionUp(int x, int y);
 
+	//è¦Î‚ª“–‚½‚Á‚½‚Ì’n–Ê‚È‚Ç‚Ì”j‰ó
 	void BreakGround(int x, int y);
+
+	//è¦Î‚ª“–‚½‚Á‚½‰ñ”‚ğ•Ô‚·
+	int GetMeteoHitCount() { return meteoHitCount_; }
 
 private:
 	int hImage_;
@@ -77,6 +81,7 @@ private:
 	int width_;
 	int height_;
 	int mapNo_;
+	int meteoHitCount_;
 	bool IsWallBlock(int x, int y);
 	bool prevResetKey_;
 };

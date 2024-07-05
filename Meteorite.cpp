@@ -29,7 +29,7 @@ Meteorite::~Meteorite()
 void Meteorite::Initialize()
 {
 	//画像の読み込み
-	mImage_ = LoadGraph("Assets/Image/meteo2.png");
+	mImage_ = LoadGraph("Assets/Image/meteo.png");
 	assert(mImage_ > 0);
 	transform_.position_ = INIT_POS;
 }
@@ -57,7 +57,7 @@ void Meteorite::Update()
 	}
 
 	bool isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y+ CHIP_SIZE/1.5);
-	if (isGround) {//地面に当たったらさようなら
+	if (isGround) {//地面などのステージの一部に当たったらさようなら
 		KillMe();
 		mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
 		Explosion*mEx = Instantiate<Explosion>(GetParent());

@@ -23,7 +23,7 @@ void PlayScene::Initialize()
 	StartSelect();
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
-	Player* pPlayer = Instantiate<Player>(this);
+	//Player* pPlayer = Instantiate<Player>(this);
 	pStage->StageSet();
 	Instantiate<Banner>(this);
 }
@@ -41,7 +41,6 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
-	//DrawGraph(0, 0, pPict_, FALSE);
 }
 
 void PlayScene::Release()
@@ -64,8 +63,6 @@ void PlayScene::StartReady()
 	timer_ = 2.0f;//Ready‚Ì•\Ž¦ŽžŠÔ
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_Start);
-	//Player‚Ì‰Šú‰»
-	//“G‚Ì‰Šú‰»
 }
 
 void PlayScene::UpdateReady()
@@ -107,6 +104,10 @@ void PlayScene::UpdatePlay()
 	}
 	else
 		prevChangeKey_ = false;
+
+	if (pStage->GetMeteoHitCount() > 5) {
+		StartGameOver();
+	}
 }
 
 void PlayScene::UpdateClear()
