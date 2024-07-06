@@ -3,7 +3,7 @@
 #include "../TestScene.h"
 #include "../TitleScene.h"
 #include "../PlayScene.h"
-#include "../GameOverScene.h"
+#include "../ResultScene.h"
 #include "time.h"
 
 //コンストラクタ
@@ -38,7 +38,7 @@ void SceneManager::Update()
 		case SCENE_ID_TEST: Instantiate<TestScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
-		case SCENE_ID_GAMEOVER: Instantiate<GameOverScene>(this); break;
+		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 
 		}
 		currentSceneID_ = nextSceneID_;

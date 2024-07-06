@@ -125,6 +125,6 @@ void PlayScene::UpdateGameOver()
 {
 	if (CheckHitKey(KEY_INPUT_SPACE)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+		pSceneManager->ChangeScene(SCENE_ID_RESULT);
 	}
 }

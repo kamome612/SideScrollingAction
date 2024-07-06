@@ -5,7 +5,8 @@
 #include "Camera.h"
 
 namespace {
-	const int CHIP_SIZE = 32;
+	//const int CHIP_SIZE = 32;
+	const int CHIP_SIZE = 64;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
 	const int CHIP_NULL = 255;
@@ -64,13 +65,23 @@ void Stage::Draw()
 		scroll = cam->GetValue();
 	}
 
-	//ステージの描画
+	////ステージの描画
+	//for (int h = 0; h < height_; h++) {
+	//	for (int w = 0; w < width_; w++) {
+	//		int chip = map_[h * width_ + w];
+	//		DrawRectGraph(w * CHIP_SIZE-scroll, h * CHIP_SIZE, 
+	//			          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
+	//			          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+	//	}
+	//}
+
+	//ステージの描画(仮)
 	for (int h = 0; h < height_; h++) {
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
-			DrawRectGraph(w * CHIP_SIZE-scroll, h * CHIP_SIZE, 
-				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
-				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+			DrawRectGraph(w * CHIP_SIZE - scroll, h * CHIP_SIZE,
+				CHIP_SIZE * (chip % 8), CHIP_SIZE * (chip / 8),
+				CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 		}
 	}
 }
@@ -107,7 +118,7 @@ void Stage::StageSet()
 	//csvから読み込み
 	CsvReader csv;
 	//bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
-	bool ret = csv.Load("Assets/Stage/testStage.csv");
+	bool ret = csv.Load("Assets/Stage/testStage0.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -284,40 +295,47 @@ bool Stage::IsWallBlock(int x, int y)
 	//地面などの当たり判定のあるチップなのか(ステージごとに変えてもあり)
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
+	//switch (map_[chipY * width_ + chipX]) {
+	//case 2://土の左上
+	//case 3://土の右上
+	//case 18://土の左下
+	//case 19://土の右下
+	//case 32://地面の左上
+	//case 33://地面の右上
+	//case 48://地面の左下
+	//case 49://地面の右下
+	//case 160://浮いてる足場(右)の左上
+	//case 161://浮いてる足場(右)の右上
+	//case 192://浮いてる足場(中央)の左上
+	//case 193://浮いてる足場(中央)の右上
+	//case 224://浮いてる足場(左)の左上
+	//case 225://浮いてる足場(左)の右上
+	//	//月の方のマップチップ
+	//case 132:
+	//case 133:
+	//case 148:
+	//case 149:
+	//case 164:
+	//case 165:
+	//case 180:
+	//case 181:
+	//case 196:
+	//case 197:
+	//case 212:
+	//case 213:
+	//case 292:
+	//case 293:
+	//case 324:
+	//case 325:
+	//case 356:
+	//case 357:
+	//	return true;
+	//}
+	//return false;
+
 	switch (map_[chipY * width_ + chipX]) {
-	case 2://土の左上
-	case 3://土の右上
-	case 18://土の左下
-	case 19://土の右下
-	case 32://地面の左上
-	case 33://地面の右上
-	case 48://地面の左下
-	case 49://地面の右下
-	case 160://浮いてる足場(右)の左上
-	case 161://浮いてる足場(右)の右上
-	case 192://浮いてる足場(中央)の左上
-	case 193://浮いてる足場(中央)の右上
-	case 224://浮いてる足場(左)の左上
-	case 225://浮いてる足場(左)の右上
-		//月の方のマップチップ
-	case 132:
-	case 133:
-	case 148:
-	case 149:
-	case 164:
-	case 165:
-	case 180:
-	case 181:
-	case 196:
-	case 197:
-	case 212:
-	case 213:
-	case 292:
-	case 293:
-	case 324:
-	case 325:
-	case 356:
-	case 357:
+	case 8:
+	case 1:
 		return true;
 	}
 	return false;
