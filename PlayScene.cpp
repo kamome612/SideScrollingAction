@@ -14,12 +14,10 @@ PlayScene::PlayScene(GameObject* parent)
 
 void PlayScene::Initialize()
 {
-	//画像のロード(背景)
-	//pPict_ = LoadGraph("Assets\\Picture\\playscene.png");//拾ってきた画像がwindowサイズに合ってなかった(探すこと)
+	////画像のロード
+	//pPict_ = LoadGraph("Assets\\Image\\");
 	//assert(pPict_ > 0);
-	//Stage* pStage = Instantiate<Stage>(this);
-	//pStage->Reset();
-	//state_ = S_Play;
+
 	StartSelect();
 	Instantiate<Camera>(this);
 	Stage* pStage = Instantiate<Stage>(this);
@@ -55,6 +53,9 @@ void PlayScene::StartSelect()
 void PlayScene::UpdateSelect()
 {
 	StartReady();
+
+	//ここで画像を用意してその上にステージ三つぐらいを回す(予定)
+	//DrawGraph(0, 0, pPict_, TRUE);
 }
 
 void PlayScene::StartReady()
@@ -105,7 +106,7 @@ void PlayScene::UpdatePlay()
 	else
 		prevChangeKey_ = false;
 
-	if (pStage->GetMeteoHitCount() > 5) {
+	if (pStage->GetStageLife() <= 0) {
 		StartGameOver();
 	}
 }

@@ -31,9 +31,6 @@ public:
 	//マップをセットする
 	void StageSet();
 
-	//マップの状態をリセットする
-	void StageReset();
-
 	void ChangeStage() { mapNo_++; }
 
 	/// <summary>
@@ -71,18 +68,19 @@ public:
 	//隕石が当たった時の地面などの破壊
 	void BreakGround(int x, int y);
 
-	//隕石が当たった回数を返す
-	int GetMeteoHitCount() { return meteoHitCount_; }
+	//ステージの体力を返す
+	int GetStageLife() { return stageLife_; }
 
 private:
-	int hImage_;
-	int gPict_;
-	int* map_;
-	int width_;
-	int height_;
-	int mapNo_;
-	int meteoHitCount_;
+	int hImage_;        //ステージの素材
+	int gPict_;         //背景の画像
+	int lImage_;        //ステージの体力的なのを表す素材
+	int* map_;          //ステージの情報を入れる
+	int width_;         //ステージの横
+	int height_;        //ステージの縦
+	int mapNo_;         //どのステージかの識別
+	int stageLife_;     //ステージの体力
+	bool prevResetKey_; //ひとつ前のフレームのRキーの状態
 	bool IsWallBlock(int x, int y);
-	bool prevResetKey_;
 };
 

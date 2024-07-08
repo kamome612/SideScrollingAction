@@ -23,8 +23,7 @@ public:
 	bool canMove() { return state_ == S_Play; }
 
 private:
-	//背景(ステージのほうで表示することにするかも)
-	int pPict_;
+	int pPict_; //ステージ選択時の画像
 	enum State {
 		S_Select = 0,
 		S_Ready,   //始まるまで待つ(Readyなどを表示予定)

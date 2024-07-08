@@ -19,12 +19,6 @@ public:
     //通常時の動作のアニメーションなどの更新
     void UpdateNormal();
 
-    //こっちに変えるかも
-    void UpdateNormal2();
-
-    int CharMove(float* _x, float* _y, float *_downSP,
-        float _moveX, float _moveY, bool*_jumpFlag);
-
     //攻撃時のアニメーションなどの更新
     void UpdateAttack();
 

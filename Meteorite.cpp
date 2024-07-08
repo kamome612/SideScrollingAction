@@ -81,7 +81,7 @@ void Meteorite::Draw()
 
 	//“–‚½‚è”»’è‚ğ‰Â‹‰»‚·‚é‚½‚ß—p
 	DrawCircle(x + CHIP_SIZE/4, y + CHIP_SIZE/2, 24.0f, GetColor(0, 0, 255), FALSE);
-	DrawPixel(transform_.position_.x, transform_.position_.y + CHIP_SIZE /1.5, GetColor(0, 0, 0));
+	//DrawPixel(transform_.position_.x, transform_.position_.y + CHIP_SIZE /1.5, GetColor(0, 0, 0));
 }
 
 void Meteorite::SetPosition(float _x, float _y)
@@ -92,7 +92,7 @@ void Meteorite::SetPosition(float _x, float _y)
 
 bool Meteorite::CollideCircle(float x, float y, float r)
 {
-	//x,y,r‚ª‘Šè‚Ì‰~‚Ìî•ñ1
+	//x,y,r‚ª‘Šè‚Ì‰~‚Ìî•ñ
 	//©•ª‚Ì‰~‚Ìî•ñ
 	float myCenterX = transform_.position_.x + (float)CHIP_SIZE / 4;
 	float myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2;

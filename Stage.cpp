@@ -5,8 +5,9 @@
 #include "Camera.h"
 
 namespace {
-	//const int CHIP_SIZE = 32;
-	const int CHIP_SIZE = 64;
+	const int CHIP_SIZE = 32;
+	//const int CHIP_SIZE = 64;
+	const int LIFE_IMAGE_SIZE = 64;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
 	const int CHIP_NULL = 255;
@@ -16,12 +17,13 @@ Stage::Stage(GameObject* parent)
 	:GameObject(parent,"Stage")
 {
 	hImage_ = -1;
+	lImage_ = -1;
 	width_ = 0;
 	height_ = 0;
 	mapNo_ = 1;
 	prevResetKey_ = false;
 	gPict_ = -1;
-	meteoHitCount_ = 0;
+	stageLife_ = 0;
 	map_ = nullptr;
 }
 
@@ -36,6 +38,12 @@ Stage::~Stage()
 		DeleteGraph(gPict_);
 		gPict_ = -1;
 	}
+
+	if (lImage_ < 0) {
+		DeleteGraph(lImage_);
+		lImage_ = -1;
+	}
+
 	if (map_ != nullptr) {
 		delete[] map_;
 	}
@@ -65,25 +73,30 @@ void Stage::Draw()
 		scroll = cam->GetValue();
 	}
 
-	////ステージの描画
-	//for (int h = 0; h < height_; h++) {
-	//	for (int w = 0; w < width_; w++) {
-	//		int chip = map_[h * width_ + w];
-	//		DrawRectGraph(w * CHIP_SIZE-scroll, h * CHIP_SIZE, 
-	//			          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
-	//			          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
-	//	}
-	//}
-
-	//ステージの描画(仮)
+	//ステージの描画
 	for (int h = 0; h < height_; h++) {
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
-			DrawRectGraph(w * CHIP_SIZE - scroll, h * CHIP_SIZE,
-				CHIP_SIZE * (chip % 8), CHIP_SIZE * (chip / 8),
-				CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+			DrawRectGraph(w * CHIP_SIZE-scroll, h * CHIP_SIZE, 
+				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
+				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 		}
 	}
+
+	//ステージの体力の表示
+	for (int i = 0; i < stageLife_; i++) {
+		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
+	}
+
+	////ステージの描画(仮)
+	//for (int h = 0; h < height_; h++) {
+	//	for (int w = 0; w < width_; w++) {
+	//		int chip = map_[h * width_ + w];
+	//		DrawRectGraph(w * CHIP_SIZE - scroll, h * CHIP_SIZE,
+	//			CHIP_SIZE * (chip % 8), CHIP_SIZE * (chip / 8),
+	//			CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+	//	}
+	//}
 }
 
 void Stage::StageSet()
@@ -105,7 +118,7 @@ void Stage::StageSet()
 	cam->SetValue(0);
 	static const std::string folder = "Assets/Stage/";
 
-	//画像の読み込み
+	//ステージ素材の画像の読み込み
 	std::string n = std::to_string(mapNo_);
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
@@ -115,10 +128,13 @@ void Stage::StageSet()
 	gPict_ = LoadGraph(("Assets/Picture/background" + n + ".png").c_str());
 	assert(gPict_ > 0);
 
+	lImage_ = LoadGraph("Assets/Image/planet.png");
+	assert(lImage_ > 0);
+
 	//csvから読み込み
 	CsvReader csv;
-	//bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
-	bool ret = csv.Load("Assets/Stage/testStage0.csv");
+	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
+	//bool ret = csv.Load("Assets/Stage/testStage.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -153,11 +169,14 @@ void Stage::StageSet()
 				{
 				case 2:
 					sPlayer->SetGravity(1.62 / 90.0f);
+					stageLife_ = 3;;
 					break;
 				case 3:
 					sPlayer->SetGravity(3.71 / 90.0f);
+					stageLife_ = 3;
 					break;
 				default:
+					stageLife_ = 5;
 					break;
 				}
 				break;
@@ -270,7 +289,7 @@ int Stage::CollisionUp(int x, int y)
 void Stage::BreakGround(int x, int y)
 {
 	//隕石の当たった回数を増やす
-	meteoHitCount_ += 1;
+	stageLife_ -= 1;
 
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
@@ -284,8 +303,9 @@ void Stage::BreakGround(int x, int y)
 	for (int i = 0; i <= desRange; i++) {
 		map_[desChip - width_ + i] = CHIP_NULL;
 		map_[desChip + i] = CHIP_NULL;
+		map_[desChip + width_ + i] = CHIP_NULL;
 		if (i > 0 && i < desRange) {
-			map_[desChip + width_ + i] = CHIP_NULL;
+			map_[desChip + width_*2 + i] = CHIP_NULL;
 		}
 	}
 }
@@ -295,47 +315,36 @@ bool Stage::IsWallBlock(int x, int y)
 	//地面などの当たり判定のあるチップなのか(ステージごとに変えてもあり)
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
-	//switch (map_[chipY * width_ + chipX]) {
-	//case 2://土の左上
-	//case 3://土の右上
-	//case 18://土の左下
-	//case 19://土の右下
-	//case 32://地面の左上
-	//case 33://地面の右上
-	//case 48://地面の左下
-	//case 49://地面の右下
-	//case 160://浮いてる足場(右)の左上
-	//case 161://浮いてる足場(右)の右上
-	//case 192://浮いてる足場(中央)の左上
-	//case 193://浮いてる足場(中央)の右上
-	//case 224://浮いてる足場(左)の左上
-	//case 225://浮いてる足場(左)の右上
-	//	//月の方のマップチップ
-	//case 132:
-	//case 133:
-	//case 148:
-	//case 149:
-	//case 164:
-	//case 165:
-	//case 180:
-	//case 181:
-	//case 196:
-	//case 197:
-	//case 212:
-	//case 213:
-	//case 292:
-	//case 293:
-	//case 324:
-	//case 325:
-	//case 356:
-	//case 357:
-	//	return true;
-	//}
-	//return false;
-
 	switch (map_[chipY * width_ + chipX]) {
-	case 8:
-	case 1:
+	case 2://土の左上
+	case 3://土の右上
+	case 18://土の左下
+	case 19://土の右下
+	case 32://地面の左上
+	case 33://地面の右上
+	case 48://地面の左下
+	case 49://地面の右下
+	case 160://浮いてる足場(右)の左上
+	case 161://浮いてる足場(右)の右上
+	case 192://浮いてる足場(中央)の左上
+	case 193://浮いてる足場(中央)の右上
+	case 224://浮いてる足場(左)の左上
+	case 225://浮いてる足場(左)の右上
+		//月の方のマップチップ
+	case 134://地中の左上
+	case 135://地中の右上
+	case 150://地中の左下
+	case 151://地中の右下
+	case 164://地面(表面)の左上
+	case 165://地面(表面)の右上
+	case 180://地面(表面)の左下
+	case 181://地面(表面)の右下
+	case 292://浮いてる足場(右)の左上
+	case 293://〃の右上
+	case 324://浮いてる足場(中央)の左上
+	case 325://〃の右上
+	case 356://浮いてる足場(左)の左上
+	case 357://〃の右上
 		return true;
 	}
 	return false;
