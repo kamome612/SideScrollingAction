@@ -88,15 +88,6 @@ void Stage::Draw()
 		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
 	}
 
-	////ステージの描画(仮)
-	//for (int h = 0; h < height_; h++) {
-	//	for (int w = 0; w < width_; w++) {
-	//		int chip = map_[h * width_ + w];
-	//		DrawRectGraph(w * CHIP_SIZE - scroll, h * CHIP_SIZE,
-	//			CHIP_SIZE * (chip % 8), CHIP_SIZE * (chip / 8),
-	//			CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
-	//	}
-	//}
 }
 
 void Stage::StageSet()
@@ -111,7 +102,10 @@ void Stage::StageSet()
 		sPlayer->KillMe();
 	}
 	if (Meteorite* sMeteo = GetParent()->FindGameObject<Meteorite>()) {
-		sMeteo->KillMe();
+		std::list<Meteorite*> meteos = GetParent()->FindGameObjects<Meteorite>();
+		for (Meteorite* m : meteos) {
+			m->KillMe();
+		}
 	}
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -128,7 +122,8 @@ void Stage::StageSet()
 	gPict_ = LoadGraph(("Assets/Picture/background" + n + ".png").c_str());
 	assert(gPict_ > 0);
 
-	lImage_ = LoadGraph("Assets/Image/planet.png");
+	//体力を示す画像の読み込み
+	lImage_ = LoadGraph(("Assets/Image/planet"+ n + ".png").c_str());
 	assert(lImage_ > 0);
 
 	//csvから読み込み
@@ -191,59 +186,6 @@ void Stage::StageSet()
 	}
 }
 
-//void Stage::StageReset()
-//{
-//	//マップの中になにか入ってたら消す
-//	if (map_ != nullptr) {
-//		delete[] map_;
-//		map_ = nullptr;
-//	}
-//
-//	static const std::string folder = "Assets/Stage/";
-//	
-//	//画像の読み込み
-//	std::string n = std::to_string(mapNo_);
-//	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
-//	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
-//	assert(hImage_ > 0);
-//	//csvから読み込み
-//	CsvReader csv;
-//	bool ret = csv.Load((folder +"testStage"+ n + ".csv").c_str());
-//	//bool ret = csv.Load("Assets/Stage/testStage2.csv");
-//	assert(ret);
-//	width_ = csv.GetWidth(0);
-//	height_ = csv.GetHeight();
-//	map_ = new int[height_ * width_];
-//
-//	for (int h = 0; h < height_; h++) {
-//		if (csv.GetString(0, h) == "") {
-//			height_ = h;
-//			break;
-//		}
-//		for (int w = 0; w < width_; w++) {
-//			map_[h * width_ + w] = csv.GetInt(w, h);
-//		}
-//	}
-//
-//	//Mapデータの中で0があれば、Playerの座標を0の位置にする
-//	for (int h = 0; h < height_; h++) {
-//		for (int w = 0; w < width_; w++) {
-//			switch (csv.GetInt(w, h + height_ + 1))
-//			{
-//			case 0://player
-//			{
-//				//Player* sPlayer = GetParent()->FindGameObject<Player>();
-//				Player* sPlayer = Instantiate<Player>(GetParent());
-//				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-//			}
-//			case 15://Meteorite
-//				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
-//				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-//				break;
-//			}
-//		}
-//	}
-//}
 
 int Stage::CollisionRight(int x, int y)
 {
