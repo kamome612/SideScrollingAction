@@ -116,6 +116,7 @@ void Stage::StageSet()
 	std::string n = std::to_string(mapNo_);
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
+	//hImage_ = LoadGraph("Assets/Stage/tilesheet_complete.png");
 	assert(hImage_ > 0);
 
 	//バックグランドの画像読み込み
@@ -287,6 +288,7 @@ bool Stage::IsWallBlock(int x, int y)
 	case 325://〃の右上
 	case 356://浮いてる足場(左)の左上
 	case 357://〃の右上
+		//火星の方のマップチップ
 		return true;
 	}
 	return false;

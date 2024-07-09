@@ -1,5 +1,6 @@
 #include "ResultScene.h"
 #include "Engine/SceneManager.h"
+#include "PlayScene.h"
 
 ResultScene::ResultScene(GameObject* parent)
 	:GameObject(parent,"ResultScene"),rPict_(-1),isClear_(false)
@@ -19,7 +20,12 @@ void ResultScene::Initialize()
 
 void ResultScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
+	if (CheckHitKey(KEY_INPUT_R)) {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+		PlayScene StartReady();
+	}
+	else if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
 	}

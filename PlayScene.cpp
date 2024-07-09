@@ -23,7 +23,7 @@ void PlayScene::Initialize()
 	Stage* pStage = Instantiate<Stage>(this);
 	//Player* pPlayer = Instantiate<Player>(this);
 	pStage->StageSet();
-	Instantiate<Banner>(this);
+	//Instantiate<Banner>(this);
 }
 
 void PlayScene::Update()
@@ -52,7 +52,9 @@ void PlayScene::StartSelect()
 
 void PlayScene::UpdateSelect()
 {
-	StartReady();
+	if (CheckHitKey(KEY_INPUT_RETURN)) {
+		StartReady();
+	}
 
 	//ここで画像を用意してその上にステージ三つぐらいを回す(予定)
 	//DrawGraph(0, 0, pPict_, TRUE);
@@ -62,7 +64,8 @@ void PlayScene::StartReady()
 {
 	state_ = S_Ready;
 	timer_ = 2.0f;//Readyの表示時間
-	Banner* pBanner = FindGameObject<Banner>();
+	//Banner* pBanner = FindGameObject<Banner>();
+	Banner* pBanner = Instantiate<Banner>(this);
 	pBanner->View(Banner::ViewID::V_Start);
 }
 
@@ -79,6 +82,7 @@ void PlayScene::StartPlay()
 {
 	state_ = S_Play;
 	Banner* pBanner = FindGameObject<Banner>();
+	//Banner* pBanner = Instantiate<Banner>(this);
 	pBanner->View(Banner::ViewID::V_Nothing);
 }
 

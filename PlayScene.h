@@ -38,14 +38,14 @@ private:
 	bool prevChangeKey_;
 
 	void UpdateSelect();
-	void StartReady();
 	void UpdateReady();
-	void StartPlay();
 	void UpdatePlay();
 	void UpdateClear();
 	void UpdateGameOver();
 public:
 	void StartSelect();
+	void StartReady();
+	void StartPlay();
 	void StartGameOver();
 };
 
