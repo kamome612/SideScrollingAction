@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Meteorite.h"
 #include "Camera.h"
+#include "AttackSkill.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -97,7 +98,7 @@ void Stage::StageSet()
 		delete[] map_;
 		map_ = nullptr;
 	}
-	//プレイヤーと隕石がステージのリセットやセット時に消されるように
+	//プレイヤーや隕石、ミサイルがステージのリセットやセット時に消されるように
 	if (Player* sPlayer = GetParent()->FindGameObject<Player>()) {
 		sPlayer->KillMe();
 	}
@@ -106,6 +107,9 @@ void Stage::StageSet()
 		for (Meteorite* m : meteos) {
 			m->KillMe();
 		}
+	}
+	if (AttackSkill* sAttack = GetParent()->FindGameObject<AttackSkill>()) {
+		sAttack->KillMe();
 	}
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();

@@ -32,8 +32,11 @@ public:
 	//引数：next	次のシーンのID
 	void ChangeScene(SCENE_ID next);
 
-	//シーンの切り替え(値を受け取って)
+	//シーンの切り替え(boolも受け取れる)
 	void ChangeScene(SCENE_ID next, bool tmp);
+
+	//シーンの切り替え(intの値を受け取る)
+	void ChangeScene(SCENE_ID next, int tmp1 ,int tmp2);
 
 private:
 	SCENE_ID currentSceneID_;	//現在のシーン

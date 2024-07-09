@@ -57,15 +57,16 @@ void PlayScene::UpdateSelect()
 	if (CheckHitKey(KEY_INPUT_RETURN)) {
 		StartReady();
 	}
-
-	//ここで画像を用意してその上にステージ三つぐらいを回す(予定)
-	//DrawGraph(0, 0, pPict_, TRUE);
 }
 
 void PlayScene::StartReady()
 {
 	state_ = S_Ready;
 	timer_ = 2.0f;//Readyの表示時間
+	//バナーがあったら消しとく
+	if (Banner* pBanner = GetParent()->FindGameObject<Banner>()) {
+		pBanner->KillMe();
+	}
 	//Banner* pBanner = FindGameObject<Banner>();
 	Banner* pBanner = Instantiate<Banner>(this);
 	pBanner->View(Banner::ViewID::V_Start);
@@ -77,6 +78,7 @@ void PlayScene::UpdateReady()
 	if (timer_ <= 0.0f) {
 		timer_ = 0.0f;
 		StartPlay();
+		printfDx("プレイに移行");
 	}
 }
 
@@ -91,10 +93,11 @@ void PlayScene::StartPlay()
 void PlayScene::UpdatePlay()
 {
 	Stage* pStage = FindGameObject<Stage>();
-	if (CheckHitKey(KEY_INPUT_R)) {
+	/*if (CheckHitKey(KEY_INPUT_R)) {
 		if (!prevResetKey_) {
 			pStage->StageSet();
 			StartReady();
+			printfDx("リセットでスタートに移動するで");
 		}
 		prevResetKey_ = true;
 	}
@@ -106,11 +109,12 @@ void PlayScene::UpdatePlay()
 			pStage->ChangeStage();
 			pStage->StageSet();
 			StartReady();
+			printfDx("ステージ変更でスタートに移動するで");
 		}
 		prevChangeKey_ = true;
 	}
 	else
-		prevChangeKey_ = false;
+		prevChangeKey_ = false;*/
 
 	if (pStage->GetStageLife() <= 0) {
 		StartGameOver();

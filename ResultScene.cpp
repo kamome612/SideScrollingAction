@@ -12,29 +12,26 @@ ResultScene::ResultScene(GameObject* parent)
 void ResultScene::Initialize()
 {
 	if (isClear_) {
-		rPict_ = LoadGraph("Assets/Picture/clear.png");
+		rPict_ = LoadGraph("Assets/Picture/clear.jpg");
 	}
 	else {
-		rPict_ = LoadGraph("Assets/Picture/gameover.png");
+		rPict_ = LoadGraph("Assets/Picture/gameover.jpg");
 	}
 	assert(rPict_ > 0);
 }
 
 void ResultScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_R)) {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
-		//PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-		//scene->StartReady();
-	}
-	else if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
+    if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
 	}
 	else if (CheckHitKey(KEY_INPUT_P)) {//ステージ選択に戻る(プレイシーン内の)
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+	}
+	else if (CheckHitKey(KEY_INPUT_O)) {//終了する
+		DxLib_End();
 	}
 }
 
