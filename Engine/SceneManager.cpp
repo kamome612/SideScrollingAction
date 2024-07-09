@@ -65,6 +65,6 @@ void SceneManager::ChangeScene(SCENE_ID next)
 void SceneManager::ChangeScene(SCENE_ID next, bool tmp)
 {
 	nextSceneID_ = next;
-	tmp_ = tmp;
+	clearFlag_ = tmp;
 }
 

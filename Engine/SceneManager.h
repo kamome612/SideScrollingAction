@@ -17,7 +17,7 @@ enum SCENE_ID
 class SceneManager : public GameObject
 {
 public:
-	bool tmp_;
+	bool clearFlag_;
 
 	//コンストラクタ
 	//引数：parent	親オブジェクト（基本的にゲームマネージャー）

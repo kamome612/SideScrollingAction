@@ -6,7 +6,7 @@ ResultScene::ResultScene(GameObject* parent)
 	:GameObject(parent,"ResultScene"),rPict_(-1),isClear_(false)
 {
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
-	isClear_ = scenemanager->tmp_;
+	isClear_ = scenemanager->clearFlag_;
 }
 
 void ResultScene::Initialize()
