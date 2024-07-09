@@ -15,6 +15,7 @@ SceneManager::SceneManager(GameObject * parent)
 //初期化
 void SceneManager::Initialize()
 {
+	clearFlag_ = false;
 	//タイマーの初期化
 	Time::Init();
 	//最初のシーンを準備
