@@ -17,6 +17,7 @@ enum SCENE_ID
 class SceneManager : public GameObject
 {
 public:
+	bool tmp_;
 
 	//コンストラクタ
 	//引数：parent	親オブジェクト（基本的にゲームマネージャー）
@@ -30,6 +31,9 @@ public:
 	//シーン切り替え（実際に切り替わるのはこの次のフレーム）
 	//引数：next	次のシーンのID
 	void ChangeScene(SCENE_ID next);
+
+	//シーンの切り替え(値を受け取って)
+	void ChangeScene(SCENE_ID next, bool tmp);
 
 private:
 	SCENE_ID currentSceneID_;	//現在のシーン

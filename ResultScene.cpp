@@ -5,12 +5,14 @@
 ResultScene::ResultScene(GameObject* parent)
 	:GameObject(parent,"ResultScene"),rPict_(-1),isClear_(false)
 {
+	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
+	isClear_ = scenemanager->tmp_;
 }
 
 void ResultScene::Initialize()
 {
 	if (isClear_) {
-		rPict_ = LoadGraph("Assets/Picture/");
+		rPict_ = LoadGraph("Assets/Picture/clear.png");
 	}
 	else {
 		rPict_ = LoadGraph("Assets/Picture/gameover.png");
@@ -23,7 +25,8 @@ void ResultScene::Update()
 	if (CheckHitKey(KEY_INPUT_R)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
-		PlayScene StartReady();
+		//PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+		//scene->StartReady();
 	}
 	else if (CheckHitKey(KEY_INPUT_T)) {//ƒ^ƒCƒgƒ‹‚É–ß‚é
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");

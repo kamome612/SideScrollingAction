@@ -71,6 +71,9 @@ public:
 	//ステージの体力を返す
 	int GetStageLife() { return stageLife_; }
 
+	//クリア条件の判定
+	bool IsClear(int x, int y);
+
 private:
 	int hImage_;        //ステージの素材
 	int gPict_;         //背景の画像

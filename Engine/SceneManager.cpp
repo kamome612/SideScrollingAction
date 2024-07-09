@@ -61,3 +61,10 @@ void SceneManager::ChangeScene(SCENE_ID next)
 {
 	nextSceneID_ = next;
 }
+
+void SceneManager::ChangeScene(SCENE_ID next, bool tmp)
+{
+	nextSceneID_ = next;
+	tmp_ = tmp;
+}
+

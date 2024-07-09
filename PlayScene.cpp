@@ -5,6 +5,7 @@
 #include "Banner.h"
 #include "Engine/time.h"
 #include "Engine/SceneManager.h"
+#include "ResultScene.h"
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
@@ -52,6 +53,7 @@ void PlayScene::StartSelect()
 
 void PlayScene::UpdateSelect()
 {
+
 	if (CheckHitKey(KEY_INPUT_RETURN)) {
 		StartReady();
 	}
@@ -115,8 +117,19 @@ void PlayScene::UpdatePlay()
 	}
 }
 
+void PlayScene::StartClear()
+{
+	state_ = S_Clear;
+	Banner* pBanner = FindGameObject<Banner>();
+	pBanner->View(Banner::ViewID::V_Clear);
+}
+
 void PlayScene::UpdateClear()
 {
+	if (CheckHitKey(KEY_INPUT_SPACE)) {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_RESULT,true);
+	}
 }
 
 void PlayScene::StartGameOver()

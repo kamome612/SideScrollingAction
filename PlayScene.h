@@ -46,6 +46,7 @@ public:
 	void StartSelect();
 	void StartReady();
 	void StartPlay();
+	void StartClear();
 	void StartGameOver();
 };
 

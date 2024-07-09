@@ -168,6 +168,11 @@ void Player::UpdateNormal()
 		}
 	}
 
+	if (pStage->IsClear(transform_.position_.x, transform_.position_.y)) {
+		PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+		scene->StartClear();
+	}
+
 	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 

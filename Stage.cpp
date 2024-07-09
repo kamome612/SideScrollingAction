@@ -10,7 +10,7 @@ namespace {
 	const int LIFE_IMAGE_SIZE = 64;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
-	const int CHIP_NULL = 255;
+	const int CHIP_NULL = -1;
 }
 
 Stage::Stage(GameObject* parent)
@@ -251,6 +251,21 @@ void Stage::BreakGround(int x, int y)
 			map_[desChip + width_*2 + i] = CHIP_NULL;
 		}
 	}
+}
+
+bool Stage::IsClear(int x, int y)
+{
+	int chipX = x / CHIP_SIZE;
+	int chipY = y / CHIP_SIZE;
+	switch (map_[chipY * width_ + chipX]) {
+	case 96:
+	case 97:
+	case 112:
+	case 113:
+		return true;
+		break;
+	}
+	return false;
 }
 
 bool Stage::IsWallBlock(int x, int y)
