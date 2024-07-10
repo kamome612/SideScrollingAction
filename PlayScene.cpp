@@ -9,7 +9,7 @@
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
-	                                , prevResetKey_(false), prevChangeKey_(false)
+	                                ,mapNo_(-1)
 {
 }
 
@@ -21,9 +21,11 @@ void PlayScene::Initialize()
 
 	StartSelect();
 	Instantiate<Camera>(this);
-	Stage* pStage = Instantiate<Stage>(this);
+	pPict_ = LoadGraph("Assets\\Picture\\stageselect.jpg");
+	assert(pPict_ > 0);
+	//Stage* pStage = Instantiate<Stage>(this);
 	//Player* pPlayer = Instantiate<Player>(this);
-	pStage->StageSet();
+	//pStage->StageSet();
 	//Instantiate<Banner>(this);
 }
 
@@ -40,6 +42,14 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
+	if (state_ == S_Select) {
+		//ステージ選択の画像表示(画像はまだ仮)
+		DrawGraph(0, 0, pPict_, FALSE);
+		//選ぶ時の三角形の表示
+		int tmp = (mapNo_ - 1) * 440;
+		DrawTriangle(200 + tmp, 540, 200 + tmp + 20, 570, 200 + tmp - 20, 570,
+			GetColor(255, 255, 0), TRUE);
+	}
 }
 
 void PlayScene::Release()
@@ -49,11 +59,36 @@ void PlayScene::Release()
 void PlayScene::StartSelect()
 {
 	state_ = S_Select;
+	mapNo_ = 1;
 }
 
 void PlayScene::UpdateSelect()
 {
+	//三角とステージの番号を変更するため
+	if (mapNo_ < 3) {//右の上限を超えないように
+		if (CheckHitKey(KEY_INPUT_RIGHT)) {//右を押したら
+			if (!prevRightKey_) {
+				mapNo_ += 1;
+			}
+			prevRightKey_ = true;
+		}
+		else
+			prevRightKey_ = false;
+	}
 
+	if (mapNo_ > 1) {//左の上限を超えないように
+		if (CheckHitKey(KEY_INPUT_LEFT)) {//左を押したら
+			if (!prevLeftKey_) {
+				mapNo_ -= 1;
+			}
+			prevLeftKey_ = true;
+		}
+		else
+			prevLeftKey_ = false;
+
+	}
+
+	//エンターでステージを決定
 	if (CheckHitKey(KEY_INPUT_RETURN)) {
 		StartReady();
 	}
@@ -67,7 +102,9 @@ void PlayScene::StartReady()
 	if (Banner* pBanner = GetParent()->FindGameObject<Banner>()) {
 		pBanner->KillMe();
 	}
-	//Banner* pBanner = FindGameObject<Banner>();
+	Stage* pStage = Instantiate<Stage>(this);
+	pStage->ChangeStage(mapNo_);
+	pStage->StageSet();
 	Banner* pBanner = Instantiate<Banner>(this);
 	pBanner->View(Banner::ViewID::V_Start);
 }
@@ -78,7 +115,6 @@ void PlayScene::UpdateReady()
 	if (timer_ <= 0.0f) {
 		timer_ = 0.0f;
 		StartPlay();
-		printfDx("プレイに移行");
 	}
 }
 

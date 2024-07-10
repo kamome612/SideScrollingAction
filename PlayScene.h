@@ -34,8 +34,9 @@ private:
 
 	State state_;
 	float timer_;
-	bool prevResetKey_;
-	bool prevChangeKey_;
+	int mapNo_;  //ステージを指定するときに使う
+	bool prevRightKey_;
+	bool prevLeftKey_;
 
 	void UpdateSelect();
 	void UpdateReady();

@@ -31,7 +31,8 @@ public:
 	//マップをセットする
 	void StageSet();
 
-	void ChangeStage() { mapNo_++; }
+	//ステージ変更などに使う
+	void ChangeStage(int _mapNo) { mapNo_ = _mapNo; }
 
 	/// <summary>
 	/// 右側の点が当たっているか調べる

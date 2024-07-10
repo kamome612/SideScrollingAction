@@ -28,5 +28,8 @@ public:
 private:
 	bool isClear_;
 	int rPict_;
+	int select_;
+	bool prevUpKey_;
+	bool prevDownKey_;
 };
 

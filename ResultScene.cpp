@@ -3,7 +3,8 @@
 #include "PlayScene.h"
 
 ResultScene::ResultScene(GameObject* parent)
-	:GameObject(parent,"ResultScene"),rPict_(-1),isClear_(false)
+	:GameObject(parent,"ResultScene"),rPict_(-1),isClear_(false),select_(0)
+	                                 ,prevUpKey_(false),prevDownKey_(false)
 {
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	isClear_ = scenemanager->clearFlag_;
@@ -22,22 +23,64 @@ void ResultScene::Initialize()
 
 void ResultScene::Update()
 {
-    if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_TITLE);
+	//if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
+	//	SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+	//	pSceneManager->ChangeScene(SCENE_ID_TITLE);
+	//}
+	//else if (CheckHitKey(KEY_INPUT_P)) {//ステージ選択に戻る(プレイシーン内の)
+	//	SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+	//	pSceneManager->ChangeScene(SCENE_ID_PLAY);
+	//}
+	//else if (CheckHitKey(KEY_INPUT_O)) {//終了する
+	//	DxLib_End();
+	//}
+
+	//上限を超えないように
+	if (select_ > 0) {
+		if (CheckHitKey(KEY_INPUT_UP)) {//上が押されたら
+			if (!prevUpKey_) {
+				select_ -= 1;
+			}
+			prevUpKey_ = true;
+		}
+		else
+			prevUpKey_ = false;
 	}
-	else if (CheckHitKey(KEY_INPUT_P)) {//ステージ選択に戻る(プレイシーン内の)
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+	//下限を超えないように
+	if (select_ < 2) {
+		if (CheckHitKey(KEY_INPUT_DOWN)) {//下が押されたら
+			if (!prevDownKey_) {
+				select_ += 1;
+			}
+			prevDownKey_ = true;
+		}
+		else
+			prevDownKey_ = false;
 	}
-	else if (CheckHitKey(KEY_INPUT_O)) {//終了する
-		DxLib_End();
+
+	//エンターで決定!
+	if (CheckHitKey(KEY_INPUT_RETURN)) {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		switch (select_) {
+		case 0:
+			pSceneManager->ChangeScene(SCENE_ID_PLAY);
+			break;
+		case 1:
+			pSceneManager->ChangeScene(SCENE_ID_TITLE);
+			break;
+		case 2:
+			DxLib_End();
+		}
 	}
 }
 
 void ResultScene::Draw()
 {
 	DrawGraph(0, 0, rPict_, TRUE);
+	int tmp = 440 + select_ * 60;
+	//選択するときの三角
+	DrawTriangle(480, tmp,480 - 30, tmp + 20, 480 - 30, tmp - 20,
+		GetColor(255, 255, 0), TRUE);
 }
 
 void ResultScene::Release()
