@@ -120,7 +120,7 @@ void Stage::StageSet()
 	std::string n = std::to_string(mapNo_);
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
-	//hImage_ = LoadGraph("Assets/Stage/tilesheet_complete.png");
+	//hImage_ = LoadGraph("Assets/Stage/spritesheet_complete.png");
 	assert(hImage_ > 0);
 
 	//バックグランドの画像読み込み
@@ -134,7 +134,7 @@ void Stage::StageSet()
 	//csvから読み込み
 	CsvReader csv;
 	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
-	//bool ret = csv.Load("Assets/Stage/testStage.csv");
+	//bool ret = csv.Load("Assets/Stage/test.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
