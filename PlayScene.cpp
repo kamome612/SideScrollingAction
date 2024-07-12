@@ -133,7 +133,6 @@ void PlayScene::UpdatePlay()
 		if (!prevResetKey_) {
 			pStage->StageSet();
 			StartReady();
-			printfDx("リセットでスタートに移動するで");
 		}
 		prevResetKey_ = true;
 	}
