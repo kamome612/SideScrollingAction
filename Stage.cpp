@@ -7,7 +7,6 @@
 
 namespace {
 	const int CHIP_SIZE = 32;
-	//const int CHIP_SIZE = 64;
 	const int LIFE_IMAGE_SIZE = 64;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
@@ -120,7 +119,7 @@ void Stage::StageSet()
 	std::string n = std::to_string(mapNo_);
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	//hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
-	hImage_ = LoadGraph("Assets/Stage/spritesheet_complete.png");
+	hImage_ = LoadGraph("Assets/Stage/ground2.png");
 	assert(hImage_ > 0);
 
 	//バックグランドの画像読み込み
@@ -133,8 +132,8 @@ void Stage::StageSet()
 
 	//csvから読み込み
 	CsvReader csv;
-	//bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
-    bool ret = csv.Load("Assets/Stage/test.csv");
+	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
+    //bool ret = csv.Load("Assets/Stage/test.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -227,7 +226,8 @@ int Stage::CollisionUp(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		return y % CHIP_SIZE - 25;
+		//return y % CHIP_SIZE - 25;
+		return (CHIP_SIZE - y % CHIP_SIZE) + 1;
 	}
 	else
 		return 0;
@@ -262,10 +262,10 @@ bool Stage::IsClear(int x, int y)
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
 	switch (map_[chipY * width_ + chipX]) {
-	case 96:
-	case 97:
-	case 112:
-	case 113:
+	case 544:
+	case 545:
+	case 560:
+	case 561:
 		return true;
 		break;
 	}
