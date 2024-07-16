@@ -168,6 +168,12 @@ void Stage::StageSet()
 		for (int w = 0; w < width_; w++) {
 			switch (csv.GetInt(w, h + height_ + 1))
 			{
+			case 1://flag
+			{
+				Flag* sFlag = Instantiate<Flag>(GetParent());
+				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
 			case 0://player
 			{
 				//Player* sPlayer = GetParent()->FindGameObject<Player>();
@@ -188,12 +194,6 @@ void Stage::StageSet()
 					stageLife_ = 5;
 					break;
 				}
-				break;
-			}
-			case 1://flag
-			{
-				Flag* sFlag = Instantiate<Flag>(GetParent());
-				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
 			case 15://Meteorite
