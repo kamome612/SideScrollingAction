@@ -4,6 +4,7 @@
 #include "Meteorite.h"
 #include "Camera.h"
 #include "AttackSkill.h"
+#include "Flag.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -68,13 +69,6 @@ void Stage::Draw()
 	case 2:
 		DrawGraph(0, 0, gPict_, TRUE);
 	}
-
-	/*if (mapNo_ == 1) {
-		DrawGraph(5, -250, gPict_, TRUE);
-	}
-	else if (mapNo_ == 2) {
-		DrawGraph(0, 0, gPict_, TRUE);
-	}*/
 
 	int scroll = 0;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -196,11 +190,19 @@ void Stage::StageSet()
 				}
 				break;
 			}
+			case 1://flag
+			{
+				Flag* sFlag = Instantiate<Flag>(GetParent());
+				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
 			case 15://Meteorite
-				Meteorite * sMeteo = Instantiate<Meteorite>(GetParent());
-				//sMeteo_ = Instantiate<Meteorite>(this);
+			{
+				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
+
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
+			}
 			}
 		}
 	}

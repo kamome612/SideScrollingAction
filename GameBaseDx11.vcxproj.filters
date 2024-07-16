@@ -69,7 +69,7 @@
     <ClCompile Include="AttackSkill.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="GoalFlag.cpp" />
+    <ClCompile Include="Flag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -91,9 +91,6 @@
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="TestScene.h" />
-    <ClInclude Include="TitleScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="PlayScene.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
@@ -121,6 +118,9 @@
     <ClInclude Include="AttackSkill.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="GoalFlag.h" />
+    <ClInclude Include="Flag.h" />
+    <ClInclude Include="TitleScene.h">
+      <Filter>リソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

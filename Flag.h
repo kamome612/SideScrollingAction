@@ -1,16 +1,14 @@
 #pragma once
 #include "Engine/GameObject.h"
-
-//ゴールの判定に使う旗を管理するクラス
-class GoalFlag :
+class Flag :
     public GameObject
 {
 public:
     //コンストラクタ
-    GoalFlag(GameObject* parent);
+    Flag(GameObject* parent);
 
     //デストラクタ
-    ~GoalFlag();
+    ~Flag();
 
     //初期化
     void Initialize() override;
@@ -20,7 +18,12 @@ public:
 
     //描画
     void Draw() override;
+
+    //場所をセットする
+    void SetPosition(float _x, float _y);
 private:
-    int gfImage_;
+    int fImage_;
+    int animFrame_;
+    float time_;
 };
 

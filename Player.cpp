@@ -130,8 +130,10 @@ void Player::UpdateNormal()
 		moveX += SPEED * Time::DeltaTime();
 		transform_.position_.x += moveX;//ˆÚ“®—Ê
 		if (time_ > 0.2f) {
-			animFrame_ = (animFrame_ + 1) % 4;
-			time_ = 0.0f;
+			if (onGround_) {
+				animFrame_ = (animFrame_ + 1) % 4;
+				time_ = 0.0f;
+			}
 		}
 		int hitX = transform_.position_.x + 50;
 		int hitY = transform_.position_.y + 63;
@@ -145,8 +147,10 @@ void Player::UpdateNormal()
 			moveX += SPEED * Time::DeltaTime();//ˆÚ“®—Ê
 			transform_.position_.x -= moveX;
 			if (time_ > 0.2f) {
-				animFrame_ = (animFrame_ + 1) % 4;
-				time_ = 0.0f;
+				if (onGround_) {
+					animFrame_ = (animFrame_ + 1) % 4;
+					time_ = 0.0f;
+				}
 			}
 			int hitX = transform_.position_.x + 12;
 			int hitY = transform_.position_.y + 63;
