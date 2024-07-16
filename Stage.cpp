@@ -60,12 +60,21 @@ void Stage::Update()
 
 void Stage::Draw()
 {
-	if (mapNo_ == 1) {
+	switch (mapNo_) {
+	case 1:
+	case 3:
+		DrawGraph(0, -240, gPict_, TRUE);
+		break;
+	case 2:
+		DrawGraph(0, 0, gPict_, TRUE);
+	}
+
+	/*if (mapNo_ == 1) {
 		DrawGraph(5, -250, gPict_, TRUE);
 	}
 	else if (mapNo_ == 2) {
 		DrawGraph(0, 0, gPict_, TRUE);
-	}
+	}*/
 
 	int scroll = 0;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -119,7 +128,14 @@ void Stage::StageSet()
 	std::string n = std::to_string(mapNo_);
 	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
 	//hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
-	hImage_ = LoadGraph("Assets/Stage/ground2.png");
+	//hImage_ = LoadGraph("Assets/Stage/ground2.png");
+
+	if (mapNo_ != 3) {
+		hImage_ = LoadGraph((folder + "ground.png").c_str());
+	}
+	else {
+		hImage_ = LoadGraph((folder + "ground2.png").c_str());
+	}
 	assert(hImage_ > 0);
 
 	//バックグランドの画像読み込み
@@ -133,7 +149,7 @@ void Stage::StageSet()
 	//csvから読み込み
 	CsvReader csv;
 	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
-    //bool ret = csv.Load("Assets/Stage/test.csv");
+    //bool ret = csv.Load("Assets/Stage/testStage3.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -259,13 +275,15 @@ void Stage::BreakGround(int x, int y)
 
 bool Stage::IsClear(int x, int y)
 {
+	//今のところのクリア条件だけど
+	//もしかしたら旗をクラスにして当たり判定するかも
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
 	switch (map_[chipY * width_ + chipX]) {
-	case 544:
-	case 545:
-	case 560:
-	case 561:
+	case 544://旗の左上
+	case 545://旗の右上
+	case 560://旗の左下
+	case 561://旗の右下
 		return true;
 		break;
 	}
@@ -308,6 +326,18 @@ bool Stage::IsWallBlock(int x, int y)
 	case 356://浮いてる足場(左)の左上
 	case 357://〃の右上
 		//火星の方のマップチップ
+	case 4://地面(表面)の左上
+	case 5://〃の右上
+	case 20://〃の左下
+	case 21://〃の右下
+	case 0://地中の左上
+	case 1://〃の右上
+	case 16://〃の左下
+	case 17://〃の右下
+	case 64://地中2の左上
+	case 65://〃の右上
+	case 80://〃の左下
+	case 81://〃の右下
 		return true;
 	}
 	return false;

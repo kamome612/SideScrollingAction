@@ -69,6 +69,7 @@
     <ClCompile Include="AttackSkill.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="GoalFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -120,5 +121,6 @@
     <ClInclude Include="AttackSkill.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
+    <ClInclude Include="GoalFlag.h" />
   </ItemGroup>
 </Project>
