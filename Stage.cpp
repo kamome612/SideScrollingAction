@@ -164,21 +164,57 @@ void Stage::StageSet()
 	
 
 	//Mapデータの中で0があれば、Playerの座標を0の位置にする
-	for (int h = 0; h < height_; h++) {
-		for (int w = 0; w < width_; w++) {
+	//for (int h = 0; h < height_; h++) {
+	//	for (int w = 0; w < width_; w++) {
+	//		switch (csv.GetInt(w, h + height_ + 1))
+	//		{
+	//		case 0://player
+	//		{
+	//			//Player* sPlayer = GetParent()->FindGameObject<Player>();
+	//			Player* sPlayer = Instantiate<Player>(GetParent());
+	//			sPlayer ->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+	//			//とりあえずのマップ変更用
+	//			switch (mapNo_)
+	//			{
+	//			case 2:
+	//				sPlayer->SetGravity(1.62 / 90.0f);
+	//				stageLife_ = 3;;
+	//				break;
+	//			case 3:
+	//				sPlayer->SetGravity(3.71 / 90.0f);
+	//				stageLife_ = 3;
+	//				break;
+	//			default:
+	//				stageLife_ = 5;
+	//				break;
+	//			}
+	//			break;
+	//		}
+	//		case 1://flag
+	//		{
+	//			Flag* sFlag = Instantiate<Flag>(GetParent());
+	//			sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+	//			break;
+	//		}
+	//		case 15://Meteorite
+	//		{
+	//			Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
+	//			sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+	//			break;
+	//		}
+	//		}
+	//	}
+	//}
+
+	for (int h = height_ - 1; h >= 0; h--) {
+		for (int w = width_ -1; w >=0 ; w--) {
 			switch (csv.GetInt(w, h + height_ + 1))
 			{
-			case 1://flag
-			{
-				Flag* sFlag = Instantiate<Flag>(GetParent());
-				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				break;
-			}
 			case 0://player
 			{
 				//Player* sPlayer = GetParent()->FindGameObject<Player>();
 				Player* sPlayer = Instantiate<Player>(GetParent());
-				sPlayer ->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				sPlayer->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				//とりあえずのマップ変更用
 				switch (mapNo_)
 				{
@@ -194,6 +230,12 @@ void Stage::StageSet()
 					stageLife_ = 5;
 					break;
 				}
+				break;
+			}
+			case 1://flag
+			{
+				Flag* sFlag = Instantiate<Flag>(GetParent());
+				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
 			case 15://Meteorite

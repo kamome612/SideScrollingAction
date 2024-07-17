@@ -47,10 +47,18 @@ void Flag::Draw()
 		x -= cam->GetValue();
 	}
 	DrawRectGraph(x, y, 0, animFrame_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, fImage_, TRUE);
+    //“–‚½‚è”»’è‚ÌˆÊ’uŠm‚©‚ß‚é—p
+	DrawCircle(transform_.position_.x + CHIP_SIZE/2, transform_.position_.y + CHIP_SIZE /2,
+		       20.0f, GetColor(75, 0, 130),false);
 }
 
 void Flag::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
+}
+
+void Flag::HitFlag(float _x, float _y)
+{
+
 }

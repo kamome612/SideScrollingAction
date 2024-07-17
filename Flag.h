@@ -21,6 +21,10 @@ public:
 
     //êŠ‚ğƒZƒbƒg‚·‚é
     void SetPosition(float _x, float _y);
+
+    //“–‚½‚è”»’è
+    void HitFlag(float _x, float _y);
+
 private:
     int fImage_;
     int animFrame_;
