@@ -265,7 +265,6 @@ int Stage::CollisionLeft(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		//return x % CHIP_SIZE - 28;
 		return (CHIP_SIZE - x % CHIP_SIZE) + 1;
 	}
 	else
@@ -286,7 +285,6 @@ int Stage::CollisionUp(int x, int y)
 {
 	if (IsWallBlock(x, y)) {
 		//当たっているので、めり込んだ量を返す
-		//return y % CHIP_SIZE - 25;
 		return (CHIP_SIZE - y % CHIP_SIZE) + 1;
 	}
 	else
@@ -315,23 +313,6 @@ void Stage::BreakGround(int x, int y)
 			map_[desChip + width_*2 + i] = CHIP_NULL;
 		}
 	}
-}
-
-bool Stage::IsClear(int x, int y)
-{
-	//今のところのクリア条件だけど
-	//もしかしたら旗をクラスにして当たり判定するかも
-	int chipX = x / CHIP_SIZE;
-	int chipY = y / CHIP_SIZE;
-	switch (map_[chipY * width_ + chipX]) {
-	case 544://旗の左上
-	case 545://旗の右上
-	case 560://旗の左下
-	case 561://旗の右下
-		return true;
-		break;
-	}
-	return false;
 }
 
 bool Stage::IsWallBlock(int x, int y)

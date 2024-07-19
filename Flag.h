@@ -23,7 +23,7 @@ public:
     void SetPosition(float _x, float _y);
 
     //“–‚½‚è”»’è
-    void HitFlag(float _x, float _y);
+    bool HitFlag(float _x, float _y, float _r);
 
 private:
     int fImage_;
