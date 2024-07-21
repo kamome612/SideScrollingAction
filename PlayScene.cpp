@@ -66,7 +66,7 @@ void PlayScene::UpdateSelect()
 {
 	//三角とステージの番号を変更するため
 	if (mapNo_ < 3) {//右の上限を超えないように
-		if (CheckHitKey(KEY_INPUT_RIGHT)) {//右を押したら
+		if (CheckHitKey(KEY_INPUT_RIGHT) || CheckHitKey(KEY_INPUT_D)) {//右を押したら
 			if (!prevRightKey_) {
 				mapNo_ += 1;
 			}
@@ -77,7 +77,7 @@ void PlayScene::UpdateSelect()
 	}
 
 	if (mapNo_ > 1) {//左の上限を超えないように
-		if (CheckHitKey(KEY_INPUT_LEFT)) {//左を押したら
+		if (CheckHitKey(KEY_INPUT_LEFT) || CheckHitKey(KEY_INPUT_A)) {//左を押したら
 			if (!prevLeftKey_) {
 				mapNo_ -= 1;
 			}

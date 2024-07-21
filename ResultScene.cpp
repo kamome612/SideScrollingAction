@@ -23,21 +23,9 @@ void ResultScene::Initialize()
 
 void ResultScene::Update()
 {
-	//if (CheckHitKey(KEY_INPUT_T)) {//タイトルに戻る
-	//	SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-	//	pSceneManager->ChangeScene(SCENE_ID_TITLE);
-	//}
-	//else if (CheckHitKey(KEY_INPUT_P)) {//ステージ選択に戻る(プレイシーン内の)
-	//	SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-	//	pSceneManager->ChangeScene(SCENE_ID_PLAY);
-	//}
-	//else if (CheckHitKey(KEY_INPUT_O)) {//終了する
-	//	DxLib_End();
-	//}
-
 	//上限を超えないように
 	if (select_ > 0) {
-		if (CheckHitKey(KEY_INPUT_UP)) {//上が押されたら
+		if (CheckHitKey(KEY_INPUT_UP) || CheckHitKey(KEY_INPUT_W)) {//上が押されたら
 			if (!prevUpKey_) {
 				select_ -= 1;
 			}
@@ -48,7 +36,7 @@ void ResultScene::Update()
 	}
 	//下限を超えないように
 	if (select_ < 2) {
-		if (CheckHitKey(KEY_INPUT_DOWN)) {//下が押されたら
+		if (CheckHitKey(KEY_INPUT_DOWN) || CheckHitKey(KEY_INPUT_S)) {//下が押されたら
 			if (!prevDownKey_) {
 				select_ += 1;
 			}
