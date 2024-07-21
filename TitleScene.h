@@ -22,5 +22,8 @@ public:
 
 private:
 	int tPict_;
+	int select_;
+	bool prevUpKey_;
+	bool prevDownKey_;
 };
 

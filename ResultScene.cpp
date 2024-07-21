@@ -51,7 +51,7 @@ void ResultScene::Update()
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		switch (select_) {
 		case 0:
-			pSceneManager->ChangeScene(SCENE_ID_PLAY);
+			pSceneManager->ChangeScene(SCENE_ID_PLAY,true);
 			break;
 		case 1:
 			pSceneManager->ChangeScene(SCENE_ID_TITLE);

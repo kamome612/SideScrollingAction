@@ -16,6 +16,7 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	clearFlag_ = false;
+	keyFlag_ = false;
 	//タイマーの初期化
 	Time::Init();
 	//最初のシーンを準備
@@ -67,5 +68,5 @@ void SceneManager::ChangeScene(SCENE_ID next, bool tmp)
 {
 	nextSceneID_ = next;
 	clearFlag_ = tmp;
+	keyFlag_ = tmp;
 }
-

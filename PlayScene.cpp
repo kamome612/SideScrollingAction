@@ -11,6 +11,8 @@ PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
 	                                ,mapNo_(-1)
 {
+	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
+	prevEnterKey_ = scenemanager->keyFlag_;
 }
 
 void PlayScene::Initialize()
@@ -90,7 +92,10 @@ void PlayScene::UpdateSelect()
 
 	//エンターでステージを決定
 	if (CheckHitKey(KEY_INPUT_RETURN)) {
-		StartReady();
+		if (!prevEnterKey_) {
+			StartReady();
+			prevEnterKey_ = false;
+		}
 	}
 }
 

@@ -18,6 +18,7 @@ class SceneManager : public GameObject
 {
 public:
 	bool clearFlag_;
+	bool keyFlag_;
 
 	//コンストラクタ
 	//引数：parent	親オブジェクト（基本的にゲームマネージャー）

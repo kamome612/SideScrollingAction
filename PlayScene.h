@@ -49,5 +49,6 @@ public:
 	void StartPlay();
 	void StartClear();
 	void StartGameOver();
+	bool prevEnterKey_;
 };
 
