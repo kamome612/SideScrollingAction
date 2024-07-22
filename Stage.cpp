@@ -22,7 +22,6 @@ Stage::Stage(GameObject* parent)
 	width_ = 0;
 	height_ = 0;
 	mapNo_ = 1;
-	prevResetKey_ = false;
 	gPict_ = -1;
 	stageLife_ = 0;
 	map_ = nullptr;
@@ -126,6 +125,7 @@ void Stage::StageSet()
 
 	if (mapNo_ != 3) {
 		hImage_ = LoadGraph((folder + "ground.png").c_str());
+		//hImage_ = LoadGraph((folder + "ground4.png").c_str());
 	}
 	else {
 		hImage_ = LoadGraph((folder + "ground2.png").c_str());
@@ -243,6 +243,12 @@ void Stage::StageSet()
 				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
 
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				if (mapNo_ == 2) {
+					sMeteo->SetGravity(1.62 / 90.0f);
+				}
+				else if (mapNo_ == 3) {
+					sMeteo->SetGravity(3.71 / 90.0f);
+				}
 				break;
 			}
 			}
@@ -293,7 +299,7 @@ int Stage::CollisionUp(int x, int y)
 
 void Stage::BreakGround(int x, int y)
 {
-	//è¦Î‚Ì“–‚½‚Á‚½‰ñ”‚ğ‘‚â‚·
+	//˜f¯‚Ì‘Ì—Í‚ğ‘‚â‚·
 	stageLife_ -= 1;
 
 	int chipX = x / CHIP_SIZE;

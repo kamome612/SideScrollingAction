@@ -17,7 +17,7 @@ namespace {
 	const float INIT_GRAVITY = 9.8/ 90.0f;
 	const float MAX_POS = 400;
 	const int SPEED = 150;
-	//d—Íƒƒ‚:Œ...1.62,‰Î¯...3.71,‘¾—z274
+	//d—Íƒƒ‚:Œ...1.62,‰Î¯...3.71
 }
 
 Player::Player(GameObject* parent)

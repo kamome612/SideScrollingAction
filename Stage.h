@@ -81,7 +81,6 @@ private:
 	int height_;        //ステージの縦
 	int mapNo_;         //どのステージかの識別
 	int stageLife_;     //ステージの体力
-	bool prevResetKey_; //ひとつ前のフレームのRキーの状態
 	bool IsWallBlock(int x, int y);
 };
 

@@ -8,13 +8,14 @@
 namespace {
 	static const int SCREEN_WIDTH = 1280;
 	//const int CHIP_SIZE = 256;
+	const float INIT_GRAVITY = 9.8 / 90.0f;
 	const int CHIP_SIZE = 128;
 	const int MOVE_SPEED = 100;
 	const XMFLOAT3 INIT_POS = { 0,0,0 };
 }
 
 Meteorite::Meteorite(GameObject* parent)
-	:GameObject(parent,"Meteorite"),mImage_(-1)
+	:GameObject(parent,"Meteorite"),mImage_(-1),gravity_(INIT_GRAVITY),moveSpeed_(MOVE_SPEED)
 {
 }
 
@@ -65,8 +66,11 @@ void Meteorite::Update()
 	}
 
 	//à⁄ìÆÇÃèàóù
-	transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
-	transform_.position_.y += MOVE_SPEED * Time::DeltaTime();
+	moveSpeed_ += gravity_;
+	/*transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
+	transform_.position_.y += MOVE_SPEED * Time::DeltaTime();*/
+	transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
+	transform_.position_.y += moveSpeed_ * Time::DeltaTime();
 }
 
 void Meteorite::Draw()

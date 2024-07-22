@@ -24,7 +24,12 @@ public:
 
 	//円の当たり判定をする
 	bool CollideCircle(float x, float y, float r);
+
+	//重力をセット
+	void SetGravity(float _g) { gravity_ = _g; }
 private:
 	int mImage_;
+	float gravity_;
+	float moveSpeed_;
 };
 

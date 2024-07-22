@@ -94,8 +94,11 @@ void PlayScene::UpdateSelect()
 	if (CheckHitKey(KEY_INPUT_RETURN)) {
 		if (!prevEnterKey_) {
 			StartReady();
-			prevEnterKey_ = false;
+			prevEnterKey_ = true;
 		}
+	}
+	else {
+		prevEnterKey_ = false;
 	}
 }
 
@@ -134,28 +137,6 @@ void PlayScene::StartPlay()
 void PlayScene::UpdatePlay()
 {
 	Stage* pStage = FindGameObject<Stage>();
-	/*if (CheckHitKey(KEY_INPUT_R)) {
-		if (!prevResetKey_) {
-			pStage->StageSet();
-			StartReady();
-		}
-		prevResetKey_ = true;
-	}
-	else
-		prevResetKey_ = false;
-
-	if (CheckHitKey(KEY_INPUT_C)) {
-		if (!prevChangeKey_) {
-			pStage->ChangeStage();
-			pStage->StageSet();
-			StartReady();
-			printfDx("ステージ変更でスタートに移動するで");
-		}
-		prevChangeKey_ = true;
-	}
-	else
-		prevChangeKey_ = false;*/
-
 	if (pStage->GetStageLife() <= 0) {
 		StartGameOver();
 	}
@@ -187,6 +168,6 @@ void PlayScene::UpdateGameOver()
 {
 	if (CheckHitKey(KEY_INPUT_SPACE)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_RESULT);
+		pSceneManager->ChangeScene(SCENE_ID_RESULT,false);
 	}
 }
