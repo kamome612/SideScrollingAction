@@ -54,7 +54,7 @@ void ResultScene::Update()
 			pSceneManager->ChangeScene(SCENE_ID_PLAY,true);
 			break;
 		case 1:
-			pSceneManager->ChangeScene(SCENE_ID_TITLE);
+			pSceneManager->ChangeScene(SCENE_ID_TITLE,true);
 			break;
 		case 2:
 			DxLib_End();

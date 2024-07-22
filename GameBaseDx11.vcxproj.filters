@@ -70,6 +70,7 @@
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Flag.cpp" />
+    <ClCompile Include="ExplanationScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -122,5 +123,6 @@
     <ClInclude Include="TitleScene.h">
       <Filter>リソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ExplanationScene.h" />
   </ItemGroup>
 </Project>

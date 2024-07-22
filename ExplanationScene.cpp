@@ -1,30 +1,23 @@
-#include "TitleScene.h"
-#include "Engine/Scenemanager.h"
+#include "ExplanationScene.h"
+#include "Engine/SceneManager.h"
 
-TitleScene::TitleScene(GameObject* parent)
-	:GameObject(parent,"TitleScene"),tPict_(-1),select_(0)
+ExplanationScene::ExplanationScene(GameObject* parent)
+	:GameObject(parent, "ExplanationScene"),select_(0),ePict_(-1), prevUpKey_(false), prevDownKey_(false)
 {
 }
 
-void TitleScene::Initialize()
+void ExplanationScene::Initialize()
 {
-	//画像のロード
-	tPict_ = LoadGraph("Assets\\Picture\\title.jpg");
-	assert(tPict_ >= 0);
+	ePict_ = LoadGraph("Assets/Picture/explanation.jpg");
+	assert(ePict_ > 0);
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	prevEnterKey_ = scenemanager->keyFlag_;
 }
 
-void TitleScene::Update()
+void ExplanationScene::Update()
 {
-	//プレイシーンへの遷移(仮だから後で変える)
-	/*if (CheckHitKey(KEY_INPUT_P)) {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
-	}*/
-
 	//上限を超えないように
-	if (select_ > 0) {
+	if (select_ == 1) {
 		if (CheckHitKey(KEY_INPUT_UP) || CheckHitKey(KEY_INPUT_W)) {//上が押されたら
 			if (!prevUpKey_) {
 				select_ -= 1;
@@ -35,7 +28,7 @@ void TitleScene::Update()
 			prevUpKey_ = false;
 	}
 	//下限を超えないように
-	if (select_ < 2) {
+	if (select_ == 0) {
 		if (CheckHitKey(KEY_INPUT_DOWN) || CheckHitKey(KEY_INPUT_S)) {//下が押されたら
 			if (!prevDownKey_) {
 				select_ += 1;
@@ -55,10 +48,10 @@ void TitleScene::Update()
 				pSceneManager->ChangeScene(SCENE_ID_PLAY, true);
 				break;
 			case 1:
-				pSceneManager->ChangeScene(SCENE_ID_EXPLANATION,true);
+				pSceneManager->ChangeScene(SCENE_ID_TITLE,true);
 				break;
-			case 2:
-				DxLib_End();
+			default:
+				break;
 			}
 		}
 		prevEnterKey_ = true;
@@ -68,16 +61,16 @@ void TitleScene::Update()
 	}
 }
 
-void TitleScene::Draw()
+void ExplanationScene::Draw()
 {
 	//画像の表示
-	DrawGraph(0, 0, tPict_, TRUE);
+	DrawGraph(0, 0, ePict_, TRUE);
 	//選択するときの三角
-	int tmp = 440 + select_ * 60;
-	DrawTriangle(480, tmp, 480 - 30, tmp + 20, 480 - 30, tmp - 20,
+	int tmp = 600 + select_ * 60;
+	DrawTriangle(1000, tmp, 1000 - 30, tmp + 20, 1000 - 30, tmp - 20,
 		GetColor(255, 255, 0), TRUE);
 }
 
-void TitleScene::Release()
+void ExplanationScene::Release()
 {
 }

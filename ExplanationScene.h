@@ -1,12 +1,11 @@
 #pragma once
 #include "Engine/GameObject.h"
-class TitleScene :
+class ExplanationScene :
     public GameObject
 {
 public:
 	//コンストラクタ
-	//引数：parent  親オブジェクト（SceneManager）
-	TitleScene(GameObject* parent);
+	ExplanationScene(GameObject* parent);
 
 	//初期化
 	void Initialize() override;
@@ -19,9 +18,8 @@ public:
 
 	//開放
 	void Release() override;
-
 private:
-	int tPict_;
+	int ePict_;
 	int select_;
 	bool prevUpKey_;
 	bool prevDownKey_;

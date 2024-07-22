@@ -7,6 +7,7 @@ enum SCENE_ID
 {
 	SCENE_ID_TEST = 0,
 	SCENE_ID_TITLE,
+	SCENE_ID_EXPLANATION,
 	SCENE_ID_PLAY,
 	SCENE_ID_RESULT,
 };
@@ -35,9 +36,6 @@ public:
 
 	//シーンの切り替え(boolも受け取れる)
 	void ChangeScene(SCENE_ID next, bool tmp);
-
-	//シーンの切り替え(intの値を受け取る)
-	void ChangeScene(SCENE_ID next, int tmp1 ,int tmp2);
 
 private:
 	SCENE_ID currentSceneID_;	//現在のシーン
