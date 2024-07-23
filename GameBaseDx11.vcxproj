@@ -161,6 +161,7 @@
     <ClInclude Include="AttackSkill.h" />
     <ClInclude Include="Banner.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cloud.h" />
     <ClInclude Include="Ease.h" />
     <ClInclude Include="Engine\CsvReader.h" />
     <ClInclude Include="Engine\GameObject.h" />

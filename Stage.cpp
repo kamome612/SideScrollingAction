@@ -6,6 +6,7 @@
 #include "AttackSkill.h"
 #include "Flag.h"
 #include "Tree.h"
+#include "Cloud.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -64,10 +65,10 @@ void Stage::Draw()
 {
 	switch (mapNo_) {
 	case 1:
-	case 3:
 		DrawGraph(0, -240, gPict_, TRUE);
 		break;
 	case 2:
+	case 3:
 		DrawGraph(0, 0, gPict_, TRUE);
 	}
 
@@ -149,7 +150,7 @@ void Stage::StageSet()
 	//csvから読み込み
 	CsvReader csv;
 	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
-    //bool ret = csv.Load("Assets/Stage/test.csv");
+    //bool ret = csv.Load("Assets/Stage/test1.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -169,51 +170,35 @@ void Stage::StageSet()
 	}
 	
 
-	//Mapデータの中で0があれば、Playerの座標を0の位置にする
-	//for (int h = 0; h < height_; h++) {
-	//	for (int w = 0; w < width_; w++) {
-	//		switch (csv.GetInt(w, h + height_ + 1))
-	//		{
-	//		case 0://player
-	//		{
-	//			//Player* sPlayer = GetParent()->FindGameObject<Player>();
-	//			Player* sPlayer = Instantiate<Player>(GetParent());
-	//			sPlayer ->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-	//			//とりあえずのマップ変更用
-	//			switch (mapNo_)
-	//			{
-	//			case 2:
-	//				sPlayer->SetGravity(1.62 / 90.0f);
-	//				stageLife_ = 3;;
-	//				break;
-	//			case 3:
-	//				sPlayer->SetGravity(3.71 / 90.0f);
-	//				stageLife_ = 3;
-	//				break;
-	//			default:
-	//				stageLife_ = 5;
-	//				break;
-	//			}
-	//			break;
-	//		}
-	//		case 1://flag
-	//		{
-	//			Flag* sFlag = Instantiate<Flag>(GetParent());
-	//			sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-	//			break;
-	//		}
-	//		case 15://Meteorite
-	//		{
-	//			Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
-	//			sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-	//			break;
-	//		}
-	//		}
-	//	}
-	//}
+	//旗や木などのオブジェクトの設置
+	for (int h = 0; h < height_; h++) {
+		for (int w = 0; w < width_; w++) {
+			switch (csv.GetInt(w, h + height_ + 1))
+			{
+			case 1://flag
+			{
+				Flag* sFlag = Instantiate<Flag>(GetParent());
+				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
+			case 14://Tree
+			{
+				Tree* sTree = Instantiate<Tree>(GetParent());
+				sTree->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
+			case 30://Cloud
+			{
+				Cloud* sCloud = Instantiate<Cloud>(GetParent());
+				sCloud->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
+			}
+		}
+	}
 
-	for (int h = height_ - 1; h >= 0; h--) {
-		for (int w = width_ -1; w >=0 ; w--) {
+	for (int h = 0; h < height_; h++) {
+		for (int w = 0; w < width_; w++) {
 			switch (csv.GetInt(w, h + height_ + 1))
 			{
 			case 0://player
@@ -239,18 +224,6 @@ void Stage::StageSet()
 					initStageLife_ = 5;
 					break;
 				}
-				break;
-			}
-			case 1://flag
-			{
-				Flag* sFlag = Instantiate<Flag>(GetParent());
-				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				break;
-			}
-			case 14://Tree
-			{
-				Tree* sTree = Instantiate<Tree>(GetParent());
-				sTree->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
 			case 15://Meteorite

@@ -137,13 +137,11 @@ void Player::UpdateNormal()
 	moveY = 0.0f;
 
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
-		animType_ = 4;//歩くモーションroboバージョン
 		moveX += SPEED * Time::DeltaTime();
 		transform_.position_.x += moveX;//移動量
 		if (time_ > 0.2f) {
 			if (onGround_) {
-				//animFrame_ = (animFrame_ + 1) % 4;
-				animFrame_ = (animFrame_ + 1) % 8;
+				animFrame_ = animFrame_ % 8 + 1;
 				time_ = 0.0f;
 			}
 		}
@@ -155,18 +153,16 @@ void Player::UpdateNormal()
 		}
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
-		animType_ = 4;//歩くモーションroboバージョン
 		if (transform_.position_.x > 0) {//左画面端で止まるように
 			moveX += SPEED * Time::DeltaTime();//移動量
 			transform_.position_.x -= moveX;
 			if (time_ > 0.2f) {
 				if (onGround_) {
-					//animFrame_ = (animFrame_ + 1) % 4;
-					animFrame_ = (animFrame_ + 1) % 8;
+					animFrame_ = animFrame_ % 8 + 1;
 					time_ = 0.0f;
 				}
 			}
-			int hitX = transform_.position_.x + 12;
+			int hitX = transform_.position_.x + 10;
 			int hitY = transform_.position_.y + CHIP_SIZE-1;
 			if (pStage != nullptr) {
 				int push = pStage->CollisionLeft(hitX, hitY);
@@ -190,14 +186,14 @@ void Player::UpdateNormal()
 	if (!onGround_ && jumpSpeed_ < 0) {
 		/*animType_ = 2;
 		animFrame_ = 2;*/
-		animType_ = 0;
-		animFrame_ = 1;
+		animType_ = 2;
+		animFrame_ = 0;
 	}
 	else if (!onGround_ && jumpSpeed_ > 0) {
 		/*animType_ = 2;
 		animFrame_ = 1;*/
-		animType_ = 0;
-		animFrame_ = 2;
+		animType_ = 2;
+		animFrame_ = 1;
 	}
 
 	jumpSpeed_ += gravity_;//速度 += 重力
@@ -219,7 +215,8 @@ void Player::UpdateNormal()
 
 void Player::UpdateAttack()
 {
-	animType_ = 2;//仮だけど攻撃モーション
+	//animType_ = 2;//仮だけど攻撃モーション
+	animType_ = 1;//仮だけど攻撃モーション
 	if (animFrame_ + 1 == 3)
 	{
 		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
@@ -244,10 +241,10 @@ void Player::Draw()
 		x -= cam->GetValue();
 	}
 	//DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
-	DrawRectGraph(x, y, animFrame_ * ROBO_WIDTH, animType_ * CHIP_SIZE, ROBO_WIDTH, CHIP_SIZE, pImage_, TRUE);
+	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
 	//DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	DrawCircle(x + ROBO_WIDTH/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 }
 
 void Player::SetPosition(float _x, float _y)
