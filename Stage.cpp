@@ -24,6 +24,7 @@ Stage::Stage(GameObject* parent)
 	mapNo_ = 1;
 	gPict_ = -1;
 	stageLife_ = 0;
+	initStageLife_ = 0;
 	map_ = nullptr;
 }
 
@@ -90,6 +91,10 @@ void Stage::Draw()
 		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
 	}
 
+	for (int i = initStageLife_; i > stageLife_;) {
+		i--;
+		DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(0,0,0), TRUE);
+	}
 }
 
 void Stage::StageSet()
@@ -124,8 +129,8 @@ void Stage::StageSet()
 	//hImage_ = LoadGraph("Assets/Stage/ground2.png");
 
 	if (mapNo_ != 3) {
-		hImage_ = LoadGraph((folder + "ground.png").c_str());
-		//hImage_ = LoadGraph((folder + "ground4.png").c_str());
+		//hImage_ = LoadGraph((folder + "ground.png").c_str());
+		hImage_ = LoadGraph((folder + "ground3.png").c_str());
 	}
 	else {
 		hImage_ = LoadGraph((folder + "ground2.png").c_str());
@@ -142,7 +147,7 @@ void Stage::StageSet()
 
 	//csvから読み込み
 	CsvReader csv;
-	bool ret = csv.Load((folder + "testStage" + n + ".csv").c_str());
+	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
     //bool ret = csv.Load("Assets/Stage/testStage3.csv");
 	assert(ret);
 
@@ -220,14 +225,17 @@ void Stage::StageSet()
 				{
 				case 2:
 					sPlayer->SetGravity(1.62 / 90.0f);
-					stageLife_ = 3;;
+					stageLife_ = 3;
+					initStageLife_ = 3;
 					break;
 				case 3:
 					sPlayer->SetGravity(3.71 / 90.0f);
 					stageLife_ = 3;
+					initStageLife_ = 3;
 					break;
 				default:
 					stageLife_ = 5;
+					initStageLife_ = 5;
 					break;
 				}
 				break;
@@ -299,8 +307,9 @@ int Stage::CollisionUp(int x, int y)
 
 void Stage::BreakGround(int x, int y)
 {
-	//惑星の体力を増やす
+	//惑星の体力を減らす
 	stageLife_ -= 1;
+
 
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
@@ -341,6 +350,8 @@ bool Stage::IsWallBlock(int x, int y)
 	case 193://浮いてる足場(中央)の右上
 	case 224://浮いてる足場(左)の左上
 	case 225://浮いてる足場(左)の右上
+	case 520://橋の左
+	case 521://橋の右
 		//月の方のマップチップ
 	case 134://地中の左上
 	case 135://地中の右上

@@ -103,8 +103,10 @@ bool Meteorite::CollideCircle(float x, float y, float r)
 	float myR = 24.0f;
 	float dx = myCenterX - x;
 	float dy = myCenterY - y;
-	if ((dx * dx + dy * dy) < (r + myR) * (r + myR))
+	if ((dx * dx + dy * dy) < ((r + myR) * (r + myR))) {
 		return true;
-	else
+	}
+	else {
 		return false;
+	}
 }

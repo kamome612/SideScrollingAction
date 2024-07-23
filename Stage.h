@@ -81,6 +81,7 @@ private:
 	int height_;        //ステージの縦
 	int mapNo_;         //どのステージかの識別
 	int stageLife_;     //ステージの体力
+	int initStageLife_; //最初のステージの体力
 	bool IsWallBlock(int x, int y);
 };
 

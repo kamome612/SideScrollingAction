@@ -147,14 +147,21 @@ void PlayScene::StartClear()
 	state_ = S_Clear;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_Clear);
+	timer_ = 2.0f;
 }
 
 void PlayScene::UpdateClear()
 {
-	if (CheckHitKey(KEY_INPUT_SPACE)) {
+	timer_ -= Time::DeltaTime();
+	if (timer_ <= 0.0f) {
+		timer_ = 0.0f;
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_RESULT, true);
+	}
+	/*if (CheckHitKey(KEY_INPUT_R)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_RESULT,true);
-	}
+	}*/
 }
 
 void PlayScene::StartGameOver()
@@ -162,12 +169,21 @@ void PlayScene::StartGameOver()
 	state_ = S_GameOver;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_GameOver);
+	timer_ = 2.0f;
+
 }
 
 void PlayScene::UpdateGameOver()
 {
-	if (CheckHitKey(KEY_INPUT_SPACE)) {
+	timer_ -= Time::DeltaTime();
+	if (timer_ <= 0.0f) {
+		timer_ = 0.0f;
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_RESULT, false);
+	}
+
+	/*if (CheckHitKey(KEY_INPUT_R)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_RESULT,false);
-	}
+	}*/
 }
