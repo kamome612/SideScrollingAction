@@ -179,6 +179,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

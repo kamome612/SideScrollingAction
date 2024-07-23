@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "AttackSkill.h"
 #include "Flag.h"
+#include "Tree.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -148,7 +149,7 @@ void Stage::StageSet()
 	//csvから読み込み
 	CsvReader csv;
 	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
-    //bool ret = csv.Load("Assets/Stage/testStage3.csv");
+    //bool ret = csv.Load("Assets/Stage/test.csv");
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -244,6 +245,12 @@ void Stage::StageSet()
 			{
 				Flag* sFlag = Instantiate<Flag>(GetParent());
 				sFlag->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
+			case 14://Tree
+			{
+				Tree* sTree = Instantiate<Tree>(GetParent());
+				sTree->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
 			case 15://Meteorite
