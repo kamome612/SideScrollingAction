@@ -52,10 +52,10 @@ void Meteorite::Update()
 
 	if (x > SCREEN_WIDTH)//画面外(右側)にいるならなにもしない
 		return;
-	else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
-		KillMe();
-		return;
-	}
+	//else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
+	//	KillMe();
+	//	return;
+	//}
 
 	bool isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y+ CHIP_SIZE/1.5);
 	if (isGround) {//地面などのステージの一部に当たったらさようなら
@@ -70,7 +70,7 @@ void Meteorite::Update()
 	/*transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
 	transform_.position_.y += MOVE_SPEED * Time::DeltaTime();*/
 	transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
-	transform_.position_.y += moveSpeed_ * 0.5 * Time::DeltaTime();
+	transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
 }
 
 void Meteorite::Draw()

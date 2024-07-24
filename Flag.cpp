@@ -48,8 +48,8 @@ void Flag::Draw()
 	}
 	DrawRectGraph(x, y, 0, animFrame_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, fImage_, TRUE);
     //“–‚½‚è”»’è‚ÌˆÊ’uŠm‚©‚ß‚é—p
-	DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE /2,
-		       20.0f, GetColor(75, 0, 130),false);
+	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE /2,
+	//	       20.0f, GetColor(75, 0, 130),false);
 }
 
 void Flag::SetPosition(float _x, float _y)

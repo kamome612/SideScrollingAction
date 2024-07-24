@@ -147,7 +147,7 @@ void PlayScene::StartClear()
 	state_ = S_Clear;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_Clear);
-	timer_ = 3.0f;
+	timer_ = 2.0f;
 }
 
 void PlayScene::UpdateClear()
@@ -169,7 +169,7 @@ void PlayScene::StartGameOver()
 	state_ = S_GameOver;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_GameOver);
-	timer_ = 3.0f;
+	timer_ = 2.0f;
 
 }
 
