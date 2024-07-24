@@ -32,7 +32,7 @@ void AttackSkill::Update()
 		KillMe();
 	}
 	transform_.position_.x += SPEED_ * Time::DeltaTime();
-	//transform_.position_.y -= SPEED_ * Time::DeltaTime();
+	transform_.position_.y -= SPEED_ * Time::DeltaTime();
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
@@ -53,8 +53,8 @@ void AttackSkill::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	/*DrawRotaGraph(x,y,1.0,0.78, aImage_, TRUE);*/
-	DrawRotaGraph(x, y, 1.0, 1.6, aImage_, TRUE);
+	DrawRotaGraph(x,y,1.0,0.78, aImage_, TRUE);
+	//DrawRotaGraph(x, y, 1.0, 1.6, aImage_, TRUE);
 	//DrawCircle(x,y, 10.0f, GetColor(0, 0, 255), FALSE);
 }
 

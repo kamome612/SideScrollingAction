@@ -98,6 +98,7 @@ void Stage::Draw()
 	for (int i = initStageLife_; i > stageLife_;) {
 		i--;
 		DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(0,0,0), TRUE);
+		DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(255, 255, 255), FALSE);
 	}
 }
 

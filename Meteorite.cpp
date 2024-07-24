@@ -70,7 +70,7 @@ void Meteorite::Update()
 	/*transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
 	transform_.position_.y += MOVE_SPEED * Time::DeltaTime();*/
 	transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
-	transform_.position_.y += moveSpeed_ * Time::DeltaTime();
+	transform_.position_.y += moveSpeed_ * 0.5 * Time::DeltaTime();
 }
 
 void Meteorite::Draw()
