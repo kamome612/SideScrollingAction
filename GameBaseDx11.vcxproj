@@ -173,10 +173,12 @@
     <ClInclude Include="ExplanationScene.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Flag.h" />
+    <ClInclude Include="Meteo.h" />
     <ClInclude Include="Meteorite.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="ResultScene.h" />
+    <ClInclude Include="Rocket.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />

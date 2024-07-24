@@ -84,7 +84,7 @@ void Meteorite::Draw()
 	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 
 	//“–‚½‚è”»’è‚ð‰ÂŽ‹‰»‚·‚é‚½‚ß—p
-	DrawCircle(x + CHIP_SIZE/4, y + CHIP_SIZE/2, 24.0f, GetColor(0, 0, 255), FALSE);
+	//DrawCircle(x + CHIP_SIZE/4, y + CHIP_SIZE/2, 24.0f, GetColor(0, 0, 255), FALSE);
 	//DrawPixel(transform_.position_.x, transform_.position_.y + CHIP_SIZE /1.5, GetColor(0, 0, 0));
 }
 

@@ -113,6 +113,12 @@ void Player::Update()
 		scene->StartClear();
 	}
 
+	//画面外に落ちたらゲームオーバ
+	if (transform_.position_.y >= 730) {
+		KillMe();
+		scene->StartGameOver();
+	}
+
 	//ここでカメラ位置の調整
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int x = (int)transform_.position_.x - cam->GetValue();
@@ -123,6 +129,10 @@ void Player::Update()
 	if (x < 0) {
 		x = 0;
 		cam->SetValue((int)transform_.position_.x + x);
+	}
+	if (x > 3800) {
+		x = 3800;
+		cam->SetValue((int)transform_.position_.x - x);
 	}
 }
 
@@ -202,6 +212,8 @@ void Player::UpdateNormal()
 	if (CheckHitKey(KEY_INPUT_E)) {
 		//if (onGround_) {
 			if (prevAttackKey_ == false) {
+				animFrame_ = 0;
+				animType_ = 1;
 				time_ = 0.0f;
 				state_ = S_Attack;
 			}
@@ -244,7 +256,7 @@ void Player::Draw()
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
 	//DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 }
 
 void Player::SetPosition(float _x, float _y)

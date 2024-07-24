@@ -22,6 +22,9 @@ public:
     //場所をセットする
     void SetPosition(float _x, float _y);
 
+    //位置をゲット
+    float GetPosition() { return transform_.position_.x, transform_.position_.y; }
+
     //当たり判定
     bool HitFlag(float _x, float _y, float _r);
 

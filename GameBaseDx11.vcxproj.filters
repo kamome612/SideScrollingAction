@@ -69,8 +69,10 @@
     <ClCompile Include="AttackSkill.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Flag.cpp" />
     <ClCompile Include="ExplanationScene.cpp" />
+    <ClCompile Include="Flag.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -119,10 +121,24 @@
     <ClInclude Include="AttackSkill.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Flag.h" />
     <ClInclude Include="TitleScene.h">
       <Filter>リソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ExplanationScene.h" />
+    <ClInclude Include="Rocket.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Flag.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Cloud.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteo.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

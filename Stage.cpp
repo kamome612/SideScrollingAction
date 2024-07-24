@@ -7,6 +7,8 @@
 #include "Flag.h"
 #include "Tree.h"
 #include "Cloud.h"
+#include "Rocket.h"
+#include "Meteo.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -193,6 +195,18 @@ void Stage::StageSet()
 				sCloud->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
+			//case 31://Rocket
+			//{
+			//	Rocket* sRocket = Instantiate<Rocket>(GetParent());
+			//	sRocket->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+			//	break;
+			//}
+			//case 46://Meteo
+			//{
+			//	Meteo* sMeteo = Instantiate<Meteo>(GetParent());
+			//	sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+			//	break;
+			//}
 			}
 		}
 	}
