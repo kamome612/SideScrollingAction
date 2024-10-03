@@ -7,18 +7,21 @@
 #include "Explosion.h"
 #include "AttackSkill.h"
 #include "Flag.h"
+#include "iostream"
 
 namespace {
-	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
+	//const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
+	const float CHIP_SIZE = 60.0f;//キャラの画像サイズ
 	const int MAP_HEIGHT = 720; //高さ
 	const float ROBO_WIDTH = 48;
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f;
 	const float MAX_POS = 400;
-	//const int SPEED = 150;
-	const int SPEED = 1000;
-	const int MARGIN = 14;//プレイヤーのチップの余白
+	const int SPEED = 150;
+	//const int SPEED = 1000;
+	//const int MARGIN = 14;//プレイヤーのチップの余白
+	const int MARGIN = 10;//プレイヤーのチップの余白
 	//重力メモ:月...1.62,火星...3.71
 }
 
@@ -45,12 +48,14 @@ Player::~Player()
 void Player::Initialize()
 {
 	//プレイヤーの画像の読み込み
-	pImage_ = LoadGraph("Assets\\Image\\robot.png");
+	//pImage_ = LoadGraph("Assets\\Image\\robot.png");
+	pImage_ = LoadGraph("Assets\\Image\\cyborg.png");
 	assert(pImage_ >= 0); 
 }
 
 void Player::Update()
 {
+
 	//プレイシーンから動いていいのかどうかを確認する
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())
@@ -132,7 +137,7 @@ void Player::Update()
 	if (transform_.position_.x < 0) {
 		transform_.position_.x = 0;
 	}
-	if (transform_.position_.x = 4600) {
+	if (transform_.position_.x > 4600) {
 		transform_.position_.x = 4600;
 	}
 
@@ -155,7 +160,7 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
-	animType_ = 0;//歩くモーション
+	animType_ = 1;//歩くモーション
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
 	//移動量とその初期化
@@ -164,13 +169,13 @@ void Player::UpdateNormal()
 	moveY = 0.0f;
 
 	//コントローラ操作
-	//VECTOR inputDirection = VGet(0, 0, 0);
-	int x, y;
-	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
-	moveX = (float)x / 1000.0f;
-	if (moveX < 0.3f) {//中心付近の誤差をのぞく
-		 moveX = 0.0f;
-	}
+	//int x, y;
+	//GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
+	//moveX += (float)x / 1000.0f;
+	//if (moveX < 0.3f) {//中心付近の誤差をのぞく
+	//	 moveX = 0.0f;
+	//}
+
 	//移動
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		moveX += SPEED * Time::DeltaTime();
@@ -182,13 +187,14 @@ void Player::UpdateNormal()
 		time_ = 0;
 		animFrame_ = 0;
 	    frameCounter_ = 0;
+		//animType_ = 0;
 	}
 
 	transform_.position_.x += moveX;//移動量
 
 	if (time_ > 0.2f) {
 		if (onGround_) {
-			animFrame_ = animFrame_ % 8 + 1;
+			animFrame_ = animFrame_ % 5 + 1;
 			time_ = 0.0f;
 		}
 	}
@@ -261,12 +267,18 @@ void Player::UpdateNormal()
 		animFrame_ = 2;*/
 		animType_ = 2;
 		animFrame_ = 0;
+		if (time_ > 0.5) {
+			animFrame_ = 1;
+		}
 	}
 	else if (!onGround_ && jumpSpeed_ > 0) {
 		/*animType_ = 2;
 		animFrame_ = 1;*/
 		animType_ = 2;
-		animFrame_ = 1;
+		animFrame_ = 2;
+		if (time_ > 0.5) {
+			animFrame_ = 3;
+		}
 	}
 
 	jumpSpeed_ += gravity_;//速度 += 重力
@@ -277,7 +289,6 @@ void Player::UpdateNormal()
 		//if (onGround_) { //地面にいる間だけ
 			if (prevAttackKey_ == false) {
 				animFrame_ = 0;
-				animType_ = 1;
 				time_ = 0.0f;
 				state_ = S_Attack;//攻撃の状態に移る
 			}
@@ -292,8 +303,8 @@ void Player::UpdateNormal()
 void Player::UpdateAttack()
 {
 	//animType_ = 2;//仮だけど攻撃モーション
-	animType_ = 1;//仮だけど攻撃モーション
-	if (animFrame_ + 1 == 3)
+	animType_ = 3;//仮だけど攻撃モーション
+	if (animFrame_ +1 == 6)
 	{
 		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
 		int x = (int)transform_.position_.x;
@@ -303,7 +314,7 @@ void Player::UpdateAttack()
 		state_ = S_Normal;
 	}
 	if (time_ > 0.3f) {
-		animFrame_ = (animFrame_ + 1) % 3;
+		animFrame_ = (animFrame_ + 1) % 6;
 		time_ = 0.0f;
 	}
 }
