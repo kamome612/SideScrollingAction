@@ -19,8 +19,14 @@ public:
     //通常時の動作のアニメーションなどの更新
     void UpdateNormal();
 
+    //歩くやジャンプのアニメーションなどの更新
+    void UpdateMove();
+
     //攻撃時のアニメーションなどの更新
     void UpdateAttack();
+
+    //死ぬ時のアニメーションなどの更新
+    void UpdateDie();
 
     //描画
     void Draw() override;
@@ -32,7 +38,6 @@ public:
     void SetGravity(float _gravity);
 private:
     int pImage_; //プレイヤーの画像
-    //float walkSpeed_; //歩く速さ(後でnamespaceの方に入れるかも)
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
@@ -45,7 +50,9 @@ private:
 
     enum State {
         S_Normal = 0,
+        S_Move,
         S_Attack,
+        S_Die,
     };
     State state_;
 };

@@ -14,7 +14,7 @@ namespace {
 	const float CHIP_SIZE = 60.0f;//キャラの画像サイズ
 	const int MAP_HEIGHT = 720; //高さ
 	const float ROBO_WIDTH = 48;
-	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
+	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f;
 	const float MAX_POS = 400;
@@ -70,11 +70,17 @@ void Player::Update()
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
-	case 0: //ノーマル、歩いたりとか
+	case 0: //ノーマル
 		UpdateNormal();
 		break;
-	case 1: //攻撃
+	case 1: //歩いたり、ジャンプ
+		UpdateMove();
+		break;
+	case 2:
 		UpdateAttack();
+		break;
+	case 3:
+		UpdateDie();
 		break;
 	default:
 		break;
@@ -160,6 +166,35 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
+	animType_ = 0;//何もしてないときIdle状態
+
+	if (time_ > 0.5f) {
+		if (onGround_) {
+			animFrame_ = animFrame_ % 3 + 1;
+			time_ = 0.0f;
+		}
+	}
+
+	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)) {//S_MOVEにする
+		state_ = S_Move;
+	}
+
+	//ミサイルを飛ばしての攻撃
+	if (CheckHitKey(KEY_INPUT_E)) {
+		if (prevAttackKey_ == false) {
+			animFrame_ = 0;
+			time_ = 0.0f;
+			state_ = S_Attack;//攻撃の状態に移る
+		}
+		prevAttackKey_ = true;
+	}
+	else {
+		prevAttackKey_ = false;
+	}
+}
+
+void Player::UpdateMove()
+{
 	animType_ = 1;//歩くモーション
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
@@ -168,7 +203,7 @@ void Player::UpdateNormal()
 	moveX = 0.0f;
 	moveY = 0.0f;
 
-	//コントローラ操作
+	//コントローラ操作(なぜかスティックを左に倒しても左にいかない)
 	//int x, y;
 	//GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
 	//moveX += (float)x / 1000.0f;
@@ -186,8 +221,8 @@ void Player::UpdateNormal()
 	else {
 		time_ = 0;
 		animFrame_ = 0;
-	    frameCounter_ = 0;
-		//animType_ = 0;
+		frameCounter_ = 0;
+		state_ = S_Normal;//Idle状態に戻る
 	}
 
 	transform_.position_.x += moveX;//移動量
@@ -200,7 +235,7 @@ void Player::UpdateNormal()
 	}
 
 	//プレイヤーの右側のステージとの当たり判定
-	int hitX = transform_.position_.x + (CHIP_SIZE -MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
 	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
 	if (pStage != nullptr) {
 		int push = pStage->CollisionRight(hitX, hitY);
@@ -283,28 +318,14 @@ void Player::UpdateNormal()
 
 	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
-
-	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E)) {
-		//if (onGround_) { //地面にいる間だけ
-			if (prevAttackKey_ == false) {
-				animFrame_ = 0;
-				time_ = 0.0f;
-				state_ = S_Attack;//攻撃の状態に移る
-			}
-			prevAttackKey_ = true;
-		//}
-	}
-	else {
-		prevAttackKey_ = false;
-	}
 }
 
 void Player::UpdateAttack()
 {
 	//animType_ = 2;//仮だけど攻撃モーション
-	animType_ = 3;//仮だけど攻撃モーション
-	if (animFrame_ +1 == 6)
+	animType_ = 3;//攻撃状態
+
+	if (animFrame_ + 1 == 6)
 	{
 		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
 		int x = (int)transform_.position_.x;
@@ -313,10 +334,18 @@ void Player::UpdateAttack()
 		time_ = 0.0f;
 		state_ = S_Normal;
 	}
-	if (time_ > 0.3f) {
-		animFrame_ = (animFrame_ + 1) % 6;
+
+	if (time_ > 0.1f) {
+		/*animFrame_ = (animFrame_ + 1) % 6;
+		time_ = 0.0f;*/
+		animFrame_ = animFrame_ % 5 + 1;
 		time_ = 0.0f;
 	}
+}
+
+void Player::UpdateDie()
+{
+
 }
 
 void Player::Draw()
