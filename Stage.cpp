@@ -12,7 +12,7 @@
 
 namespace {
 	const int CHIP_SIZE = 32;
-	const int LIFE_IMAGE_SIZE = 64;
+	//const int LIFE_IMAGE_SIZE = 64;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
 	const int CHIP_NULL = -1;
@@ -90,16 +90,15 @@ void Stage::Draw()
 		}
 	}
 
-	//ステージの体力の表示
-	for (int i = 0; i < stageLife_; i++) {
-		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
-	}
-
-	for (int i = initStageLife_; i > stageLife_;) {
-		i--;
-		DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(0,0,0), TRUE);
-		DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(255, 255, 255), FALSE);
-	}
+	////ステージの体力の表示
+	//for (int i = 0; i < stageLife_; i++) {
+	//	DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
+	//}
+	//for (int i = initStageLife_; i > stageLife_;) {
+	//	i--;
+	//	DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(0,0,0), TRUE);
+	//	DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(255, 255, 255), FALSE);
+	//}
 }
 
 void Stage::StageSet()
@@ -146,9 +145,9 @@ void Stage::StageSet()
 	gPict_ = LoadGraph(("Assets/Picture/background" + n + ".png").c_str());
 	assert(gPict_ > 0);
 
-	//体力を示す画像の読み込み
-	lImage_ = LoadGraph(("Assets/Image/planet"+ n + ".png").c_str());
-	assert(lImage_ > 0);
+	////体力を示す画像の読み込み
+	//lImage_ = LoadGraph(("Assets/Image/planet"+ n + ".png").c_str());
+	//assert(lImage_ > 0);
 
 	//csvから読み込み
 	CsvReader csv;

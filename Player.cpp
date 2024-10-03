@@ -10,13 +10,15 @@
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
-
+	const int MAP_HEIGHT = 720; //高さ
 	const float ROBO_WIDTH = 48;
 	const XMFLOAT3 INIT_POS = { 30,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f;
 	const float MAX_POS = 400;
-	const int SPEED = 150;
+	//const int SPEED = 150;
+	const int SPEED = 1000;
+	const int MARGIN = 14;//プレイヤーのチップの余白
 	//重力メモ:月...1.62,火星...3.71
 }
 
@@ -33,6 +35,7 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
+	//ちゃんと消す
 	if (pImage_ > 0) {
 		DeleteGraph(pImage_);
 		pImage_ = -1;
@@ -41,40 +44,45 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	//とりあえず今はaoiを出しとく(後で変える)
-	//pImage_ = LoadGraph("Assets\\Image\\aoi.png");
+	//プレイヤーの画像の読み込み
 	pImage_ = LoadGraph("Assets\\Image\\robot.png");
 	assert(pImage_ >= 0); 
 }
 
 void Player::Update()
 {
+	//プレイシーンから動いていいのかどうかを確認する
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())
 		return;
+
+	//ちょっとプレイヤーの座標を確認したいとき用
 	if (CheckHitKey(KEY_INPUT_O)) {
 		int tmp = (int)transform_.position_.x;
 		int tmp2 = (int)transform_.position_.y;
 		printfDx("(%d,%d)", tmp,tmp2);
 	}
 
+	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
-	case 0: 
+	case 0: //ノーマル、歩いたりとか
 		UpdateNormal();
 		break;
-	case 1:
+	case 1: //攻撃
 		UpdateAttack();
 		break;
 	default:
 		break;
 	}
+
 	//アニメーションに使うタイムの更新
 	time_ += Time::DeltaTime();
 
+	//ステージとの上下の当たり判定
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
-		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + CHIP_SIZE);
-		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + CHIP_SIZE);
+		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE - MARGIN, transform_.position_.y + CHIP_SIZE);
+		int pushL = pStage->CollisionDown(transform_.position_.x + MARGIN, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y -= push - 1;
@@ -85,8 +93,8 @@ void Player::Update()
 			onGround_ = false;
 		}
 
-		pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
-		pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
+		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE -MARGIN, transform_.position_.y);
+		pushL = pStage->CollisionUp(transform_.position_.x + MARGIN, transform_.position_.y);
 		push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
@@ -94,6 +102,7 @@ void Player::Update()
 		}
 	}
 
+	//隕石との当たり判定
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
 		if (pMeteo->CollideCircle(transform_.position_.x + CHIP_SIZE/2, 
@@ -113,10 +122,18 @@ void Player::Update()
 		scene->StartClear();
 	}
 
-	//画面外に落ちたらゲームオーバ
-	if (transform_.position_.y >= 730) {
+	//画面外(下)に落ちたらゲームオーバ
+	if (transform_.position_.y >= MAP_HEIGHT) {
 		KillMe();
 		scene->StartGameOver();
+	}
+
+	//画面外(左右)に行かないように
+	if (transform_.position_.x < 0) {
+		transform_.position_.x = 0;
+	}
+	if (transform_.position_.x = 4600) {
+		transform_.position_.x = 4600;
 	}
 
 	//ここでカメラ位置の調整
@@ -146,44 +163,90 @@ void Player::UpdateNormal()
 	moveX = 0.0f;
 	moveY = 0.0f;
 
+	//コントローラ操作
+	//VECTOR inputDirection = VGet(0, 0, 0);
+	int x, y;
+	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
+	moveX = (float)x / 1000.0f;
+	if (moveX < 0.3f) {//中心付近の誤差をのぞく
+		 moveX = 0.0f;
+	}
+	//移動
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		moveX += SPEED * Time::DeltaTime();
-		transform_.position_.x += moveX;//移動量
-		if (time_ > 0.2f) {
-			if (onGround_) {
-				animFrame_ = animFrame_ % 8 + 1;
-				time_ = 0.0f;
-			}
-		}
-		int hitX = transform_.position_.x + 50;
-		int hitY = transform_.position_.y + CHIP_SIZE -1;
-		if (pStage != nullptr) {
-			int push = pStage->CollisionRight(hitX, hitY);
-			transform_.position_.x -= push;
-		}
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
-		if (transform_.position_.x > 0) {//左画面端で止まるように
-			moveX += SPEED * Time::DeltaTime();//移動量
-			transform_.position_.x -= moveX;
-			if (time_ > 0.2f) {
-				if (onGround_) {
-					animFrame_ = animFrame_ % 8 + 1;
-					time_ = 0.0f;
-				}
-			}
-			int hitX = transform_.position_.x + 10;
-			int hitY = transform_.position_.y + CHIP_SIZE-1;
-			if (pStage != nullptr) {
-				int push = pStage->CollisionLeft(hitX, hitY);
-				transform_.position_.x += push;
-			}
-		}
+		moveX -= SPEED * Time::DeltaTime();
 	}
 	else {
+		time_ = 0;
 		animFrame_ = 0;
-		frameCounter_ = 0;
+	    frameCounter_ = 0;
 	}
+
+	transform_.position_.x += moveX;//移動量
+
+	if (time_ > 0.2f) {
+		if (onGround_) {
+			animFrame_ = animFrame_ % 8 + 1;
+			time_ = 0.0f;
+		}
+	}
+
+	//プレイヤーの右側のステージとの当たり判定
+	int hitX = transform_.position_.x + (CHIP_SIZE -MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+	if (pStage != nullptr) {
+		int push = pStage->CollisionRight(hitX, hitY);
+		transform_.position_.x -= push;
+	}
+	//プレイヤーの左側のステージとの当たり判定
+	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+	if (pStage != nullptr) {
+		int push = pStage->CollisionLeft(hitX, hitY);
+		transform_.position_.x += push;
+	}
+
+	//変更前の移動
+	//if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
+	//	moveX += SPEED * Time::DeltaTime();
+	//	transform_.position_.x += moveX;//移動量
+	//	if (time_ > 0.2f) {
+	//		if (onGround_) {
+	//			animFrame_ = animFrame_ % 8 + 1;
+	//			time_ = 0.0f;
+	//		}
+	//	}
+	//	int hitX = transform_.position_.x + 50;
+	//	int hitY = transform_.position_.y + CHIP_SIZE -1;
+	//	if (pStage != nullptr) {
+	//		int push = pStage->CollisionRight(hitX, hitY);
+	//		transform_.position_.x -= push;
+	//	}
+	//}
+	//else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
+	//	if (transform_.position_.x > 0) {//左画面端で止まるように
+	//		moveX -= SPEED * Time::DeltaTime();//移動量
+	//		transform_.position_.x += moveX;
+	//		if (time_ > 0.2f) {
+	//			if (onGround_) {
+	//				animFrame_ = animFrame_ % 8 + 1;
+	//				time_ = 0.0f;
+	//			}
+	//		}
+	//		int hitX = transform_.position_.x + 10;
+	//		int hitY = transform_.position_.y + CHIP_SIZE-1;
+	//		if (pStage != nullptr) {
+	//			int push = pStage->CollisionLeft(hitX, hitY);
+	//			transform_.position_.x += push;
+	//		}
+	//	}
+	//}
+	//else {
+	//	animFrame_ = 0;
+	//	frameCounter_ = 0;
+	//}
 
 	if (onGround_) {//地面にいるか
 		if (CheckHitKey(KEY_INPUT_SPACE)) {//SPACEキーを押すとジャンプ
@@ -209,13 +272,14 @@ void Player::UpdateNormal()
 	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
+	//ミサイルを飛ばしての攻撃
 	if (CheckHitKey(KEY_INPUT_E)) {
-		//if (onGround_) {
+		//if (onGround_) { //地面にいる間だけ
 			if (prevAttackKey_ == false) {
 				animFrame_ = 0;
 				animType_ = 1;
 				time_ = 0.0f;
-				state_ = S_Attack;
+				state_ = S_Attack;//攻撃の状態に移る
 			}
 			prevAttackKey_ = true;
 		//}
