@@ -23,5 +23,6 @@ public:
     void SetPosition(float _x, float _y);
 private:
     int aImage_;
+    float BulletTime_;
 };
 

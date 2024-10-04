@@ -222,7 +222,6 @@ void Player::UpdateMove()
 		time_ = 0;
 		animFrame_ = 0;
 		frameCounter_ = 0;
-		state_ = S_Normal;//Idle状態に戻る
 	}
 
 	transform_.position_.x += moveX;//移動量
@@ -318,6 +317,19 @@ void Player::UpdateMove()
 
 	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
+	//ミサイルを飛ばしての攻撃
+	if (CheckHitKey(KEY_INPUT_E)) {
+		if (prevAttackKey_ == false) {
+			animFrame_ = 0;
+			time_ = 0.0f;
+			state_ = S_Attack;//攻撃の状態に移る
+		}
+		prevAttackKey_ = true;
+	}
+	else {
+		prevAttackKey_ = false;
+	}
 }
 
 void Player::UpdateAttack()
@@ -325,13 +337,14 @@ void Player::UpdateAttack()
 	//animType_ = 2;//仮だけど攻撃モーション
 	animType_ = 3;//攻撃状態
 
-	if (animFrame_ + 1 == 6)
+	if (animFrame_ + 1 == 5)
 	{
 		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
 		int x = (int)transform_.position_.x;
 		int y = (int)transform_.position_.y;
 		attack->SetPosition(x + CHIP_SIZE, y);
 		time_ = 0.0f;
+		animFrame_ = 0;
 		state_ = S_Normal;
 	}
 

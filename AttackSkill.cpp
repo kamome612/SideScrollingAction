@@ -6,10 +6,11 @@
 
 namespace {
 	const float SPEED_ = 300;
+	const float LimitTime_ = 1.5;//消える時間
 }
 
 AttackSkill::AttackSkill(GameObject* parent)
-	:GameObject(parent,"AttackSkill"),aImage_(-1)
+	:GameObject(parent,"AttackSkill"),aImage_(-1),BulletTime_(0)
 {
 }
 
@@ -28,11 +29,16 @@ void AttackSkill::Initialize()
 
 void AttackSkill::Update()
 {
-	if (transform_.position_.y < -30) {//画面外に出ていれば消す
+	BulletTime_ += Time::DeltaTime();
+	if (BulletTime_ >= LimitTime_)//時間で消える
+	{
 		KillMe();
 	}
+	//if (transform_.position_.x < -30) {//画面外に出ていれば消す
+	//	KillMe();
+	//}
 	transform_.position_.x += SPEED_ * Time::DeltaTime();
-	transform_.position_.y -= SPEED_ * Time::DeltaTime();
+	//transform_.position_.y -= SPEED_ * Time::DeltaTime();
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
@@ -53,7 +59,7 @@ void AttackSkill::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	DrawRotaGraph(x,y,1.0,0.78, aImage_, TRUE);
+	DrawRotaGraph(x,y,1.0,1.6, aImage_, TRUE);
 	//DrawRotaGraph(x, y, 1.0, 1.6, aImage_, TRUE);
 	//DrawCircle(x,y, 10.0f, GetColor(0, 0, 255), FALSE);
 }
@@ -61,5 +67,5 @@ void AttackSkill::Draw()
 void AttackSkill::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
-	transform_.position_.y = _y;
+	transform_.position_.y = _y + 21;
 }
