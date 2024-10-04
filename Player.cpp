@@ -116,7 +116,7 @@ void Player::Update()
 	//è¦Î‚Æ‚Ì“–‚½‚è”»’è
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
-		if (pMeteo->CollideCircle(transform_.position_.x + CHIP_SIZE/2, 
+		if (pMeteo->CollideCircle(transform_.position_.x + CHIP_SIZE/4, 
 			                      transform_.position_.y + CHIP_SIZE/2, 20.0f)) {
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
@@ -188,7 +188,8 @@ void Player::UpdateNormal()
 		}
 	}
 
-	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)) {//S_MOVE‚É‚·‚é
+	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)
+		|| CheckHitKey(KEY_INPUT_SPACE)) {//S_MOVE‚É‚·‚é
 		state_ = S_Move;
 	}
 
@@ -361,7 +362,12 @@ void Player::UpdateAttack()
 		attack->SetPosition(x + CHIP_SIZE, y);
 		time_ = 0.0f;
 		animFrame_ = 0;
-		state_ = S_Normal;
+		if (onGround_) {
+			state_ = S_Normal;
+		}
+		else {
+			state_ = S_Move;
+		}
 	}
 
 	if (time_ > 0.1f) {
