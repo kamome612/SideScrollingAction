@@ -3,14 +3,15 @@
 #include "Meteorite.h"
 #include "Explosion.h"
 #include "Camera.h"
-
+#include "Enemy.h"
 namespace {
-	const float SPEED_ = 300;
-	const float LimitTime_ = 1.5;//消える時間
+	const float SPEED_ = 600;
+	const float LimitTime_ = 1.5f;
+	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
 }
 
 AttackSkill::AttackSkill(GameObject* parent)
-	:GameObject(parent,"AttackSkill"),aImage_(-1),BulletTime_(0)
+	:GameObject(parent,"AttackSkill"),aImage_(-1)
 {
 }
 
@@ -30,22 +31,32 @@ void AttackSkill::Initialize()
 void AttackSkill::Update()
 {
 	BulletTime_ += Time::DeltaTime();
-	if (BulletTime_ >= LimitTime_)//時間で消える
+	if (BulletTime_ >= LimitTime_)
 	{
 		KillMe();
 	}
-	//if (transform_.position_.x < -30) {//画面外に出ていれば消す
-	//	KillMe();
-	//}
+	if (transform_.position_.y < -30) {//画面外に出ていれば消す
+		KillMe();
+	}
 	transform_.position_.x += SPEED_ * Time::DeltaTime();
 	//transform_.position_.y -= SPEED_ * Time::DeltaTime();
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
-		if (pMeteo->CollideCircle(transform_.position_.x, transform_.position_.y, 10.0f)) {
+		if (pMeteo->CollideCircle(transform_.position_.x, transform_.position_.y+32.0f, 10.0f)) {
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
-			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
+			pEx->SetPosition(transform_.position_.x-32.0, transform_.position_.y-64.0);
+			KillMe();
+		}
+	}
+
+	std::list<Enemy*> pEnemys = GetParent()->FindGameObjects<Enemy>();
+	for (Enemy* pEnemy : pEnemys) {
+		if (pEnemy->CollideCircle(transform_.position_.x, transform_.position_.y+32.0f,10.0f)) {
+			pEnemy->KillMe();
+			Explosion* pEx = Instantiate<Explosion>(GetParent());
+			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y-64.0f);
 			KillMe();
 		}
 	}
@@ -54,12 +65,12 @@ void AttackSkill::Update()
 void AttackSkill::Draw()
 {
 	int x = (int)transform_.position_.x;
-	int y = (int)transform_.position_.y;
+	int y = (int)transform_.position_.y+32.0f;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	DrawRotaGraph(x,y,1.0,1.6, aImage_, TRUE);
+	DrawRotaGraph(x,y,1.0,1.55, aImage_, TRUE);
 	//DrawRotaGraph(x, y, 1.0, 1.6, aImage_, TRUE);
 	//DrawCircle(x,y, 10.0f, GetColor(0, 0, 255), FALSE);
 }
@@ -67,5 +78,5 @@ void AttackSkill::Draw()
 void AttackSkill::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
-	transform_.position_.y = _y + 21;
+	transform_.position_.y = _y;
 }

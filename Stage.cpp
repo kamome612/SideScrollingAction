@@ -9,6 +9,7 @@
 #include "Cloud.h"
 #include "Rocket.h"
 #include "Meteo.h"
+#include "Enemy.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -22,13 +23,10 @@ Stage::Stage(GameObject* parent)
 	:GameObject(parent,"Stage")
 {
 	hImage_ = -1;
-	lImage_ = -1;
 	width_ = 0;
 	height_ = 0;
 	mapNo_ = 1;
 	gPict_ = -1;
-	stageLife_ = 0;
-	initStageLife_ = 0;
 	map_ = nullptr;
 }
 
@@ -42,11 +40,6 @@ Stage::~Stage()
 	if (gPict_ < 0) {
 		DeleteGraph(gPict_);
 		gPict_ = -1;
-	}
-
-	if (lImage_ < 0) {
-		DeleteGraph(lImage_);
-		lImage_ = -1;
 	}
 
 	if (map_ != nullptr) {
@@ -89,16 +82,6 @@ void Stage::Draw()
 				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 		}
 	}
-
-	////ステージの体力の表示
-	//for (int i = 0; i < stageLife_; i++) {
-	//	DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
-	//}
-	//for (int i = initStageLife_; i > stageLife_;) {
-	//	i--;
-	//	DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(0,0,0), TRUE);
-	//	DrawCircle(LIFE_IMAGE_SIZE * i + 32, 32, 25, GetColor(255, 255, 255), FALSE);
-	//}
 }
 
 void Stage::StageSet()
@@ -144,10 +127,6 @@ void Stage::StageSet()
 	//バックグランドの画像読み込み
 	gPict_ = LoadGraph(("Assets/Picture/background" + n + ".png").c_str());
 	assert(gPict_ > 0);
-
-	////体力を示す画像の読み込み
-	//lImage_ = LoadGraph(("Assets/Image/planet"+ n + ".png").c_str());
-	//assert(lImage_ > 0);
 
 	//csvから読み込み
 	CsvReader csv;
@@ -225,18 +204,24 @@ void Stage::StageSet()
 				{
 				case 2:
 					sPlayer->SetGravity(1.62 / 90.0f);
-					stageLife_ = 3;
-					initStageLife_ = 3;
 					break;
 				case 3:
 					sPlayer->SetGravity(3.71 / 90.0f);
-					stageLife_ = 3;
-					initStageLife_ = 3;
 					break;
 				default:
-					stageLife_ = 5;
-					initStageLife_ = 5;
 					break;
+				}
+				break;
+			}
+			case 5: //Enemy
+			{
+				Enemy* sEnemy = Instantiate<Enemy>(GetParent());
+				sEnemy->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				if (mapNo_ == 2) {
+					sEnemy->SetGravity(1.62 / 90.0f);
+				}
+				else if (mapNo_ == 3) {
+					sEnemy->SetGravity(3.71 / 90.0f);
 				}
 				break;
 			}
@@ -301,10 +286,6 @@ int Stage::CollisionUp(int x, int y)
 
 void Stage::BreakGround(int x, int y)
 {
-	//惑星の体力を減らす
-	stageLife_ -= 1;
-
-
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
 

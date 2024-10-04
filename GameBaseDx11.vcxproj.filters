@@ -73,6 +73,9 @@
     <ClCompile Include="Flag.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -138,6 +141,9 @@
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Meteo.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
   </ItemGroup>

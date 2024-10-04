@@ -137,9 +137,6 @@ void PlayScene::StartPlay()
 void PlayScene::UpdatePlay()
 {
 	Stage* pStage = FindGameObject<Stage>();
-	if (pStage->GetStageLife() <= 0) {
-		StartGameOver();
-	}
 }
 
 void PlayScene::StartClear()

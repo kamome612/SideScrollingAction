@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="AttackSkill.cpp" />
     <ClCompile Include="Banner.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Engine\CsvReader.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cloud.h" />
     <ClInclude Include="Ease.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine\CsvReader.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Global.h" />

@@ -69,19 +69,13 @@ public:
 	//隕石が当たった時の地面などの破壊
 	void BreakGround(int x, int y);
 
-	//ステージの体力を返す
-	int GetStageLife() { return stageLife_; }
-
 private:
 	int hImage_;        //ステージの素材
 	int gPict_;         //背景の画像
-	int lImage_;        //ステージの体力的なのを表す素材
 	int* map_;          //ステージの情報を入れる
 	int width_;         //ステージの横
 	int height_;        //ステージの縦
 	int mapNo_;         //どのステージかの識別
-	int stageLife_;     //ステージの体力
-	int initStageLife_; //最初のステージの体力
 	bool IsWallBlock(int x, int y);
 };
 

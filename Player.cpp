@@ -7,11 +7,11 @@
 #include "Explosion.h"
 #include "AttackSkill.h"
 #include "Flag.h"
-#include "iostream"
+#include "Enemy.h"
 
 namespace {
-	//const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
-	const float CHIP_SIZE = 60.0f;//キャラの画像サイズ
+	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
+	//const float CHIP_SIZE = 60.0f;//キャラの画像サイズ
 	const int MAP_HEIGHT = 720; //高さ
 	const float ROBO_WIDTH = 48;
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
@@ -20,8 +20,8 @@ namespace {
 	const float MAX_POS = 400;
 	const int SPEED = 150;
 	//const int SPEED = 1000;
-	//const int MARGIN = 14;//プレイヤーのチップの余白
-	const int MARGIN = 10;//プレイヤーのチップの余白
+	const int MARGIN = 14;//プレイヤーのチップの余白
+	//const int MARGIN = 10;//プレイヤーのチップの余白
 	//重力メモ:月...1.62,火星...3.71
 }
 
@@ -121,8 +121,21 @@ void Player::Update()
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
-			KillMe();
-			scene->StartGameOver();
+			animFrame_ = 0;
+			state_ = S_Die;
+			//KillMe();
+			//scene->StartGameOver();
+		}
+	}
+
+	//敵との当たり判定
+	std::list<Enemy*> pEnemys = GetParent()->FindGameObjects<Enemy>();
+	for (Enemy* pEnemy : pEnemys) {
+		if (pEnemy->CollideCircle(transform_.position_.x + CHIP_SIZE / 4,
+			transform_.position_.y + CHIP_SIZE / 2, 20.0f)) {
+			Explosion* pEx = Instantiate<Explosion>(GetParent());
+			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
+			state_ = S_Die;
 		}
 	}
 
@@ -222,6 +235,9 @@ void Player::UpdateMove()
 		time_ = 0;
 		animFrame_ = 0;
 		frameCounter_ = 0;
+		if (onGround_) {
+			state_ = S_Normal;
+		}
 	}
 
 	transform_.position_.x += moveX;//移動量
@@ -358,7 +374,17 @@ void Player::UpdateAttack()
 
 void Player::UpdateDie()
 {
-
+	animType_ = 4;
+	if (animFrame_ + 1 == 6) {
+		KillMe();
+		animFrame_ = 0;
+		PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+		scene->StartGameOver();
+	}
+	if (time_ > 0.2f) {
+		animFrame_ = animFrame_ % 5 + 1;
+		time_ = 0.0f;
+	}
 }
 
 void Player::Draw()
@@ -372,7 +398,7 @@ void Player::Draw()
 	//DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
-	//DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 }
 
