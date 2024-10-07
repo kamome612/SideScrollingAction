@@ -80,10 +80,10 @@ void Player::Update()
 	case 1: //歩いたり、ジャンプ
 		UpdateMove();
 		break;
-	case 2:
+	case 2: //アタック
 		UpdateAttack();
 		break;
-	case 3:
+	case 3: //死ぬ
 		UpdateDie();
 		break;
 	default:
@@ -220,16 +220,33 @@ void Player::UpdateNormal()
 	}
 
 	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E)) {
+	if (CheckHitKey(KEY_INPUT_E)) {//横に飛ばす
 		if (prevAttackKey_ == false) {
 			animFrame_ = 0;
 			time_ = 0.0f;
+			isTypeA = true;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
 		prevAttackKey_ = true;
 	}
 	else {
 		prevAttackKey_ = false;
+		isTypeA = false;
+	}
+
+	if (CheckHitKey(KEY_INPUT_R)) {//斜め前に飛ばす
+		if (prevAttackKey_ == false) {
+			animFrame_ = 0;
+			time_ = 0.0f;
+			isTypeB = true;
+			state_ = S_Attack;//攻撃の状態に移る
+		}
+		prevAttackKey_ = true;
+
+	}
+	else {
+		prevAttackKey_ = false;
+		isTypeB = false;
 	}
 }
 
@@ -396,6 +413,16 @@ void Player::UpdateAttack()
 		int x = (int)transform_.position_.x;
 		int y = (int)transform_.position_.y;
 		attack->SetPosition(x + CHIP_SIZE, y);
+
+		//横に撃つか、斜めに撃つか
+		if (isTypeA == true) {
+			attack->SetAngle(0);
+
+		}
+		if (isTypeB == true) {
+			attack->SetAngle(XM_PI / -4);//角度を設定
+		}
+
 		time_ = 0.0f;
 		animFrame_ = 0;
 		if (onGround_) {

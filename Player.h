@@ -51,6 +51,8 @@ private:
     int animFrame_;//コマ
     int frameCounter_;
     int pLife_;//プレイヤーの体力
+    bool isTypeA{ false };
+    bool isTypeB{ false };
 
     enum State {
         S_Normal = 0,

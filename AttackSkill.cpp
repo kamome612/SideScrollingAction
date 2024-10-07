@@ -11,7 +11,7 @@ namespace {
 }
 
 AttackSkill::AttackSkill(GameObject* parent)
-	:GameObject(parent,"AttackSkill"),aImage_(-1)
+	:GameObject(parent,"AttackSkill"),aImage_(-1),BulletTime_(0),angle_(0)
 {
 }
 
@@ -38,8 +38,10 @@ void AttackSkill::Update()
 	if (transform_.position_.y < -30) {//画面外に出ていれば消す
 		KillMe();
 	}
-	transform_.position_.x += SPEED_ * Time::DeltaTime();
+	//transform_.position_.x += SPEED_ * Time::DeltaTime();
 	//transform_.position_.y -= SPEED_ * Time::DeltaTime();
+	transform_.position_.x += cos(angle_) * SPEED_ * Time::DeltaTime();
+	transform_.position_.y += sin(angle_) * SPEED_ * Time::DeltaTime();
 
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
@@ -70,7 +72,8 @@ void AttackSkill::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	DrawRotaGraph(x,y,1.0,1.55, aImage_, TRUE);
+	//DrawRotaGraph(x,y,1.0,1.55, aImage_, TRUE);
+	DrawRotaGraph(x, y, 1.0, angle_ - 80.1, aImage_, TRUE);//角度は適当に調整した
 	//DrawRotaGraph(x, y, 1.0, 1.6, aImage_, TRUE);
 	//DrawCircle(x,y, 10.0f, GetColor(0, 0, 255), FALSE);
 }
@@ -79,4 +82,9 @@ void AttackSkill::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
+}
+
+void AttackSkill::SetAngle(float _angle)
+{
+	angle_ = _angle;
 }

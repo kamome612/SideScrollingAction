@@ -21,8 +21,12 @@ public:
 
     //位置をセット
     void SetPosition(float _x, float _y);
+
+    //角度セット
+    void SetAngle(float _angle);
 private:
     int aImage_;
     float BulletTime_;
+    float angle_;
 };
 
