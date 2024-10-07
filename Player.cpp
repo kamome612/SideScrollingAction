@@ -19,9 +19,10 @@ namespace {
 	const float INIT_GRAVITY = 9.8/ 90.0f;
 	const float MAX_POS = 400;
 	const int SPEED = 150;
-	//const int SPEED = 1000;
+	//const int SPEED = 500;
 	const int MARGIN = 14;//プレイヤーのチップの余白
-	//const int MARGIN = 10;//プレイヤーのチップの余白
+	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
+	const float FINV_TIME = 1.0f;//無敵が終わる時間
 	//重力メモ:月...1.62,火星...3.71
 }
 
@@ -29,7 +30,7 @@ Player::Player(GameObject* parent)
 	:GameObject(parent,"Player"),pImage_(-1),gravity_(INIT_GRAVITY),
 	                             jumpSpeed_(0.0f), onGround_(true),
 	                             time_(0.0f),animType_(0),animFrame_(0),
-	                             prevAttackKey_(false)
+	                             prevAttackKey_(false), pLife_(3), invTime_(0), hitFlag_(false)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -51,6 +52,9 @@ void Player::Initialize()
 	//pImage_ = LoadGraph("Assets\\Image\\robot.png");
 	pImage_ = LoadGraph("Assets\\Image\\cyborg.png");
 	assert(pImage_ >= 0); 
+
+	hImage_ = LoadGraph("Assets\\Image\\Life.png");
+	assert(hImage_ > 0);
 }
 
 void Player::Update()
@@ -131,12 +135,29 @@ void Player::Update()
 	//敵との当たり判定
 	std::list<Enemy*> pEnemys = GetParent()->FindGameObjects<Enemy>();
 	for (Enemy* pEnemy : pEnemys) {
-		if (pEnemy->CollideCircle(transform_.position_.x + CHIP_SIZE / 4,
-			transform_.position_.y + CHIP_SIZE / 2, 20.0f)) {
-			Explosion* pEx = Instantiate<Explosion>(GetParent());
-			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
-			state_ = S_Die;
+		if (hitFlag_ == false) {
+			if (pEnemy->CollideCircle(transform_.position_.x + CHIP_SIZE / 4,
+				transform_.position_.y + CHIP_SIZE / 2, 20.0f)) {
+				//Explosion* pEx = Instantiate<Explosion>(GetParent());
+				//pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
+				//state_ = S_Die;
+				pLife_ -= 1;
+				hitFlag_ = true;
+			}
 		}
+	}
+
+	if (hitFlag_ == true) {//敵が当たったら少しの間無敵になる
+		invTime_ += Time::DeltaTime();
+		if (invTime_ >= FINV_TIME) {
+			hitFlag_ = false;
+			invTime_ = 0;
+		}
+	}
+
+	if (pLife_ == 0)//ライフが０になったら死ぬ
+	{
+		state_ = S_Die;
 	}
 
 	//ゴールの旗との当たり判定
@@ -179,9 +200,14 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
-	animType_ = 0;//何もしてないときIdle状態
+	if (hitFlag_) {//無敵の時は点滅
+		animType_ = 5;
+	}
+	else {
+		animType_ = 0;//何もしてないときIdle状態
+	}
 
-	if (time_ > 0.5f) {
+	if (time_ > 0.2f) {
 		if (onGround_) {
 			animFrame_ = animFrame_ % 3 + 1;
 			time_ = 0.0f;
@@ -209,7 +235,12 @@ void Player::UpdateNormal()
 
 void Player::UpdateMove()
 {
-	animType_ = 1;//歩くモーション
+	if (hitFlag_) {//無敵の時は点滅
+		animType_ = 6;
+	}
+	else {
+		animType_ = 1;//歩くモーション
+	}
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
 	//移動量とその初期化
@@ -243,7 +274,7 @@ void Player::UpdateMove()
 
 	transform_.position_.x += moveX;//移動量
 
-	if (time_ > 0.2f) {
+	if (time_ > 0.15f) {
 		if (onGround_) {
 			animFrame_ = animFrame_ % 5 + 1;
 			time_ = 0.0f;
@@ -351,8 +382,13 @@ void Player::UpdateMove()
 
 void Player::UpdateAttack()
 {
-	//animType_ = 2;//仮だけど攻撃モーション
-	animType_ = 3;//攻撃状態
+	
+	if (hitFlag_) {//無敵の時は点滅
+		animType_ = 7;
+	}
+	else {
+		animType_ = 3;//攻撃状態
+	}
 
 	if (animFrame_ + 1 == 5)
 	{
@@ -406,6 +442,9 @@ void Player::Draw()
 	//当たり判定を見るよう
 	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	for (int i = 0; i < pLife_; i++) {
+		DrawGraph(LIFE_IMAGE_SIZE * i, 0, hImage_, TRUE);
+	}
 }
 
 void Player::SetPosition(float _x, float _y)

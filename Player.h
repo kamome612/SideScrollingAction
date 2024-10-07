@@ -38,15 +38,19 @@ public:
     void SetGravity(float _gravity);
 private:
     int pImage_; //プレイヤーの画像
+    int hImage_; //プレイヤーの体力を表す画像
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
     bool prevAttackKey_;//ひとつ前のフレームでEキーを押したから
     bool onGround_;     //地面の上にいるか
+    bool hitFlag_; //当った時のフラグ
     float time_;        //タイム
+    float invTime_; //無敵時間
     int animType_;//状況
     int animFrame_;//コマ
     int frameCounter_;
+    int pLife_;//プレイヤーの体力
 
     enum State {
         S_Normal = 0,
