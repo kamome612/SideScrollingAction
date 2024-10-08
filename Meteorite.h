@@ -27,9 +27,13 @@ public:
 
 	//重力をセット
 	void SetGravity(float _g) { gravity_ = _g; }
+
+	//隕石の落ちるタイプをセットする
+	void SetMoveType(int _type) { moveType_ = _type; }
 private:
 	int mImage_;
 	float gravity_;
 	float moveSpeed_;
+	int moveType_;
 };
 

@@ -15,7 +15,8 @@ namespace {
 }
 
 Meteorite::Meteorite(GameObject* parent)
-	:GameObject(parent,"Meteorite"),mImage_(-1),gravity_(INIT_GRAVITY),moveSpeed_(MOVE_SPEED)
+	:GameObject(parent, "Meteorite"), mImage_(-1), gravity_(INIT_GRAVITY),
+	moveSpeed_(MOVE_SPEED), moveType_(0)
 {
 }
 
@@ -30,8 +31,18 @@ Meteorite::~Meteorite()
 void Meteorite::Initialize()
 {
 	//画像の読み込み
-	mImage_ = LoadGraph("Assets/Image/meteo.png");
-	assert(mImage_ > 0);
+	/*mImage_ = LoadGraph("Assets/Image/meteo.png");
+	assert(mImage_ > 0);*/
+
+	//新・画像読み込み
+	if (moveType_ == 0) {
+		mImage_ = LoadGraph("Assets/Image/meteo0.png");
+		assert(mImage_ > 0);
+	}
+	else if (moveType_ == 1) {
+		mImage_ = LoadGraph("Assets/Image/meteo1.png");
+		assert(mImage_ > 0);
+	}
 	transform_.position_ = INIT_POS;
 }
 
@@ -57,20 +68,34 @@ void Meteorite::Update()
 	//	return;
 	//}
 
-	bool isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y+ CHIP_SIZE/1.5);
+	bool isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y + CHIP_SIZE / 1.5);
 	if (isGround) {//地面などのステージの一部に当たったらさようなら
 		KillMe();
 		mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
-		Explosion*mEx = Instantiate<Explosion>(GetParent());
+		Explosion* mEx = Instantiate<Explosion>(GetParent());
 		mEx->SetPosition(transform_.position_.x, transform_.position_.y);
 	}
 
-	//移動の処理
+	////移動の処理
+	//moveSpeed_ += gravity_;
+	///*transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
+	//transform_.position_.y += MOVE_SPEED * Time::DeltaTime();*/
+	//transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
+	//transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
+
+	//新・移動処理(試用)
 	moveSpeed_ += gravity_;
-	/*transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
-	transform_.position_.y += MOVE_SPEED * Time::DeltaTime();*/
-	transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
-	transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
+	if (moveType_ == 0) {
+		transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
+		transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
+	}
+	else if (moveType_ == 1) {
+		transform_.position_.x += moveSpeed_ * Time::DeltaTime();
+		transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
+	}
+	else {
+		transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
+	}
 }
 
 void Meteorite::Draw()

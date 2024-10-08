@@ -27,10 +27,10 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),pImage_(-1),gravity_(INIT_GRAVITY),
-	                             jumpSpeed_(0.0f), onGround_(true),
-	                             time_(0.0f),animType_(0),animFrame_(0),
-	                             prevAttackKey_(false), pLife_(3), invTime_(0), hitFlag_(false)
+	:GameObject(parent, "Player"), pImage_(-1), gravity_(INIT_GRAVITY),
+	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
+	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
+	 invTime_(0), hitFlag_(false),lImage_(-1),ground_(0)
 {
 	//‰ŠúˆÊ’u‚Ì’²®
 	transform_.position_ = INIT_POS;
@@ -53,8 +53,8 @@ void Player::Initialize()
 	pImage_ = LoadGraph("Assets\\Image\\cyborg.png");
 	assert(pImage_ >= 0); 
 
-	hImage_ = LoadGraph("Assets\\Image\\Life.png");
-	assert(hImage_ > 0);
+	lImage_ = LoadGraph("Assets\\Image\\Life.png");
+	assert(lImage_ > 0);
 }
 
 void Player::Update()
@@ -470,7 +470,7 @@ void Player::Draw()
 	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	for (int i = 0; i < pLife_; i++) {
-		DrawGraph(LIFE_IMAGE_SIZE * i, 0, hImage_, TRUE);
+		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
 	}
 }
 

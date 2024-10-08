@@ -174,18 +174,6 @@ void Stage::StageSet()
 				sCloud->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
-			//case 31://Rocket
-			//{
-			//	Rocket* sRocket = Instantiate<Rocket>(GetParent());
-			//	sRocket->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-			//	break;
-			//}
-			//case 46://Meteo
-			//{
-			//	Meteo* sMeteo = Instantiate<Meteo>(GetParent());
-			//	sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-			//	break;
-			//}
 			}
 		}
 	}
@@ -225,7 +213,7 @@ void Stage::StageSet()
 				}
 				break;
 			}
-			case 15://Meteorite
+			case 15://Meteorite¶Œü‚«
 			{
 				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
 
@@ -236,6 +224,21 @@ void Stage::StageSet()
 				else if (mapNo_ == 3) {
 					sMeteo->SetGravity(3.71 / 90.0f);
 				}
+				sMeteo->SetMoveType(0);
+				break;
+			}
+			case 16://Meteorite‰EŒü‚«
+			{
+				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
+
+				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				if (mapNo_ == 2) {
+					sMeteo->SetGravity(1.62 / 90.0f);
+				}
+				else if (mapNo_ == 3) {
+					sMeteo->SetGravity(3.71 / 90.0f);
+				}
+				sMeteo->SetMoveType(1);
 				break;
 			}
 			}
