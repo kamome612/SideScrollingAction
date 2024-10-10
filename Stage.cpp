@@ -241,6 +241,20 @@ void Stage::StageSet()
 				sMeteo->SetMoveType(1);
 				break;
 			}
+			case 17://Meteorite‰ºŒü‚«
+			{
+				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
+
+				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				if (mapNo_ == 2) {
+					sMeteo->SetGravity(1.62 / 90.0f);
+				}
+				else if (mapNo_ == 3) {
+					sMeteo->SetGravity(3.71 / 90.0f);
+				}
+				sMeteo->SetMoveType(2);
+				break;
+			}
 			}
 		}
 	}

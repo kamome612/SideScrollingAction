@@ -31,18 +31,9 @@ Meteorite::~Meteorite()
 void Meteorite::Initialize()
 {
 	//画像の読み込み
-	/*mImage_ = LoadGraph("Assets/Image/meteo.png");
-	assert(mImage_ > 0);*/
+	mImage_ = LoadGraph("Assets/Image/meteo0.png");
+	assert(mImage_ > 0);
 
-	//新・画像読み込み
-	if (moveType_ == 0) {
-		mImage_ = LoadGraph("Assets/Image/meteo0.png");
-		assert(mImage_ > 0);
-	}
-	else if (moveType_ == 1) {
-		mImage_ = LoadGraph("Assets/Image/meteo1.png");
-		assert(mImage_ > 0);
-	}
 	transform_.position_ = INIT_POS;
 }
 
@@ -85,15 +76,15 @@ void Meteorite::Update()
 
 	//新・移動処理(試用)
 	moveSpeed_ += gravity_;
-	if (moveType_ == 0) {
+	if (moveType_ == 0) {//左向き
 		transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
 		transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
 	}
-	else if (moveType_ == 1) {
+	else if (moveType_ == 1) {//右向き
 		transform_.position_.x += moveSpeed_ * Time::DeltaTime();
 		transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
 	}
-	else {
+	else {//下向き
 		transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
 	}
 }
@@ -109,7 +100,15 @@ void Meteorite::Draw()
 	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 
 	//当たり判定を可視化するため用
-	//DrawCircle(x + CHIP_SIZE/4, y + CHIP_SIZE/2, 24.0f, GetColor(0, 0, 255), FALSE);
+	switch (moveType_)
+	{
+	case 0:
+		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
+	case 1:
+		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
+	case 2:
+		DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 4 * 3, 24.0f, GetColor(0, 0, 255), FALSE);
+	}
 	//DrawPixel(transform_.position_.x, transform_.position_.y + CHIP_SIZE /1.5, GetColor(0, 0, 0));
 }
 
@@ -133,5 +132,23 @@ bool Meteorite::CollideCircle(float x, float y, float r)
 	}
 	else {
 		return false;
+	}
+}
+
+void Meteorite::SetMoveType(int _type)
+{
+	moveType_ = _type;
+	//新・画像読み込み
+	if (moveType_ == 0) {//左向きの画像
+		mImage_ = LoadGraph("Assets/Image/meteo0.png");
+		assert(mImage_ > 0);
+	}
+	else if (moveType_ == 1) {//右向きの画像
+		mImage_ = LoadGraph("Assets/Image/meteo1.png");
+		assert(mImage_ > 0);
+	}
+	else {//下向きの画像
+		mImage_ = LoadGraph("Assets/Image/meteo2.png");
+		assert(mImage_ > 0);
 	}
 }
