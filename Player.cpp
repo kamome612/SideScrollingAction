@@ -77,11 +77,11 @@ void Player::Update()
 		return;
 
 	//ちょっとプレイヤーの座標を確認したいとき用
-	if (CheckHitKey(KEY_INPUT_O)) {
+	/*if (CheckHitKey(KEY_INPUT_O)) {
 		int tmp = (int)transform_.position_.x;
 		int tmp2 = (int)transform_.position_.y;
 		printfDx("(%d,%d)", tmp,tmp2);
-	}
+	}*/
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
@@ -302,12 +302,14 @@ void Player::UpdateMove()
 
 	transform_.position_.x += moveX;//移動量
 
+	//アニメーション
 	if (time_ > 0.15f) {
 		if (onGround_) {
 			animFrame_ = animFrame_ % 5 + 1;
 			time_ = 0.0f;
 		}
 	}
+
 
 	//プレイヤーの右側のステージとの当たり判定
 	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
