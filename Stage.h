@@ -34,6 +34,9 @@ public:
 	//ステージ変更などに使う
 	void ChangeStage(int _mapNo) { mapNo_ = _mapNo; }
 
+	//ステージの種類のゲッター
+	int GetMapNo() { return mapNo_; }
+
 	/// <summary>
 	/// 右側の点が当たっているか調べる
 	/// </summary>

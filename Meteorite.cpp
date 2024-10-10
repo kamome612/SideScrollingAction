@@ -40,6 +40,12 @@ void Meteorite::Initialize()
 void Meteorite::Update()
 {
 	Stage* mStage = GetParent()->FindGameObject<Stage>();
+	if (mStage->GetMapNo() == 2) {
+		gravity_ = 1.62 / 90.0f;
+	}
+	else if (mStage->GetMapNo() == 3) {
+		gravity_ = 3.71 / 90.0f;
+	}
 
 	//ƒXƒNƒ[ƒ‹‚É‡‚í‚¹‚Ä“®‚­‚æ‚¤‚É
 	int x = (int)transform_.position_.x;

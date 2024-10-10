@@ -76,6 +76,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="MeteoSpawner.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -144,6 +147,9 @@
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MeteoSpawner.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
   </ItemGroup>

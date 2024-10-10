@@ -10,6 +10,7 @@
 #include "Rocket.h"
 #include "Meteo.h"
 #include "Enemy.h"
+#include "MeteoSpawner.h"	
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -218,12 +219,12 @@ void Stage::StageSet()
 				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
 
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				if (mapNo_ == 2) {
+				/*if (mapNo_ == 2) {
 					sMeteo->SetGravity(1.62 / 90.0f);
 				}
 				else if (mapNo_ == 3) {
 					sMeteo->SetGravity(3.71 / 90.0f);
-				}
+				}*/
 				sMeteo->SetMoveType(0);
 				break;
 			}
@@ -232,12 +233,12 @@ void Stage::StageSet()
 				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
 
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				if (mapNo_ == 2) {
+				/*if (mapNo_ == 2) {
 					sMeteo->SetGravity(1.62 / 90.0f);
 				}
 				else if (mapNo_ == 3) {
 					sMeteo->SetGravity(3.71 / 90.0f);
-				}
+				}*/
 				sMeteo->SetMoveType(1);
 				break;
 			}
@@ -246,15 +247,19 @@ void Stage::StageSet()
 				Meteorite* sMeteo = Instantiate<Meteorite>(GetParent());
 
 				sMeteo->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
-				if (mapNo_ == 2) {
+				/*if (mapNo_ == 2) {
 					sMeteo->SetGravity(1.62 / 90.0f);
 				}
 				else if (mapNo_ == 3) {
 					sMeteo->SetGravity(3.71 / 90.0f);
-				}
+				}*/
 				sMeteo->SetMoveType(2);
 				break;
 			}
+			case 20://MeteoSpawner
+				MeteoSpawner * meteoS = Instantiate<MeteoSpawner>(GetParent());
+				meteoS->SetPosition(w* CHIP_SIZE, h* CHIP_SIZE);
+				break;
 			}
 		}
 	}

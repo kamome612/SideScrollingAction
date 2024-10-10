@@ -6,6 +6,7 @@
 #include "Engine/time.h"
 #include "Engine/SceneManager.h"
 #include "ResultScene.h"
+#include <random>
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
@@ -33,6 +34,7 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+	srand(time(NULL));
 	switch (state_) {
 	case S_Select:UpdateSelect(); break;
 	case S_Ready:UpdateReady(); break;
