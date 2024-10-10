@@ -30,7 +30,7 @@ Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), pImage_(-1), gravity_(INIT_GRAVITY),
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
 	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
-	 invTime_(0), hitFlag_(false),lImage_(-1),ground_(0)
+	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0)
 {
 	//‰ŠúˆÊ’u‚Ì’²®
 	transform_.position_ = INIT_POS;
@@ -44,6 +44,14 @@ Player::~Player()
 		DeleteGraph(pImage_);
 		pImage_ = -1;
 	}
+	if (lImage_ > 0) {
+		DeleteGraph(lImage_);
+		lImage_ = -1;
+	}
+	if (dImage_ > 0) {
+		DeleteGraph(dImage_);
+		dImage_ = -1;
+	}
 }
 
 void Player::Initialize()
@@ -55,6 +63,9 @@ void Player::Initialize()
 
 	lImage_ = LoadGraph("Assets\\Image\\Life.png");
 	assert(lImage_ > 0);
+
+	dImage_ = LoadGraph("Assets\\Image\\Damege.png");
+	assert(dImage_ > 0);
 }
 
 void Player::Update()
@@ -469,6 +480,10 @@ void Player::Draw()
 	//“–‚½‚è”»’è‚ðŒ©‚é‚æ‚¤
 	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	for (int j = 0; j < 3; j++) {
+
+		DrawGraph(LIFE_IMAGE_SIZE * j, 0, dImage_, TRUE);
+	}
 	for (int i = 0; i < pLife_; i++) {
 		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
 	}

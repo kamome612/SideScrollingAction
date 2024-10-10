@@ -39,6 +39,7 @@ public:
 private:
     int pImage_; //プレイヤーの画像
     int lImage_; //プレイヤーの体力を表す画像
+    int dImage_; //体力のダメージ受けた部分の画像
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
