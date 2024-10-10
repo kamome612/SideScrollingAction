@@ -7,6 +7,7 @@
 
 namespace {
 	static const int SCREEN_WIDTH = 1280;
+	static const int SCREEN_HEIGHT = 720;
 	//const int CHIP_SIZE = 256;
 	const float INIT_GRAVITY = 9.8 / 90.0f;
 	const int CHIP_SIZE = 128;
@@ -49,6 +50,7 @@ void Meteorite::Update()
 
 	//スクロールに合わせて動くように
 	int x = (int)transform_.position_.x;
+	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValue();
@@ -58,19 +60,33 @@ void Meteorite::Update()
 	if (!scene->canMove())//canMoveなら動かす
 		return;
 
-	if (x > SCREEN_WIDTH)//画面外(右側)にいるならなにもしない
+	if (x < 0 - CHIP_SIZE || y > SCREEN_HEIGHT) {
+		//マップ外に出たらさよなら
+		KillMe();
 		return;
-	//else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
-	//	KillMe();
-	//	return;
-	//}
+	}
 
-	bool isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y + CHIP_SIZE / 1.5);
+	bool isGround = false;
+	switch (moveType_)//隕石の種類によって変える
+	{
+	case 0://左向き
+	    isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y + CHIP_SIZE / 2.0);
+		break;
+	case 1://右向き
+		isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0 * 3.0, transform_.position_.y + CHIP_SIZE / 2.0);
+		break;
+	case 2://下向き
+		isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 2.0, transform_.position_.y + CHIP_SIZE / 4 * 3);
+		break;
+	}
+
 	if (isGround) {//地面などのステージの一部に当たったらさようなら
 		KillMe();
-		mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
-		Explosion* mEx = Instantiate<Explosion>(GetParent());
-		mEx->SetPosition(transform_.position_.x, transform_.position_.y);
+		if (!(x > SCREEN_WIDTH)) {//画面外(右側)にいるならステージ壊したりしないように
+			mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
+			Explosion* mEx = Instantiate<Explosion>(GetParent());
+			mEx->SetPosition(transform_.position_.x, transform_.position_.y);
+		}
 	}
 
 	//新・移動処理(採用)
@@ -125,8 +141,8 @@ bool Meteorite::CollideCircle(float x, float y, float r)
 {
 	//x,y,rが相手の円の情報
 	//自分の円の情報
-	float myCenterX;
-	float myCenterY;
+	float myCenterX = 0.0f;
+	float myCenterY = 0.0f;
 	switch (moveType_) {//隕石の種類によって分ける
 	case 0:
 		myCenterX = transform_.position_.x + (float)CHIP_SIZE / 4;
