@@ -67,14 +67,7 @@ void Meteorite::Update()
 		mEx->SetPosition(transform_.position_.x, transform_.position_.y);
 	}
 
-	////移動の処理
-	//moveSpeed_ += gravity_;
-	///*transform_.position_.x -= MOVE_SPEED * Time::DeltaTime();
-	//transform_.position_.y += MOVE_SPEED * Time::DeltaTime();*/
-	//transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
-	//transform_.position_.y += moveSpeed_ * 0.75 * Time::DeltaTime();
-
-	//新・移動処理(試用)
+	//新・移動処理(採用)
 	moveSpeed_ += gravity_;
 	if (moveType_ == 0) {//左向き
 		transform_.position_.x -= moveSpeed_ * Time::DeltaTime();
@@ -100,16 +93,20 @@ void Meteorite::Draw()
 	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 
 	//当たり判定を可視化するため用
-	switch (moveType_)
+	switch (moveType_)//隕石の種類によって分ける
 	{
-	case 0:
+	case 0://左向き
 		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
-	case 1:
+		break;
+	case 1://右向き
 		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
-	case 2:
+		break;
+	case 2://下向き
 		DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 4 * 3, 24.0f, GetColor(0, 0, 255), FALSE);
+		break;
+	default:
+		break;
 	}
-	//DrawPixel(transform_.position_.x, transform_.position_.y + CHIP_SIZE /1.5, GetColor(0, 0, 0));
 }
 
 void Meteorite::SetPosition(float _x, float _y)
@@ -122,8 +119,24 @@ bool Meteorite::CollideCircle(float x, float y, float r)
 {
 	//x,y,rが相手の円の情報
 	//自分の円の情報
-	float myCenterX = transform_.position_.x + (float)CHIP_SIZE / 4;
-	float myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2;
+	float myCenterX;
+	float myCenterY;
+	switch (moveType_) {//隕石の種類によって分ける
+	case 0:
+		myCenterX = transform_.position_.x + (float)CHIP_SIZE / 4;
+		myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2;
+		break;
+	case 1:
+		myCenterX = transform_.position_.x + (float)CHIP_SIZE / 4 * 3;
+		myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2;
+		break;
+	case 2:
+		myCenterX = transform_.position_.x + (float)CHIP_SIZE / 2;
+		myCenterY = transform_.position_.y + (float)CHIP_SIZE / 4 * 3;
+		break;
+
+	}
+
 	float myR = 24.0f;
 	float dx = myCenterX - x;
 	float dy = myCenterY - y;
