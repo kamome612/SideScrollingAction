@@ -58,7 +58,7 @@ void Player::Initialize()
 {
 	//プレイヤーの画像の読み込み
 	//pImage_ = LoadGraph("Assets\\Image\\robot.png");
-	pImage_ = LoadGraph("Assets\\Image\\cyborg.png");
+	pImage_ = LoadGraph("Assets\\Image\\cyborg3.png");
 	assert(pImage_ >= 0); 
 
 	lImage_ = LoadGraph("Assets\\Image\\Life.png");
@@ -290,6 +290,7 @@ void Player::UpdateMove()
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		moveX -= SPEED * Time::DeltaTime();
+		animType_ = 11;
 	}
 	else {
 		time_ = 0;
@@ -310,6 +311,19 @@ void Player::UpdateMove()
 		}
 	}
 
+	//左向きの歩き
+	if (time_ > 0.15f) {
+		if (onGround_) {
+			if (animFrame_ == 0) {
+				animFrame_ = 5;
+			}
+			else {
+				animFrame_--;
+			}
+
+			time_ = 0.0f;
+		}
+	}
 
 	//プレイヤーの右側のステージとの当たり判定
 	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
