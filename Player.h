@@ -54,6 +54,7 @@ private:
     int pLife_;//プレイヤーの体力
     bool isTypeA{ false };
     bool isTypeB{ false };
+    int prevMoveKey_;//左右どっちのキーが前回押されたか
 
     enum State {
         S_Normal = 0,

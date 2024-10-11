@@ -30,7 +30,8 @@ Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), pImage_(-1), gravity_(INIT_GRAVITY),
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
 	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
-	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0)
+	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
+	 prevMoveKey_(0)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -212,16 +213,37 @@ void Player::Update()
 void Player::UpdateNormal()
 {
 	if (hitFlag_) {//無敵の時は点滅
-		animType_ = 5;
+		if (prevMoveKey_ == 0) {
+			animType_ = 5;
+		}
+		else{
+			animType_ = 15;
+		}
 	}
 	else {
-		animType_ = 0;//何もしてないときIdle状態
+		if (prevMoveKey_ == 0) {
+			animType_ = 0;//何もしてないときIdle状態
+		}
+		else {
+			animType_ = 10;
+		}
 	}
 
 	if (time_ > 0.2f) {
 		if (onGround_) {
-			animFrame_ = animFrame_ % 3 + 1;
-			time_ = 0.0f;
+			if (prevMoveKey_ == 0) {
+				animFrame_ = animFrame_ % 3 + 1;
+				time_ = 0.0f;
+			}
+			else {
+				if (animFrame_ == 2) {
+					animFrame_ = 5;
+				}
+				else {
+					animFrame_--;
+				}
+				time_ = 0.0f;
+			}
 		}
 	}
 
@@ -264,10 +286,20 @@ void Player::UpdateNormal()
 void Player::UpdateMove()
 {
 	if (hitFlag_) {//無敵の時は点滅
-		animType_ = 6;
+		if (prevMoveKey_ == 0) {
+			animType_ = 6;
+		}
+		else {
+			animType_ = 16;
+		}
 	}
 	else {
-		animType_ = 1;//歩くモーション
+		if (prevMoveKey_ == 0) {
+			animType_ = 1;//歩くモーション
+		}
+		else {
+			animType_ = 11;
+		}
 	}
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
@@ -287,9 +319,11 @@ void Player::UpdateMove()
 	//移動
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
 		moveX += SPEED * Time::DeltaTime();
+		prevMoveKey_ = 0;//右向き
 	}
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		moveX -= SPEED * Time::DeltaTime();
+		prevMoveKey_ = 1;//左向き
 		animType_ = 11;
 	}
 	else {
@@ -298,30 +332,36 @@ void Player::UpdateMove()
 		frameCounter_ = 0;
 		if (onGround_) {
 			state_ = S_Normal;
+			if (prevMoveKey_ == 1) {
+				animFrame_ = 5;
+			}
 		}
 	}
 
 	transform_.position_.x += moveX;//移動量
 
-	//アニメーション
-	if (time_ > 0.15f) {
-		if (onGround_) {
-			animFrame_ = animFrame_ % 5 + 1;
-			time_ = 0.0f;
+	if (prevMoveKey_ == 0) {
+		//アニメーション
+		if (time_ > 0.15f) {
+			if (onGround_) {
+				animFrame_ = animFrame_ % 5 + 1;
+				time_ = 0.0f;
+			}
 		}
 	}
+	else {
+		//左向きの歩き
+		if (time_ > 0.15f) {
+			if (onGround_) {
+				if (animFrame_ == 0) {
+					animFrame_ = 5;
+				}
+				else {
+					animFrame_--;
+				}
 
-	//左向きの歩き
-	if (time_ > 0.15f) {
-		if (onGround_) {
-			if (animFrame_ == 0) {
-				animFrame_ = 5;
+				time_ = 0.0f;
 			}
-			else {
-				animFrame_--;
-			}
-
-			time_ = 0.0f;
 		}
 	}
 
@@ -391,19 +431,37 @@ void Player::UpdateMove()
 	if (!onGround_ && jumpSpeed_ < 0) {
 		/*animType_ = 2;
 		animFrame_ = 2;*/
-		animType_ = 2;
-		animFrame_ = 0;
-		if (time_ > 0.5) {
-			animFrame_ = 1;
+		if (prevMoveKey_ == 0) {
+			animType_ = 2;
+			animFrame_ = 0;
+			if (time_ > 0.5) {
+				animFrame_ = 1;
+			}
+		}
+		if (prevMoveKey_ == 1) {
+			animType_ = 12;
+			animFrame_ = 5;
+			if (time_ > 0.5) {
+				animFrame_ = 4;
+			}
 		}
 	}
 	else if (!onGround_ && jumpSpeed_ > 0) {
 		/*animType_ = 2;
 		animFrame_ = 1;*/
-		animType_ = 2;
-		animFrame_ = 2;
-		if (time_ > 0.5) {
+		if (prevMoveKey_ == 0) {
+			animType_ = 2;
+			animFrame_ = 2;
+			if (time_ > 0.5) {
+				animFrame_ = 3;
+			}
+		}
+		if (prevMoveKey_ == 1) {
+			animType_ = 12;
 			animFrame_ = 3;
+			if (time_ > 0.5) {
+				animFrame_ = 2;
+			}
 		}
 	}
 
