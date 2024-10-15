@@ -471,7 +471,14 @@ void Player::UpdateMove()
 	//ミサイルを飛ばしての攻撃
 	if (CheckHitKey(KEY_INPUT_E)) {
 		if (prevAttackKey_ == false) {
-			animFrame_ = 0;
+			if (prevMoveKey_ == 0) {
+				animFrame_ = 0;
+				animType_ = 3;
+			}
+			else {
+				animFrame_ = 5;
+				animType_ = 13;
+			}
 			time_ = 0.0f;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
@@ -484,45 +491,96 @@ void Player::UpdateMove()
 
 void Player::UpdateAttack()
 {
-	
 	if (hitFlag_) {//無敵の時は点滅
-		animType_ = 7;
-	}
-	else {
-		animType_ = 3;//攻撃状態
-	}
-
-	if (animFrame_ + 1 == 5)
-	{
-		AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
-		int x = (int)transform_.position_.x;
-		int y = (int)transform_.position_.y;
-		attack->SetPosition(x + CHIP_SIZE, y);
-
-		//横に撃つか、斜めに撃つか
-		if (isTypeA == true) {
-			attack->SetAngle(0);
-
-		}
-		if (isTypeB == true) {
-			attack->SetAngle(XM_PI / -4);//角度を設定
-		}
-
-		time_ = 0.0f;
-		animFrame_ = 0;
-		if (onGround_) {
-			state_ = S_Normal;
+		if (prevMoveKey_ == 0) {
+			animType_ = 8;
 		}
 		else {
-			state_ = S_Move;
+			animType_ = 18;
+		}
+	}
+	else {
+		if (prevMoveKey_ == 0) {
+			animType_ = 3;//攻撃状態
+		}
+		else {
+			animType_ = 13;
 		}
 	}
 
-	if (time_ > 0.1f) {
-		/*animFrame_ = (animFrame_ + 1) % 6;
-		time_ = 0.0f;*/
-		animFrame_ = animFrame_ % 5 + 1;
-		time_ = 0.0f;
+	//アニメーションが最後になったら弾を打ち出す
+	if (prevMoveKey_ == 0) {
+		if (animFrame_ + 1 == 5)
+		{
+			AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
+			int x = (int)transform_.position_.x;
+			int y = (int)transform_.position_.y;
+			attack->SetPosition(x + CHIP_SIZE, y);
+
+			//横に撃つか、斜めに撃つか
+			if (isTypeA == true) {
+				attack->SetAngle(0);
+			}
+			if (isTypeB == true) {
+				attack->SetAngle(XM_PI / -4);//角度を設定
+			}
+
+			time_ = 0.0f;
+			animFrame_ = 0;
+			if (onGround_) {
+				state_ = S_Normal;
+			}
+			else {
+				state_ = S_Move;
+			}
+		}
+	}
+	else{
+		if (animFrame_ - 1 == 0)
+		{
+			AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
+			int x = (int)transform_.position_.x;
+			int y = (int)transform_.position_.y;
+			attack->SetPosition(x + CHIP_SIZE, y);
+
+			//横に撃つか、斜めに撃つか
+			if (isTypeA == true) {
+				attack->SetAngle(XM_PI);
+
+			}
+			if (isTypeB == true) {
+				attack->SetAngle(XM_PI / -4 * 3);//角度を設定
+			}
+
+			time_ = 0.0f;
+			animFrame_ = 5;
+			if (onGround_) {
+				state_ = S_Normal;
+			}
+			else {
+				state_ = S_Move;
+			}
+		}
+	}
+
+	if (prevMoveKey_ == 0) {
+		if (time_ > 0.1f) {
+			/*animFrame_ = (animFrame_ + 1) % 6;
+			time_ = 0.0f;*/
+			animFrame_ = animFrame_ % 5 + 1;
+			time_ = 0.0f;
+		}
+	}
+	else {
+		if (time_ > 0.1f) {
+			if (animFrame_ == 0) {
+				animFrame_ = 5;
+			}
+			else {
+				animFrame_--;
+			}
+			time_ = 0.0f;
+		}
 	}
 }
 

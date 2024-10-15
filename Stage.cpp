@@ -315,6 +315,7 @@ void Stage::BreakGround(int x, int y)
 	int desChip = chipY * width_ + chipX;
 	//destructionRange:‰ó‚·”ÍˆÍ
 	int desRange = 5;
+	int desRangeY = 7;
 
 	//è¦Î‚ª“–‚½‚Á‚½‚Æ‚±‚ë‚ç‚Ö‚ñ‚ğ‰ó‚·
 	for (int i = 0; i <= desRange; i++) {
@@ -322,7 +323,9 @@ void Stage::BreakGround(int x, int y)
 		map_[desChip + i] = CHIP_NULL;
 		map_[desChip + width_ + i] = CHIP_NULL;
 		if (i > 0 && i < desRange) {
-			map_[desChip + width_*2 + i] = CHIP_NULL;
+			for (int j = 2; j < desRangeY; j++) {
+				map_[desChip + width_ * j + i] = CHIP_NULL;
+			}
 		}
 	}
 }
