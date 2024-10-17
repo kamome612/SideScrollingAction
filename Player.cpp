@@ -95,7 +95,7 @@ void Player::Update()
 	case 2: //アタック
 		UpdateAttack();
 		break;
-	case 3: //死ぬ
+	case 3: //〇ぬ
 		UpdateDie();
 		break;
 	default:
@@ -137,7 +137,12 @@ void Player::Update()
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
-			animFrame_ = 0;
+			if (prevMoveKey_ == 0) {
+				animFrame_ = 0;
+			}
+			else {
+				animFrame_ = 5;
+			}
 			state_ = S_Die;
 			//KillMe();
 			//scene->StartGameOver();
@@ -624,23 +629,47 @@ void Player::UpdateAttack()
 
 void Player::UpdateDie()
 {
-	animType_ = 4;//死ぬ時のアニメーション
+	if (prevMoveKey_ == 0) {
+		animType_ = 4;//死ぬ時のアニメーション(右)
+	}
+	else {
+		animType_ = 14;//死ぬときのアニメーション(左)
+	}
 
 	//死んだ時に地面にいないなら地面に落としてから〇す
 	if (!onGround_) {
 		transform_.position_.y += 3.0f;
-		animFrame_ = 1;
+		if (prevMoveKey_ == 0) {
+			animFrame_ = 1;
+		}
+		else {
+			animFrame_ = 4;
+		}
 	}
 	else {
-		if (animFrame_ + 1 == 6) {
-			KillMe();
-			animFrame_ = 0;
-			PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-			scene->StartGameOver();
+		if (prevMoveKey_ == 0) {
+			if (animFrame_ + 1 == 6) {
+				KillMe();
+				animFrame_ = 0;
+				PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+				scene->StartGameOver();
+			}
+			if (time_ > 0.2f) {
+				animFrame_ = animFrame_ % 5 + 1;
+				time_ = 0.0f;
+			}
 		}
-		if (time_ > 0.2f) {
-			animFrame_ = animFrame_ % 5 + 1;
-			time_ = 0.0f;
+		else {
+			if (animFrame_ == 0) {
+				KillMe();
+				animFrame_ = 5;
+				PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+				scene->StartGameOver();
+			}
+			if (time_ > 0.2f) {
+				animFrame_--;
+				time_ = 0.0f;
+			}
 		}
 	}
 }
