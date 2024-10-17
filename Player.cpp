@@ -624,16 +624,24 @@ void Player::UpdateAttack()
 
 void Player::UpdateDie()
 {
-	animType_ = 4;
-	if (animFrame_ + 1 == 6) {
-		KillMe();
-		animFrame_ = 0;
-		PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-		scene->StartGameOver();
+	animType_ = 4;//死ぬ時のアニメーション
+
+	//死んだ時に地面にいないなら地面に落としてから〇す
+	if (!onGround_) {
+		transform_.position_.y += 3.0f;
+		animFrame_ = 1;
 	}
-	if (time_ > 0.2f) {
-		animFrame_ = animFrame_ % 5 + 1;
-		time_ = 0.0f;
+	else {
+		if (animFrame_ + 1 == 6) {
+			KillMe();
+			animFrame_ = 0;
+			PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+			scene->StartGameOver();
+		}
+		if (time_ > 0.2f) {
+			animFrame_ = animFrame_ % 5 + 1;
+			time_ = 0.0f;
+		}
 	}
 }
 
