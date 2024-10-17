@@ -37,9 +37,9 @@ void AttackSkill::Update()
 	{
 		KillMe();
 	}
-	//if (transform_.position_.y < -30) {//画面外に出ていれば消す
-	//	KillMe();
-	//}
+	if (transform_.position_.y < -30) {//画面外に出ていれば消す
+		KillMe();
+	}
 	//transform_.position_.x += SPEED_ * Time::DeltaTime();
 	//transform_.position_.y -= SPEED_ * Time::DeltaTime();
 	transform_.position_.x += cos(angle_) * SPEED_ * Time::DeltaTime();
@@ -66,8 +66,9 @@ void AttackSkill::Update()
 	}
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
-	bool isHit = pStage->CollisionLeft(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
-	if (isHit) {
+	bool isHitLeft = pStage->CollisionLeft(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
+	bool isHitRight = pStage->CollisionRight(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
+	if (isHitLeft || isHitRight) {
 		KillMe();
 	}
 }

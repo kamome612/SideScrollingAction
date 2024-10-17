@@ -255,7 +255,14 @@ void Player::UpdateNormal()
 	//ミサイルを飛ばしての攻撃
 	if (CheckHitKey(KEY_INPUT_E)) {//横に飛ばす
 		if (prevAttackKey_ == false) {
-			animFrame_ = 0;
+			if (prevMoveKey_ == 0) {
+				animFrame_ = 0;
+				animType_ = 3;
+			}
+			else {
+				animFrame_ = 5;
+				animType_ = 13;
+			}
 			time_ = 0.0f;
 			isTypeA = true;
 			state_ = S_Attack;//攻撃の状態に移る
@@ -269,7 +276,14 @@ void Player::UpdateNormal()
 
 	if (CheckHitKey(KEY_INPUT_R)) {//斜め前に飛ばす
 		if (prevAttackKey_ == false) {
-			animFrame_ = 0;
+			if (prevMoveKey_ == 0) {
+				animFrame_ = 0;
+				animType_ = 3;
+			}
+			else {
+				animFrame_ = 5;
+				animType_ = 13;
+			}
 			time_ = 0.0f;
 			isTypeB = true;
 			state_ = S_Attack;//攻撃の状態に移る
@@ -324,17 +338,17 @@ void Player::UpdateMove()
 	else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
 		moveX -= SPEED * Time::DeltaTime();
 		prevMoveKey_ = 1;//左向き
-		animType_ = 11;
 	}
 	else {
-		time_ = 0;
-		animFrame_ = 0;
-		frameCounter_ = 0;
 		if (onGround_) {
 			state_ = S_Normal;
-			if (prevMoveKey_ == 1) {
+			if (prevMoveKey_ == 0) {
+				animFrame_ = 0;
+			}
+			else {
 				animFrame_ = 5;
 			}
+			time_ = 0;
 		}
 	}
 
@@ -480,12 +494,36 @@ void Player::UpdateMove()
 				animType_ = 13;
 			}
 			time_ = 0.0f;
+			isTypeA = true;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
 		prevAttackKey_ = true;
 	}
 	else {
 		prevAttackKey_ = false;
+		isTypeA = false;
+	}
+
+	if (CheckHitKey(KEY_INPUT_R)) {//斜め前に飛ばす
+		if (prevAttackKey_ == false) {
+			if (prevMoveKey_ == 0) {
+				animFrame_ = 0;
+				animType_ = 3;
+			}
+			else {
+				animFrame_ = 5;
+				animType_ = 13;
+			}
+			time_ = 0.0f;
+			isTypeB = true;
+			state_ = S_Attack;//攻撃の状態に移る
+		}
+		prevAttackKey_ = true;
+
+	}
+	else {
+		prevAttackKey_ = false;
+		isTypeB = false;
 	}
 }
 
