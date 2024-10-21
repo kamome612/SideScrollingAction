@@ -40,6 +40,15 @@ public:
     //弾のリロード
     void Reload();
 
+    //攻撃に移るための準備
+    void ReadyAttack(bool &_isType);
+
+    //攻撃
+    void Attack(int _angleA,int _angleB);
+
+    //〇ぬ
+    void Die();
+
 private:
     int pImage_; //プレイヤーの画像
     int lImage_; //プレイヤーの体力を表す画像

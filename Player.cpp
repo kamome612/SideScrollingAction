@@ -253,21 +253,7 @@ void Player::UpdateNormal()
 
 	//ミサイルを飛ばしての攻撃
 	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {//横に飛ばす
-		if (prevAttackKey_ == false) {
-			if (prevMoveKey_ == 0) {
-				animFrame_ = 0;
-				animType_ = 3;
-			}
-			else {
-				animFrame_ = 5;
-				animType_ = 13;
-			}
-			time_ = 0.0f;
-			isTypeA = true;
-			currentNum_ -= 1;
-			state_ = S_Attack;//攻撃の状態に移る
-		}
-		prevAttackKey_ = true;
+		ReadyAttack(isTypeA);//弾の準備
 	}
 	else {
 		prevAttackKey_ = false;
@@ -275,22 +261,7 @@ void Player::UpdateNormal()
 	}
 
 	if (CheckHitKey(KEY_INPUT_R) && currentNum_ > 0) {//斜め前に飛ばす
-		if (prevAttackKey_ == false) {
-			if (prevMoveKey_ == 0) {
-				animFrame_ = 0;
-				animType_ = 3;
-			}
-			else {
-				animFrame_ = 5;
-				animType_ = 13;
-			}
-			time_ = 0.0f;
-			isTypeB = true;
-			currentNum_ -= 1;
-			state_ = S_Attack;//攻撃の状態に移る
-		}
-		prevAttackKey_ = true;
-
+		ReadyAttack(isTypeB);//弾の準備
 	}
 	else {
 		prevAttackKey_ = false;
@@ -329,12 +300,19 @@ void Player::UpdateMove()
 	moveY = 0.0f;
 
 	//コントローラ操作(なぜかスティックを左に倒しても左にいかない)
-	//int x, y;
-	//GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
-	//moveX += (float)x / 1000.0f;
-	//if (moveX < 0.3f) {//中心付近の誤差をのぞく
-	//	 moveX = 0.0f;
-	//}
+	int x, y;
+	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);//スティックの倒し具合を取ってくる
+	moveX += (float)x / 1000.0f; //取ってきた値を使えるように小さくする
+	if (moveX < 0.3f) {//中心付近の誤差をのぞく
+		 moveX = 0.0f;
+	}
+	//コントローラでも右左の動きを切り替えられるように
+	if (moveX > 0) {
+		prevMoveKey_ = 0;//右向き
+	}
+	else if(moveX < 0) {
+		prevMoveKey_ = 1;//左向き
+	}
 
 	//移動
 	if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
@@ -345,13 +323,13 @@ void Player::UpdateMove()
 		moveX -= SPEED * Time::DeltaTime();
 		prevMoveKey_ = 1;//左向き
 	}
-	else {
-		if (onGround_) {
-			state_ = S_Normal;
-			if (prevMoveKey_ == 0) {
+	else {//なにも移動のキーは押してない
+		if (onGround_) {            //地面にいるなら
+			state_ = S_Normal;      //ノーマルに戻したる
+			if (prevMoveKey_ == 0) {//最終が右向きなら
 				animFrame_ = 0;
 			}
-			else {
+			else {//最終が左向きなら
 				animFrame_ = 5;
 			}
 			time_ = 0;
@@ -360,7 +338,7 @@ void Player::UpdateMove()
 
 	transform_.position_.x += moveX;//移動量
 
-	if (prevMoveKey_ == 0) {
+	if (prevMoveKey_ == 0) {//右向きなら
 		//アニメーション
 		if (time_ > 0.15f) {
 			if (onGround_) {
@@ -369,7 +347,7 @@ void Player::UpdateMove()
 			}
 		}
 	}
-	else {
+	else {//左向きなら
 		//左向きの歩き
 		if (time_ > 0.15f) {
 			if (onGround_) {
@@ -389,15 +367,15 @@ void Player::UpdateMove()
 	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
 	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
 	if (pStage != nullptr) {
-		int push = pStage->CollisionRight(hitX, hitY);
-		transform_.position_.x -= push;
+		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+		transform_.position_.x -= push;//のめりこんでる分戻す
 	}
 	//プレイヤーの左側のステージとの当たり判定
 	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
 	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
 	if (pStage != nullptr) {
-		int push = pStage->CollisionLeft(hitX, hitY);
-		transform_.position_.x += push;
+		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+		transform_.position_.x += push;//のめりこんでる分戻す
 	}
 
 	//変更前の移動
@@ -448,17 +426,17 @@ void Player::UpdateMove()
 	}
 
 	//ジャンプの時と降りてる時のアニメーションの変更
-	if (!onGround_ && jumpSpeed_ < 0) {
+	if (!onGround_ && jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
 		/*animType_ = 2;
 		animFrame_ = 2;*/
-		if (prevMoveKey_ == 0) {
+		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
 			animFrame_ = 0;
 			if (time_ > 0.5) {
 				animFrame_ = 1;
 			}
 		}
-		if (prevMoveKey_ == 1) {
+		if (prevMoveKey_ == 1) {//左向きなら
 			animType_ = 12;
 			animFrame_ = 5;
 			if (time_ > 0.5) {
@@ -466,17 +444,17 @@ void Player::UpdateMove()
 			}
 		}
 	}
-	else if (!onGround_ && jumpSpeed_ > 0) {
+	else if (!onGround_ && jumpSpeed_ > 0) {//地面にいなくて、ジャンプで下がっているなら
 		/*animType_ = 2;
 		animFrame_ = 1;*/
-		if (prevMoveKey_ == 0) {
+		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
 			animFrame_ = 2;
 			if (time_ > 0.5) {
 				animFrame_ = 3;
 			}
 		}
-		if (prevMoveKey_ == 1) {
+		if (prevMoveKey_ == 1) {//左向きなら
 			animType_ = 12;
 			animFrame_ = 3;
 			if (time_ > 0.5) {
@@ -489,22 +467,8 @@ void Player::UpdateMove()
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {
-		if (prevAttackKey_ == false) {
-			if (prevMoveKey_ == 0) {
-				animFrame_ = 0;
-				animType_ = 3;
-			}
-			else {
-				animFrame_ = 5;
-				animType_ = 13;
-			}
-			time_ = 0.0f;
-			isTypeA = true;
-			currentNum_ -= 1;
-			state_ = S_Attack;//攻撃の状態に移る
-		}
-		prevAttackKey_ = true;
+	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
+		ReadyAttack(isTypeA);//弾の準備
 	}
 	else {
 		prevAttackKey_ = false;
@@ -512,22 +476,7 @@ void Player::UpdateMove()
 	}
 
 	if (CheckHitKey(KEY_INPUT_R) && currentNum_ > 0) {//斜め前に飛ばす
-		if (prevAttackKey_ == false) {
-			if (prevMoveKey_ == 0) {
-				animFrame_ = 0;
-				animType_ = 3;
-			}
-			else {
-				animFrame_ = 5;
-				animType_ = 13;
-			}
-			time_ = 0.0f;
-			isTypeB = true;
-			currentNum_ -= 1;
-			state_ = S_Attack;//攻撃の状態に移る
-		}
-		prevAttackKey_ = true;
-
+		ReadyAttack(isTypeB);//弾の準備
 	}
 	else {
 		prevAttackKey_ = false;
@@ -543,7 +492,7 @@ void Player::UpdateMove()
 void Player::UpdateAttack()
 {
 	if (hitFlag_) {//無敵の時は点滅
-		if (prevMoveKey_ == 0) {
+		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 8;
 		}
 		else {
@@ -551,8 +500,8 @@ void Player::UpdateAttack()
 		}
 	}
 	else {
-		if (prevMoveKey_ == 0) {
-			animType_ = 3;//攻撃状態
+		if (prevMoveKey_ == 0) {//左向きなら
+			animType_ = 3;
 		}
 		else {
 			animType_ = 13;
@@ -560,64 +509,22 @@ void Player::UpdateAttack()
 	}
 
 	//アニメーションが最後になったら弾を打ち出す
-	if (prevMoveKey_ == 0) {
+	if (prevMoveKey_ == 0) {//右向きなら
 		if (animFrame_ + 1 == 5)
 		{
-			AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
-			int x = (int)transform_.position_.x;
-			int y = (int)transform_.position_.y;
-			attack->SetPosition(x + CHIP_SIZE, y);
-
-			//横に撃つか、斜めに撃つか
-			if (isTypeA == true) {
-				attack->SetAngle(0);
-			}
-			if (isTypeB == true) {
-				attack->SetAngle(XM_PI / -4);//角度を設定
-			}
-
-			time_ = 0.0f;
-			animFrame_ = 0;
-			if (onGround_) {
-				state_ = S_Normal;
-			}
-			else {
-				state_ = S_Move;
-			}
+			Attack(0,1);
 		}
 	}
-	else{
+	else{//左向きなら
 		if (animFrame_ - 1 == 0)
 		{
-			AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
-			int x = (int)transform_.position_.x;
-			int y = (int)transform_.position_.y;
-			attack->SetPosition(x + CHIP_SIZE, y);
-
-			//横に撃つか、斜めに撃つか
-			if (isTypeA == true) {
-				attack->SetAngle(XM_PI);
-
-			}
-			if (isTypeB == true) {
-				attack->SetAngle(XM_PI / -4 * 3);//角度を設定
-			}
-
-			time_ = 0.0f;
+			Attack(1,3);
 			animFrame_ = 5;
-			if (onGround_) {
-				state_ = S_Normal;
-			}
-			else {
-				state_ = S_Move;
-			}
 		}
 	}
 
 	if (prevMoveKey_ == 0) {
 		if (time_ > 0.1f) {
-			/*animFrame_ = (animFrame_ + 1) % 6;
-			time_ = 0.0f;*/
 			animFrame_ = animFrame_ % 5 + 1;
 			time_ = 0.0f;
 		}
@@ -656,11 +563,9 @@ void Player::UpdateDie()
 	}
 	else {
 		if (prevMoveKey_ == 0) {
-			if (animFrame_ + 1 == 6) {
-				KillMe();
+			if (animFrame_ + 1 == 6) {//最後のフレームになったら
+				Die();//〇ぬ
 				animFrame_ = 0;
-				PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-				scene->StartGameOver();
 			}
 			if (time_ > 0.2f) {
 				animFrame_ = animFrame_ % 5 + 1;
@@ -668,11 +573,9 @@ void Player::UpdateDie()
 			}
 		}
 		else {
-			if (animFrame_ == 0) {
-				KillMe();
+			if (animFrame_ == 0) {//最後のフレームになったら
+				Die();//〇ぬ
 				animFrame_ = 5;
-				PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-				scene->StartGameOver();
 			}
 			if (time_ > 0.2f) {
 				animFrame_--;
@@ -695,8 +598,9 @@ void Player::Draw()
 	//当たり判定を見るよう
 	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	
+	//ライフとライフの下に黒くしたライフを描画
 	for (int j = 0; j < 3; j++) {
-
 		DrawGraph(LIFE_IMAGE_SIZE * j, 0, dImage_, TRUE);
 	}
 	for (int i = 0; i < pLife_; i++) {
@@ -719,4 +623,55 @@ void Player::SetGravity(float _gravity)
 void Player::Reload()
 {
 	currentNum_ = MAX_BULLET;
+}
+
+void Player::ReadyAttack(bool &_isType)
+{
+	if (prevAttackKey_ == false) {
+		if (prevMoveKey_ == 0) {
+			animFrame_ = 0;
+			animType_ = 3;
+		}
+		else {
+			animFrame_ = 5;
+			animType_ = 13;
+		}
+		time_ = 0.0f;
+		_isType = true;
+		currentNum_ -= 1;
+		state_ = S_Attack;//攻撃の状態に移る
+	}
+	prevAttackKey_ = true;
+}
+
+void Player::Attack(int angleA, int angleB)
+{
+	AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
+	int x = (int)transform_.position_.x;
+	int y = (int)transform_.position_.y;
+	attack->SetPosition(x + CHIP_SIZE, y);
+
+	//横に撃つか、斜めに撃つか
+	if (isTypeA == true) {//横に撃つ
+		attack->SetAngle(XM_PI*angleA);//角度の設定
+	}
+	if (isTypeB == true) {//斜め上に撃つ
+		attack->SetAngle(XM_PI / -4 * angleB);//角度を設定
+	}
+
+	time_ = 0.0f;
+	animFrame_ = 0;
+	if (onGround_) {
+		state_ = S_Normal;
+	}
+	else {
+		state_ = S_Move;
+	}
+}
+
+void Player::Die()
+{
+	KillMe();//バイバイ
+	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
+	scene->StartGameOver();//ゲームオーバシーンに移行
 }
