@@ -36,6 +36,10 @@ public:
 
     //重力のセット
     void SetGravity(float _gravity);
+
+    //弾のリロード
+    void Reload();
+
 private:
     int pImage_; //プレイヤーの画像
     int lImage_; //プレイヤーの体力を表す画像
@@ -55,6 +59,7 @@ private:
     bool isTypeA{ false };
     bool isTypeB{ false };
     int prevMoveKey_;//左右どっちのキーが前回押されたか
+    int currentNum_;//現在の弾数
 
     enum State {
         S_Normal = 0,
@@ -62,6 +67,7 @@ private:
         S_Attack,
         S_Die,
     };
+
     State state_;
 };
 

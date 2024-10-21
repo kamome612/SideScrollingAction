@@ -23,6 +23,7 @@ namespace {
 	const int MARGIN = 14;//プレイヤーのチップの余白
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
 	const float FINV_TIME = 1.0f;//無敵が終わる時間
+	const int MAX_BULLET = 10; //ミサイルの発射可能数
 	//重力メモ:月...1.62,火星...3.71
 }
 
@@ -31,7 +32,7 @@ Player::Player(GameObject* parent)
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
 	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
 	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
-	 prevMoveKey_(0)
+	 prevMoveKey_(0),currentNum_(MAX_BULLET)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -258,7 +259,7 @@ void Player::UpdateNormal()
 	}
 
 	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E)) {//横に飛ばす
+	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {//横に飛ばす
 		if (prevAttackKey_ == false) {
 			if (prevMoveKey_ == 0) {
 				animFrame_ = 0;
@@ -270,6 +271,7 @@ void Player::UpdateNormal()
 			}
 			time_ = 0.0f;
 			isTypeA = true;
+			currentNum_ -= 1;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
 		prevAttackKey_ = true;
@@ -279,7 +281,7 @@ void Player::UpdateNormal()
 		isTypeA = false;
 	}
 
-	if (CheckHitKey(KEY_INPUT_R)) {//斜め前に飛ばす
+	if (CheckHitKey(KEY_INPUT_R) && currentNum_ > 0) {//斜め前に飛ばす
 		if (prevAttackKey_ == false) {
 			if (prevMoveKey_ == 0) {
 				animFrame_ = 0;
@@ -291,6 +293,7 @@ void Player::UpdateNormal()
 			}
 			time_ = 0.0f;
 			isTypeB = true;
+			currentNum_ -= 1;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
 		prevAttackKey_ = true;
@@ -299,6 +302,11 @@ void Player::UpdateNormal()
 	else {
 		prevAttackKey_ = false;
 		isTypeB = false;
+	}
+
+	if (CheckHitKey(KEY_INPUT_H))//弾のリロード
+	{
+		Reload();
 	}
 }
 
@@ -488,7 +496,7 @@ void Player::UpdateMove()
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E)) {
+	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {
 		if (prevAttackKey_ == false) {
 			if (prevMoveKey_ == 0) {
 				animFrame_ = 0;
@@ -500,6 +508,7 @@ void Player::UpdateMove()
 			}
 			time_ = 0.0f;
 			isTypeA = true;
+			currentNum_ -= 1;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
 		prevAttackKey_ = true;
@@ -509,7 +518,7 @@ void Player::UpdateMove()
 		isTypeA = false;
 	}
 
-	if (CheckHitKey(KEY_INPUT_R)) {//斜め前に飛ばす
+	if (CheckHitKey(KEY_INPUT_R) && currentNum_ > 0) {//斜め前に飛ばす
 		if (prevAttackKey_ == false) {
 			if (prevMoveKey_ == 0) {
 				animFrame_ = 0;
@@ -521,6 +530,7 @@ void Player::UpdateMove()
 			}
 			time_ = 0.0f;
 			isTypeB = true;
+			currentNum_ -= 1;
 			state_ = S_Attack;//攻撃の状態に移る
 		}
 		prevAttackKey_ = true;
@@ -529,6 +539,11 @@ void Player::UpdateMove()
 	else {
 		prevAttackKey_ = false;
 		isTypeB = false;
+	}
+
+	if (CheckHitKey(KEY_INPUT_H))//弾のリロード
+	{
+		Reload();
 	}
 }
 
@@ -706,4 +721,9 @@ void Player::SetPosition(float _x, float _y)
 void Player::SetGravity(float _gravity)
 {
 	gravity_ = _gravity;
+}
+
+void Player::Reload()
+{
+	currentNum_ = MAX_BULLET;
 }
