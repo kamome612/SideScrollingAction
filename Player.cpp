@@ -78,13 +78,6 @@ void Player::Update()
 	if (!scene->canMove())
 		return;
 
-	//ちょっとプレイヤーの座標を確認したいとき用
-	/*if (CheckHitKey(KEY_INPUT_O)) {
-		int tmp = (int)transform_.position_.x;
-		int tmp2 = (int)transform_.position_.y;
-		printfDx("(%d,%d)", tmp,tmp2);
-	}*/
-
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
 	case 0: //ノーマル
