@@ -246,8 +246,12 @@ void Player::UpdateNormal()
 		}
 	}
 
+	int x, y;
+	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
+	x = x / 1000.0f;
+
 	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)
-		|| CheckHitKey(KEY_INPUT_SPACE)) {//S_MOVEにする
+		|| CheckHitKey(KEY_INPUT_SPACE) || x > 0.3f || x < -0.3f) {//S_MOVEにする
 		state_ = S_Move;
 	}
 
@@ -302,10 +306,16 @@ void Player::UpdateMove()
 	//コントローラ操作(なぜかスティックを左に倒しても左にいかない)
 	int x, y;
 	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);//スティックの倒し具合を取ってくる
+	if (x < 0) {
+		moveX += (float)x / 1000.0f; //取ってきた値を使えるように小さくする
+	}
+
 	moveX += (float)x / 1000.0f; //取ってきた値を使えるように小さくする
-	if (moveX < 0.3f) {//中心付近の誤差をのぞく
+	
+	if (moveX < 0.3f && moveX > -0.3f) {//中心付近の誤差をのぞく
 		 moveX = 0.0f;
 	}
+
 	//コントローラでも右左の動きを切り替えられるように
 	if (moveX > 0) {
 		prevMoveKey_ = 0;//右向き
@@ -323,7 +333,8 @@ void Player::UpdateMove()
 		moveX -= SPEED * Time::DeltaTime();
 		prevMoveKey_ = 1;//左向き
 	}
-	else {//なにも移動のキーは押してない
+	
+	if (moveX == 0) {
 		if (onGround_) {            //地面にいるなら
 			state_ = S_Normal;      //ノーマルに戻したる
 			if (prevMoveKey_ == 0) {//最終が右向きなら
