@@ -11,21 +11,19 @@
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
-	//const float CHIP_SIZE = 60.0f;//キャラの画像サイズ
-	const int MAP_HEIGHT = 720; //高さ
-	const float ROBO_WIDTH = 48;
+	const int MAP_HEIGHT = 720;   //高さ
+	const float ROBO_WIDTH = 48;  //ロボの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 9.8/ 90.0f;
-	const float MAX_POS = 400;
-	const int SPEED = 150;
-	//const int SPEED = 500;
-	const int MARGIN = 14;//プレイヤーのチップの余白
+	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
+	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
+	const int SPEED = 150;    //スピード
+	const int MARGIN = 14;    //プレイヤーのチップの余白
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
-	const int MISSILE_SIZE = 30;//ミサイル画像サイズ
-	const float FINV_TIME = 1.0f;//無敵が終わる時間
-	const int MAX_BULLET = 10; //ミサイルの発射可能数
-	const float INTERVAL = 1.0f;//リロード時間
+	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
+	const float FINV_TIME = 1.0f;  //無敵が終わる時間
+	const int MAX_BULLET = 10;     //ミサイルの発射可能数
+	const float INTERVAL = 1.0f;   //リロード時間
 
 	//重力メモ:月...1.62,火星...3.71
 }
@@ -35,7 +33,7 @@ Player::Player(GameObject* parent)
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
 	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
 	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
-	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0)
+	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0),mImage_(-1)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -44,7 +42,7 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
-	//ちゃんと消す
+	//中身入っているならちゃんと消す
 	if (pImage_ > 0) {
 		DeleteGraph(pImage_);
 		pImage_ = -1;
@@ -57,32 +55,37 @@ Player::~Player()
 		DeleteGraph(dImage_);
 		dImage_ = -1;
 	}
+	if (mImage_ > 0) {
+		DeleteGraph(mImage_);
+		mImage_ = -1;
+	}
 }
 
 void Player::Initialize()
 {
 	//プレイヤーの画像の読み込み
-	//pImage_ = LoadGraph("Assets\\Image\\robot.png");
 	pImage_ = LoadGraph("Assets\\Image\\cyborg3.png");
 	assert(pImage_ >= 0); 
 
+	//体力画像の読み込み
 	lImage_ = LoadGraph("Assets\\Image\\Life.png");
 	assert(lImage_ > 0);
 
+	//体力削られたところに使う画像の読み込み
 	dImage_ = LoadGraph("Assets\\Image\\Damege.png");
 	assert(dImage_ > 0);
 
+	//残弾表示に使う画像の読み込み
 	mImage_ = LoadGraph("Assets\\Image\\missile.png");
 	assert(mImage_ > 0);
 }
 
 void Player::Update()
 {
-
 	//プレイシーンから動いていいのかどうかを確認する
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
-	if (!scene->canMove())
-		return;
+	if (!scene->canMove())//動いちゃダメの場合
+		return;           //なにもしない
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
@@ -144,8 +147,6 @@ void Player::Update()
 				animFrame_ = 5;
 			}
 			state_ = S_Die;
-			//KillMe();
-			//scene->StartGameOver();
 		}
 	}
 
@@ -155,16 +156,14 @@ void Player::Update()
 		if (hitFlag_ == false) {
 			if (pEnemy->CollideCircle(transform_.position_.x + CHIP_SIZE / 4,
 				transform_.position_.y + CHIP_SIZE / 2, 20.0f)) {
-				//Explosion* pEx = Instantiate<Explosion>(GetParent());
-				//pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
-				//state_ = S_Die;
 				pLife_ -= 1;
 				hitFlag_ = true;
 			}
 		}
 	}
 
-	if (hitFlag_ == true) {//敵が当たったら少しの間無敵になる
+	//敵が当たったら少しの間無敵になる
+	if (hitFlag_ == true) {
 		invTime_ += Time::DeltaTime();
 		if (invTime_ >= FINV_TIME) {
 			hitFlag_ = false;
@@ -172,7 +171,8 @@ void Player::Update()
 		}
 	}
 
-	if (pLife_ == 0)//ライフが０になったら死ぬ
+	//ライフが０になったら死ぬ
+	if (pLife_ == 0)
 	{
 		state_ = S_Die;
 	}
@@ -217,7 +217,8 @@ void Player::Update()
 
 void Player::UpdateNormal()
 {
-	if (hitFlag_) {//無敵の時は点滅
+	//無敵の時は点滅
+	if (hitFlag_) {
 		if (prevMoveKey_ == 0) {
 			animType_ = 5;
 		}
@@ -227,13 +228,14 @@ void Player::UpdateNormal()
 	}
 	else {
 		if (prevMoveKey_ == 0) {
-			animType_ = 0;//何もしてないときIdle状態
+			animType_ = 0;
 		}
 		else {
 			animType_ = 10;
 		}
 	}
 
+	//アニメーション更新
 	if (time_ > 0.2f) {
 		if (onGround_) {
 			if (prevMoveKey_ == 0) {
@@ -252,10 +254,12 @@ void Player::UpdateNormal()
 		}
 	}
 
+	//コントローラの情報とる
 	int x, y;
 	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
 	x = x / 1000.0f;
 
+	//なんか動くならS_Moveに移動
 	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)
 		|| CheckHitKey(KEY_INPUT_SPACE) || x > 0.3f || x < -0.3f) {//S_MOVEにする
 		state_ = S_Move;
@@ -286,7 +290,8 @@ void Player::UpdateNormal()
 
 void Player::UpdateMove()
 {
-	if (hitFlag_) {//無敵の時は点滅
+	//無敵の時は点滅
+	if (hitFlag_) {
 		if (prevMoveKey_ == 0) {
 			animType_ = 6;
 		}
@@ -296,13 +301,12 @@ void Player::UpdateMove()
 	}
 	else {
 		if (prevMoveKey_ == 0) {
-			animType_ = 1;//歩くモーション
+			animType_ = 1;
 		}
 		else {
 			animType_ = 11;
 		}
 	}
-	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
 	//移動量とその初期化
 	float moveX, moveY;
@@ -340,6 +344,7 @@ void Player::UpdateMove()
 		prevMoveKey_ = 1;//左向き
 	}
 	
+	//移動してないなら
 	if (moveX == 0) {
 		if (onGround_) {            //地面にいるなら
 			state_ = S_Normal;      //ノーマルに戻したる
@@ -380,6 +385,7 @@ void Player::UpdateMove()
 		}
 	}
 
+	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	//プレイヤーの右側のステージとの当たり判定
 	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
 	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
@@ -404,8 +410,6 @@ void Player::UpdateMove()
 
 	//ジャンプの時と降りてる時のアニメーションの変更
 	if (!onGround_ && jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
-		/*animType_ = 2;
-		animFrame_ = 2;*/
 		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
 			animFrame_ = 0;
@@ -500,13 +504,14 @@ void Player::UpdateAttack()
 		}
 	}
 
-	if (prevMoveKey_ == 0) {
+	//アニメーションの更新
+	if (prevMoveKey_ == 0) {//右向きなら
 		if (time_ > 0.1f) {
 			animFrame_ = animFrame_ % 5 + 1;
 			time_ = 0.0f;
 		}
 	}
-	else {
+	else {//左向きなら
 		if (time_ > 0.1f) {
 			if (animFrame_ == 0) {
 				animFrame_ = 5;
@@ -570,7 +575,6 @@ void Player::Draw()
 	if (cam != nullptr) {
 		x -= cam->GetValue();
 	}
-	//DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
 	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
@@ -605,6 +609,7 @@ void Player::SetGravity(float _gravity)
 
 void Player::Reload()
 {
+	//インターバルを超えたら一弾補充
 	if (ReloadTime_ > INTERVAL) {
 		if (currentNum_ != MAX_BULLET) {
 			currentNum_++;
@@ -627,7 +632,7 @@ void Player::ReadyAttack(bool &_isType)
 		}
 		time_ = 0.0f;
 		_isType = true;
-		currentNum_ -= 1;
+		//currentNum_ -= 1;
 		state_ = S_Attack;//攻撃の状態に移る
 	}
 	prevAttackKey_ = true;
@@ -647,7 +652,7 @@ void Player::Attack(int angleA, int angleB)
 	if (isTypeB == true) {//斜め上に撃つ
 		attack->SetAngle(XM_PI / -4 * angleB);//角度を設定
 	}
-
+	currentNum_--;
 	time_ = 0.0f;
 	animFrame_ = 0;
 	if (onGround_) {
