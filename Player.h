@@ -53,6 +53,7 @@ private:
     int pImage_; //プレイヤーの画像
     int lImage_; //プレイヤーの体力を表す画像
     int dImage_; //体力のダメージ受けた部分の画像
+    int mImage_; //残弾数表示用の画像
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
@@ -69,6 +70,7 @@ private:
     bool isTypeB{ false };
     int prevMoveKey_;//左右どっちのキーが前回押されたか
     int currentNum_;//現在の弾数
+    float ReloadTime_;//リロードの時間
 
     enum State {
         S_Normal = 0,

@@ -22,8 +22,11 @@ namespace {
 	//const int SPEED = 500;
 	const int MARGIN = 14;//プレイヤーのチップの余白
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
+	const int MISSILE_SIZE = 30;//ミサイル画像サイズ
 	const float FINV_TIME = 1.0f;//無敵が終わる時間
 	const int MAX_BULLET = 10; //ミサイルの発射可能数
+	const float INTERVAL = 1.0f;//リロード時間
+
 	//重力メモ:月...1.62,火星...3.71
 }
 
@@ -32,7 +35,7 @@ Player::Player(GameObject* parent)
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
 	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
 	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
-	 prevMoveKey_(0),currentNum_(MAX_BULLET)
+	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -68,6 +71,9 @@ void Player::Initialize()
 
 	dImage_ = LoadGraph("Assets\\Image\\Damege.png");
 	assert(dImage_ > 0);
+
+	mImage_ = LoadGraph("Assets\\Image\\missile.png");
+	assert(mImage_ > 0);
 }
 
 void Player::Update()
@@ -389,46 +395,6 @@ void Player::UpdateMove()
 		transform_.position_.x += push;//のめりこんでる分戻す
 	}
 
-	//変更前の移動
-	//if (CheckHitKey(KEY_INPUT_D)) {//Dキーを押すと右に進む
-	//	moveX += SPEED * Time::DeltaTime();
-	//	transform_.position_.x += moveX;//移動量
-	//	if (time_ > 0.2f) {
-	//		if (onGround_) {
-	//			animFrame_ = animFrame_ % 8 + 1;
-	//			time_ = 0.0f;
-	//		}
-	//	}
-	//	int hitX = transform_.position_.x + 50;
-	//	int hitY = transform_.position_.y + CHIP_SIZE -1;
-	//	if (pStage != nullptr) {
-	//		int push = pStage->CollisionRight(hitX, hitY);
-	//		transform_.position_.x -= push;
-	//	}
-	//}
-	//else if (CheckHitKey(KEY_INPUT_A)) {//Aキーを押すと左に進む
-	//	if (transform_.position_.x > 0) {//左画面端で止まるように
-	//		moveX -= SPEED * Time::DeltaTime();//移動量
-	//		transform_.position_.x += moveX;
-	//		if (time_ > 0.2f) {
-	//			if (onGround_) {
-	//				animFrame_ = animFrame_ % 8 + 1;
-	//				time_ = 0.0f;
-	//			}
-	//		}
-	//		int hitX = transform_.position_.x + 10;
-	//		int hitY = transform_.position_.y + CHIP_SIZE-1;
-	//		if (pStage != nullptr) {
-	//			int push = pStage->CollisionLeft(hitX, hitY);
-	//			transform_.position_.x += push;
-	//		}
-	//	}
-	//}
-	//else {
-	//	animFrame_ = 0;
-	//	frameCounter_ = 0;
-	//}
-
 	if (onGround_) {//地面にいるか
 		if (CheckHitKey(KEY_INPUT_SPACE)) {//SPACEキーを押すとジャンプ
 			jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
@@ -610,6 +576,12 @@ void Player::Draw()
 	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	
+	//残弾数がわかりやすいように
+	for (int i = 0; i < currentNum_; i++) {
+
+		DrawGraph((i * MISSILE_SIZE) + 180, 10, mImage_, TRUE);
+	}
+
 	//ライフとライフの下に黒くしたライフを描画
 	for (int j = 0; j < 3; j++) {
 		DrawGraph(LIFE_IMAGE_SIZE * j, 0, dImage_, TRUE);
@@ -633,7 +605,13 @@ void Player::SetGravity(float _gravity)
 
 void Player::Reload()
 {
-	currentNum_ = MAX_BULLET;
+	if (ReloadTime_ > INTERVAL) {
+		if (currentNum_ != MAX_BULLET) {
+			currentNum_++;
+		}
+		ReloadTime_ = 0;
+	}
+	ReloadTime_ += Time::DeltaTime();
 }
 
 void Player::ReadyAttack(bool &_isType)
