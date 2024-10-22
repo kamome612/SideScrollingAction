@@ -23,9 +23,13 @@ void TitleScene::Update()
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}*/
 
+	//コントローラの情報とる
+	DINPUT_JOYSTATE input;
+	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
 	//上限を超えないように
 	if (select_ > 0) {
-		if (CheckHitKey(KEY_INPUT_UP) || CheckHitKey(KEY_INPUT_W)) {//上が押されたら
+		if (CheckHitKey(KEY_INPUT_UP) || CheckHitKey(KEY_INPUT_W)
+			|| input.Y <= -500 || input.POV[0] == 0) {//上が押されたら
 			if (!prevUpKey_) {
 				select_ -= 1;
 			}
@@ -36,7 +40,8 @@ void TitleScene::Update()
 	}
 	//下限を超えないように
 	if (select_ < 2) {
-		if (CheckHitKey(KEY_INPUT_DOWN) || CheckHitKey(KEY_INPUT_S)) {//下が押されたら
+		if (CheckHitKey(KEY_INPUT_DOWN) || CheckHitKey(KEY_INPUT_S) 
+			|| input.Y >= 500 || input.POV[0] == 18000) {//下が押されたら
 			if (!prevDownKey_) {
 				select_ += 1;
 			}
@@ -47,7 +52,7 @@ void TitleScene::Update()
 	}
 
 	//エンターで決定!
-	if (CheckHitKey(KEY_INPUT_RETURN)) {
+	if (CheckHitKey(KEY_INPUT_RETURN)|| (input.Buttons[1] & 0x80) != 0) {
 		if (!prevEnterKey_) {
 			SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 			switch (select_) {

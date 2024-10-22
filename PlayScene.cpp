@@ -68,9 +68,14 @@ void PlayScene::StartSelect()
 
 void PlayScene::UpdateSelect()
 {
+	//コントローラの情報とる
+	DINPUT_JOYSTATE input;
+	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
+
 	//三角とステージの番号を変更するため
 	if (mapNo_ < 3) {//右の上限を超えないように
-		if (CheckHitKey(KEY_INPUT_RIGHT) || CheckHitKey(KEY_INPUT_D)) {//右を押したら
+		if (CheckHitKey(KEY_INPUT_RIGHT) || CheckHitKey(KEY_INPUT_D)
+			|| input.X >= 500 || input.POV[0] == 9000) {//右を押したら
 			if (!prevRightKey_) {
 				mapNo_ += 1;
 			}
@@ -81,7 +86,8 @@ void PlayScene::UpdateSelect()
 	}
 
 	if (mapNo_ > 1) {//左の上限を超えないように
-		if (CheckHitKey(KEY_INPUT_LEFT) || CheckHitKey(KEY_INPUT_A)) {//左を押したら
+		if (CheckHitKey(KEY_INPUT_LEFT) || CheckHitKey(KEY_INPUT_A)
+			|| input.X <= -500 || input.POV[0] == 27000) {//左を押したら
 			if (!prevLeftKey_) {
 				mapNo_ -= 1;
 			}
@@ -89,11 +95,10 @@ void PlayScene::UpdateSelect()
 		}
 		else
 			prevLeftKey_ = false;
-
 	}
 
 	//エンターでステージを決定
-	if (CheckHitKey(KEY_INPUT_RETURN)) {
+	if (CheckHitKey(KEY_INPUT_RETURN) || (input.Buttons[1] & 0x80) != 0) {
 		if (!prevEnterKey_) {
 			StartReady();
 			prevEnterKey_ = true;

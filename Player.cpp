@@ -256,17 +256,19 @@ void Player::UpdateNormal()
 
 	//コントローラの情報とる
 	int x, y;
-	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);
-	x = x / 1000.0f;
+	DINPUT_JOYSTATE input;
+	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
+	x = input.X / 1000.0f;
 
 	//なんか動くならS_Moveに移動
 	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)
-		|| CheckHitKey(KEY_INPUT_SPACE) || x > 0.3f || x < -0.3f) {//S_MOVEにする
+		|| CheckHitKey(KEY_INPUT_SPACE) || x > 0.3f || x < -0.3f
+		||((input.Buttons[0] &0x80) != 0)) {
 		state_ = S_Move;
 	}
 
 	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {//横に飛ばす
+	if ((CheckHitKey(KEY_INPUT_E) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//横に飛ばす
 		ReadyAttack(isTypeA);//弾の準備
 	}
 	else {
@@ -274,7 +276,7 @@ void Player::UpdateNormal()
 		isTypeA = false;
 	}
 
-	if (CheckHitKey(KEY_INPUT_R) && currentNum_ > 0) {//斜め前に飛ばす
+	if ((CheckHitKey(KEY_INPUT_R) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
 		ReadyAttack(isTypeB);//弾の準備
 	}
 	else {
@@ -282,7 +284,7 @@ void Player::UpdateNormal()
 		isTypeB = false;
 	}
 
-	if (CheckHitKey(KEY_INPUT_H))//弾のリロード
+	if (CheckHitKey(KEY_INPUT_H) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
 		Reload();
 	}
@@ -314,13 +316,13 @@ void Player::UpdateMove()
 	moveY = 0.0f;
 
 	//コントローラ操作(なぜかスティックを左に倒しても左にいかない)
-	int x, y;
-	GetJoypadAnalogInput(&x, &y, DX_INPUT_PAD1);//スティックの倒し具合を取ってくる
-	if (x < 0) {
-		moveX += (float)x / 1000.0f; //取ってきた値を使えるように小さくする
+	DINPUT_JOYSTATE input;
+	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
+	if (input.X < 0) {
+		moveX += (float)input.X / 1000.0f; //取ってきた値を使えるように小さくする
 	}
 
-	moveX += (float)x / 1000.0f; //取ってきた値を使えるように小さくする
+	moveX += (float)input.X / 1000.0f; //取ってきた値を使えるように小さくする
 	
 	if (moveX < 0.3f && moveX > -0.3f) {//中心付近の誤差をのぞく
 		 moveX = 0.0f;
@@ -402,7 +404,7 @@ void Player::UpdateMove()
 	}
 
 	if (onGround_) {//地面にいるか
-		if (CheckHitKey(KEY_INPUT_SPACE)) {//SPACEキーを押すとジャンプ
+		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {//SPACEキーを押すとジャンプ
 			jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
 			onGround_ = false;//地面にいない
 		}
@@ -448,7 +450,7 @@ void Player::UpdateMove()
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	//ミサイルを飛ばしての攻撃
-	if (CheckHitKey(KEY_INPUT_E) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
+	if ((CheckHitKey(KEY_INPUT_E) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
 		ReadyAttack(isTypeA);//弾の準備
 	}
 	else {
@@ -456,7 +458,7 @@ void Player::UpdateMove()
 		isTypeA = false;
 	}
 
-	if (CheckHitKey(KEY_INPUT_R) && currentNum_ > 0) {//斜め前に飛ばす
+	if ((CheckHitKey(KEY_INPUT_R) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
 		ReadyAttack(isTypeB);//弾の準備
 	}
 	else {
@@ -464,7 +466,7 @@ void Player::UpdateMove()
 		isTypeB = false;
 	}
 
-	if (CheckHitKey(KEY_INPUT_H))//弾のリロード
+	if (CheckHitKey(KEY_INPUT_H) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
 		Reload();
 	}

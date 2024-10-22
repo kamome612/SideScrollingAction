@@ -112,9 +112,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Banner.h" />
     <ClInclude Include="Ease.h" />
-    <ClInclude Include="ResultScene.h">
-      <Filter>Scene\PlayScene</Filter>
-    </ClInclude>
     <ClInclude Include="Stage.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
@@ -151,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="MeteoSpawner.h">
       <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
