@@ -18,7 +18,7 @@ namespace {
 	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
 	const int SPEED = 150;    //スピード
-	const int MARGIN = 14;    //プレイヤーのチップの余白
+	const int MARGIN = 24;    //プレイヤーのチップの余白
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
 	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
 	const float FINV_TIME = 1.0f;  //無敵が終わる時間
@@ -108,6 +108,17 @@ void Player::Update()
 	//アニメーションに使うタイムの更新
 	time_ += Time::DeltaTime();
 
+	//左右の向きで若干変わる当たり判定の位置の修正
+	float colX,colY,colR;
+	if (prevMoveKey_ == 0) {
+		colX = transform_.position_.x + CHIP_SIZE / 4;
+	}
+	else {
+		colX = transform_.position_.x + CHIP_SIZE / 4 * 3;
+	}
+	colY = transform_.position_.y + CHIP_SIZE / 2;
+	colR = 20.0f;
+
 	//ステージとの上下の当たり判定
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
@@ -135,8 +146,7 @@ void Player::Update()
 	//隕石との当たり判定
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
-		if (pMeteo->CollideCircle(transform_.position_.x + CHIP_SIZE/4, 
-			                      transform_.position_.y + CHIP_SIZE/2, 20.0f)) {
+		if (pMeteo->CollideCircle(colX, colY,colR)) {
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
@@ -154,8 +164,7 @@ void Player::Update()
 	std::list<Enemy*> pEnemys = GetParent()->FindGameObjects<Enemy>();
 	for (Enemy* pEnemy : pEnemys) {
 		if (hitFlag_ == false) {
-			if (pEnemy->CollideCircle(transform_.position_.x + CHIP_SIZE / 4,
-				transform_.position_.y + CHIP_SIZE / 2, 20.0f)) {
+			if (pEnemy->CollideCircle(colX,colY,colR)) {
 				pLife_ -= 1;
 				hitFlag_ = true;
 			}
@@ -179,8 +188,7 @@ void Player::Update()
 
 	//ゴールの旗との当たり判定
 	Flag* pFlag = GetParent()->FindGameObject<Flag>();
-	if (pFlag->HitFlag(transform_.position_.x +CHIP_SIZE / 2,
-		               transform_.position_.y + CHIP_SIZE / 2,20.0f)) {
+	if (pFlag->HitFlag(colX,colY,colR)) {
 		scene->StartClear();
 	}
 
@@ -388,19 +396,40 @@ void Player::UpdateMove()
 	}
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
-	//プレイヤーの右側のステージとの当たり判定
-	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
-	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
-	if (pStage != nullptr) {
-		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
-		transform_.position_.x -= push;//のめりこんでる分戻す
+
+	if (prevMoveKey_ == 0) {//左向き
+		//プレイヤーの右側のステージとの当たり判定
+		int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+		int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+		if (pStage != nullptr) {
+			int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+			transform_.position_.x -= push;//のめりこんでる分戻す
+		}
+
+		//プレイヤーの左側のステージとの当たり判定
+		hitX = transform_.position_.x + 5;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+		hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+		if (pStage != nullptr) {
+			int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+			transform_.position_.x += push;//のめりこんでる分戻す
+		}
 	}
-	//プレイヤーの左側のステージとの当たり判定
-	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
-	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
-	if (pStage != nullptr) {
-		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
-		transform_.position_.x += push;//のめりこんでる分戻す
+	else {//左向き
+		//プレイヤーの右側のステージとの当たり判定
+		int hitX = transform_.position_.x + (CHIP_SIZE -MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+		int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+		if (pStage != nullptr) {
+			int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+			transform_.position_.x -= push;//のめりこんでる分戻す
+		}
+		
+		//プレイヤーの左側のステージとの当たり判定
+		hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+		hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+		if (pStage != nullptr) {
+			int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+			transform_.position_.x += push;//のめりこんでる分戻す
+		}
 	}
 
 	if (onGround_) {//地面にいるか
@@ -579,9 +608,12 @@ void Player::Draw()
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
-	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	//DrawCircle(x + CHIP_SIZE/2, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	
+	/*if (prevMoveKey_ == 0) {
+		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	}
+	else {
+		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	}*/
 	//残弾数がわかりやすいように
 	for (int i = 0; i < currentNum_; i++) {
 
