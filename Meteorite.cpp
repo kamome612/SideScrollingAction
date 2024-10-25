@@ -53,7 +53,8 @@ void Meteorite::Update()
 	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
@@ -110,7 +111,8 @@ void Meteorite::Draw()
 	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 

@@ -79,7 +79,8 @@ void AttackSkill::Draw()
 	int y = (int)transform_.position_.y+32.0f;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 	//DrawRotaGraph(x,y,1.0,1.55, aImage_, TRUE);
 	DrawRotaGraph(x, y, 1.0, angle_ - 80.1, aImage_, TRUE);//Šp“x‚Í“K“–‚É’²®‚µ‚½

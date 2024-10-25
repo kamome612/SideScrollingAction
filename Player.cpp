@@ -208,18 +208,18 @@ void Player::Update()
 
 	//Ç±Ç±Ç≈ÉJÉÅÉâà íuÇÃí≤êÆ
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	int x = (int)transform_.position_.x - cam->GetValue();
+	int x = (int)transform_.position_.x - cam->GetValueX();
 	if (x > MAX_POS) {
 		x = MAX_POS;
-		cam->SetValue((int)transform_.position_.x - x);
+		cam->SetValueX((int)transform_.position_.x - x);
 	}
 	if (x < 0) {
 		x = 0;
-		cam->SetValue((int)transform_.position_.x + x);
+		cam->SetValueX((int)transform_.position_.x + x);
 	}
 	if (x > 3800) {
 		x = 3800;
-		cam->SetValue((int)transform_.position_.x - x);
+		cam->SetValueX((int)transform_.position_.x - x);
 	}
 }
 
@@ -604,7 +604,8 @@ void Player::Draw()
 	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//ìñÇΩÇËîªíËÇå©ÇÈÇÊÇ§
@@ -614,6 +615,7 @@ void Player::Draw()
 	else {
 		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	}*/
+
 	//écíeêîÇ™ÇÌÇ©ÇËÇ‚Ç∑Ç¢ÇÊÇ§Ç…
 	for (int i = 0; i < currentNum_; i++) {
 

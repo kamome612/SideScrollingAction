@@ -44,7 +44,8 @@ void Flag::Draw()
 	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, 0, animFrame_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, fImage_, TRUE);
     //“–‚½‚è”»’è‚ÌˆÊ’uŠm‚©‚ß‚é—p

@@ -51,9 +51,11 @@ void Enemy::Update()
 
 	//ƒXƒNƒ[ƒ‹‚É‡‚í‚¹‚Ä“®‚­‚æ‚¤‚É
 	int x = (int)transform_.position_.x;
+	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
@@ -156,7 +158,8 @@ void Enemy::Draw()
 	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
 

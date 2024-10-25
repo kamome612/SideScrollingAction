@@ -68,17 +68,19 @@ void Stage::Draw()
 		DrawGraph(0, 0, gPict_, TRUE);
 	}
 
-	int scroll = 0;
+	int scrollX = 0;
+	int scrollY = 0;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		scroll = cam->GetValue();
+		scrollX = cam->GetValueX();
+		scrollY = cam->GetValueY();
 	}
 
 	//ステージの描画
 	for (int h = 0; h < height_; h++) {
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
-			DrawRectGraph(w * CHIP_SIZE-scroll, h * CHIP_SIZE, 
+			DrawRectGraph(w * CHIP_SIZE-scrollX, h * CHIP_SIZE - scrollY, 
 				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
 				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 
@@ -112,7 +114,8 @@ void Stage::StageSet()
 	}
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	cam->SetValue(0);
+	cam->SetValueX(0);
+	cam->SetValueY(0); //ここで全体のカメラの高さを変えられる
 	static const std::string folder = "Assets/Stage/";
 
 	//ステージ素材の画像の読み込み

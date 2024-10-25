@@ -49,7 +49,8 @@ void Explosion::Draw()
 	int y = (int)transform_.position_.y;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
-		x -= cam->GetValue();
+		x -= cam->GetValueX();
+		y -= cam->GetValueY();
 	}
 	DrawRectGraph(x - CHIP_SIZE/3, y -CHIP_SIZE/5, animFrame_ * CHIP_SIZE, animLine_ * CHIP_SIZE,
 		          CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
