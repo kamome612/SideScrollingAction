@@ -12,7 +12,7 @@
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
 	const int MAP_HEIGHT = 720;   //高さ
-	const float ROBO_WIDTH = 48;  //ロボの横幅
+	const float ROBO_WIDTH = 48;  //キャラの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
