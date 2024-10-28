@@ -33,7 +33,8 @@ Player::Player(GameObject* parent)
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
 	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
 	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
-	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0),mImage_(-1)
+	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0),mImage_(-1),
+	 bImage_(-1)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -59,6 +60,10 @@ Player::~Player()
 		DeleteGraph(mImage_);
 		mImage_ = -1;
 	}
+	if (bImage_ > 0) {
+		DeleteGraph(bImage_);
+		bImage_ = -1;
+	}
 }
 
 void Player::Initialize()
@@ -78,6 +83,9 @@ void Player::Initialize()
 	//残弾表示に使う画像の読み込み
 	mImage_ = LoadGraph("Assets\\Image\\missile.png");
 	assert(mImage_ > 0);
+
+	//弾のバナーの読み込み
+	bImage_ = LoadGraph("Assets\\Image\\banner.png");
 }
 
 void Player::Update()
@@ -617,6 +625,9 @@ void Player::Draw()
 	}*/
 
 	//残弾数がわかりやすいように
+
+	DrawExtendGraph(120, -130, 610, 200, bImage_, TRUE);//バナー
+
 	for (int i = 0; i < currentNum_; i++) {
 
 		DrawGraph((i * MISSILE_SIZE) + 180, 10, mImage_, TRUE);

@@ -54,6 +54,7 @@ private:
     int lImage_; //プレイヤーの体力を表す画像
     int dImage_; //体力のダメージ受けた部分の画像
     int mImage_; //残弾数表示用の画像
+    int bImage_; //弾表示のバナー
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
