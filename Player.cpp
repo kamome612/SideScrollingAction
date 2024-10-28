@@ -8,6 +8,7 @@
 #include "AttackSkill.h"
 #include "Flag.h"
 #include "Enemy.h"
+#include "FlyEnemy.h"
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
@@ -173,6 +174,17 @@ void Player::Update()
 	for (Enemy* pEnemy : pEnemys) {
 		if (hitFlag_ == false) {
 			if (pEnemy->CollideCircle(colX,colY,colR)) {
+				pLife_ -= 1;
+				hitFlag_ = true;
+			}
+		}
+	}
+
+	//飛んでる敵との当たり判定
+	std::list<FlyEnemy*> fEnemys = GetParent()->FindGameObjects<FlyEnemy>();
+	for (FlyEnemy* fEnemy : fEnemys) {
+		if (hitFlag_ == false) {
+			if (fEnemy->CollideCircle(colX, colY, colR)) {
 				pLife_ -= 1;
 				hitFlag_ = true;
 			}
@@ -617,12 +629,12 @@ void Player::Draw()
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
-	/*if (prevMoveKey_ == 0) {
+	if (prevMoveKey_ == 0) {
 		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	}
 	else {
 		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	}*/
+	}
 
 	//残弾数がわかりやすいように
 

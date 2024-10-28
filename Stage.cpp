@@ -10,7 +10,8 @@
 #include "Rocket.h"
 #include "Meteo.h"
 #include "Enemy.h"
-#include "MeteoSpawner.h"	
+#include "MeteoSpawner.h"
+#include "FlyEnemy.h"
 
 namespace {
 	const int CHIP_SIZE = 32;
@@ -85,7 +86,7 @@ void Stage::Draw()
 				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 
 			//新しい地面用
-			/*DrawRectGraph(w * CHIP_SIZE - scroll, h * CHIP_SIZE,
+			/*DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE,
 				CHIP_SIZE * (chip % 26), CHIP_SIZE * (chip / 26),
 				CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);*/
 		}
@@ -145,7 +146,7 @@ void Stage::StageSet()
 	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
 
 	//新しい地面用
-	//bool ret = csv.Load((folder + "test.csv").c_str());
+	//bool ret = csv.Load((folder + "test2.csv").c_str());
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -225,6 +226,12 @@ void Stage::StageSet()
 				else if (mapNo_ == 3) {
 					sEnemy->SetGravity(3.71 / 90.0f);
 				}
+				break;
+			}
+			case 10: //FlyEnemy
+			{
+				FlyEnemy* fEnemy = Instantiate<FlyEnemy>(GetParent());
+				fEnemy->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				break;
 			}
 			case 15://Meteorite左向き

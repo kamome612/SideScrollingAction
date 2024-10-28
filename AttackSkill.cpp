@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Enemy.h"
 #include "Stage.h"
+#include "FlyEnemy.h"
 
 namespace {
 	const float SPEED_ = 600;
@@ -45,6 +46,7 @@ void AttackSkill::Update()
 	transform_.position_.x += cos(angle_) * SPEED_ * Time::DeltaTime();
 	transform_.position_.y += sin(angle_) * SPEED_ * Time::DeltaTime();
 
+	//隕石との当たり判定
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
 		if (pMeteo->CollideCircle(transform_.position_.x, transform_.position_.y+32.0f, 10.0f)) {
@@ -55,6 +57,7 @@ void AttackSkill::Update()
 		}
 	}
 
+	//地面の敵との当たり判定
 	std::list<Enemy*> pEnemys = GetParent()->FindGameObjects<Enemy>();
 	for (Enemy* pEnemy : pEnemys) {
 		if (pEnemy->CollideCircle(transform_.position_.x, transform_.position_.y+32.0f,10.0f)) {
@@ -65,6 +68,18 @@ void AttackSkill::Update()
 		}
 	}
 
+	//浮いてる敵との当たり判定
+	std::list<FlyEnemy*> fEnemys = GetParent()->FindGameObjects<FlyEnemy>();
+	for (FlyEnemy* fEnemy : fEnemys) {
+		if (fEnemy->CollideCircle(transform_.position_.x, transform_.position_.y + 32.0f, 10.0f)) {
+			fEnemy->KillMe();
+			Explosion* pEx = Instantiate<Explosion>(GetParent());
+			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
+			KillMe();
+		}
+	}
+
+	//ステージとの当たり反t寧
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	bool isHitLeft = pStage->CollisionLeft(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
 	bool isHitRight = pStage->CollisionRight(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
