@@ -417,7 +417,7 @@ void Player::UpdateMove()
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
-	if (prevMoveKey_ == 0) {//左向き
+	if (prevMoveKey_ == 0) {//右向き
 		//プレイヤーの右側のステージとの当たり判定
 		int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
 		int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
@@ -427,7 +427,7 @@ void Player::UpdateMove()
 		}
 
 		//プレイヤーの左側のステージとの当たり判定
-		hitX = transform_.position_.x + 5;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+		hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
 		hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
 		if (pStage != nullptr) {
 			int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
@@ -629,12 +629,12 @@ void Player::Draw()
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
-	if (prevMoveKey_ == 0) {
+	/*if (prevMoveKey_ == 0) {
 		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
 	}
 	else {
 		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	}
+	}*/
 
 	//残弾数がわかりやすいように
 
