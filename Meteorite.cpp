@@ -112,7 +112,7 @@ void Meteorite::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValueX();
-		y -= cam->GetValueY();
+		//y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 

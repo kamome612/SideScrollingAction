@@ -267,7 +267,7 @@ void FlyEnemy::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValueX();
-		y -= cam->GetValueY();
+		//y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
 	DrawCircle( x + CHIP_SIZE/2-X_MARGIN, y + CHIP_SIZE/2+Y_MARGIN, 16.0f, GetColor(0, 0, 255), FALSE);

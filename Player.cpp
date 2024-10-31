@@ -625,7 +625,7 @@ void Player::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValueX();
-		y -= cam->GetValueY();
+		//y -= cam->GetValueY();
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//“–‚½‚è”»’è‚ðŒ©‚é‚æ‚¤

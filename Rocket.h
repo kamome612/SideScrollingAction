@@ -33,7 +33,7 @@ public:
         Camera* cam = GetParent()->FindGameObject<Camera>();
         if (cam != nullptr) {
             x -= cam->GetValueX();
-            y -= cam->GetValueY();
+            //y -= cam->GetValueY();
         }
         DrawRectGraph(x, y, 0, 0, ROCKET_SIZE, ROCKET_SIZE, rImage_, TRUE);
     }
