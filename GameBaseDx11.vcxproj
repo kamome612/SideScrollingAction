@@ -98,6 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>D:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;D:\学校関係\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;D:\学校関係\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalLibraryDirectories>

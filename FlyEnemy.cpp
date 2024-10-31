@@ -25,7 +25,7 @@ FlyEnemy::FlyEnemy(GameObject* parent)
 	moveDirection_(-1),time_(0.0f), onGround_(false),
 	animType_(0),animFrame_(0),chasingPlayer_(false),
 	chaseDelayTime_(0.0f),lastPlayerX_(0.0f),lastPlayerY_(0.0),
-	underbrock_(false)
+	underbrock_(false),prevPosX_(0.0f),prevPosY_(0.0f)
 {
 	//èâä˙à íuÇÃí≤êÆ
 	transform_.position_ = INIT_POS;
@@ -105,6 +105,8 @@ void FlyEnemy::Update()
 			underbrock_ = false;
 		}
 	}
+	prevPosX_ = transform_.position_.x;
+	prevPosY_ = transform_.position_.y;
 }
 
 void FlyEnemy::UpdateNormal()
@@ -204,7 +206,17 @@ void FlyEnemy::UpdateAttack()
 		float moveX = 0.0f;
 		float moveY = 0.0f;
 
-		if (underbrock_ == true) {
+		/*if (transform_.position_.y == prevPosY_) {
+			if (animType_ == 1) {
+				moveX = FLY_SPEED * Time::DeltaTime();
+				animType_ = 1;
+			}
+			else {
+				moveX = -FLY_SPEED * Time::DeltaTime();
+				animType_ = 0;
+			}
+		}*/
+		if (underbrock_ == true && transform_.position_.y == prevPosY_) {
 			if (animType_ == 1) {
 				moveX = FLY_SPEED * Time::DeltaTime();
 				animType_ = 1;
@@ -302,5 +314,5 @@ bool FlyEnemy::InRange(Player* player)
 	float distance = sqrt(dx * dx + dy * dy);
 
 	//éãäEì‡Ç…Ç¢ÇÈÇ©ï‘Ç∑
-	return distance<SEARCH_RANGE;
+	return(distance < SEARCH_RANGE);
 }
