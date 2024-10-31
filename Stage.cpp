@@ -402,10 +402,10 @@ bool Stage::IsWallBlock(int x, int y)
 	case 65://V‚Ì‰Eã
 	case 80://V‚Ì¶‰º
 	case 81://V‚Ì‰E‰º
-		return true;
 		//V‚µ‚¢’n–Ê‚Ì“–‚½‚è”»’è
 	case 46:
 	case 47:
+		return true;
 	}
 	return false;
 }
