@@ -219,11 +219,11 @@ void FlyEnemy::UpdateAttack()
 		if (underbrock_ == true && transform_.position_.y == prevPosY_) {
 			if (animType_ == 1) {
 				moveX = FLY_SPEED * Time::DeltaTime();
-				animType_ = 1;
+				//animType_ = 1;
 			}
 			else {
 				moveX = -FLY_SPEED * Time::DeltaTime();
-				animType_ = 0;
+				//animType_ = 0;
 			}
 		}
 		else {
