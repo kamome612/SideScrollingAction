@@ -81,6 +81,7 @@ void Stage::Draw()
 	for (int h = 0; h < height_; h++) {
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
+
 			DrawRectGraph(w * CHIP_SIZE-scrollX, h * CHIP_SIZE - scrollY, 
 				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
 				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
@@ -126,7 +127,6 @@ void Stage::StageSet()
 	//hImage_ = LoadGraph("Assets/Stage/ground2.png");
 
 	if (mapNo_ != 3) {
-		//hImage_ = LoadGraph((folder + "ground.png").c_str());
 		hImage_ = LoadGraph((folder + "ground3.png").c_str());
 		
 		//新しい地面用
@@ -146,7 +146,7 @@ void Stage::StageSet()
 	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
 
 	//新しい地面用
-	//bool ret = csv.Load((folder + "test2.csv").c_str());
+	//bool ret = csv.Load((folder + "test3.csv").c_str());
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
@@ -403,6 +403,9 @@ bool Stage::IsWallBlock(int x, int y)
 	case 80://〃の左下
 	case 81://〃の右下
 		return true;
+		//新しい地面の当たり判定
+	case 46:
+	case 47:
 	}
 	return false;
 }
