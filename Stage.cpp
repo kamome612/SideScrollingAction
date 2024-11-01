@@ -82,14 +82,14 @@ void Stage::Draw()
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
 
-			DrawRectGraph(w * CHIP_SIZE-scrollX, h * CHIP_SIZE - scrollY, 
+			/*DrawRectGraph(w * CHIP_SIZE-scrollX, h * CHIP_SIZE - scrollY, 
 				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
-				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);*/
 
 			//新しい地面用
-			/*DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE,
+			DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE,
 				CHIP_SIZE * (chip % 26), CHIP_SIZE * (chip / 26),
-				CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);*/
+				CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 		}
 	}
 }
@@ -127,10 +127,10 @@ void Stage::StageSet()
 	//hImage_ = LoadGraph("Assets/Stage/ground2.png");
 
 	if (mapNo_ != 3) {
-		hImage_ = LoadGraph((folder + "ground3.png").c_str());
+		//hImage_ = LoadGraph((folder + "ground3.png").c_str());
 		
 		//新しい地面用
-		//hImage_ = LoadGraph((folder + "ground.png").c_str());
+		hImage_ = LoadGraph((folder + "ground.png").c_str());
 	}
 	else {
 		hImage_ = LoadGraph((folder + "ground2.png").c_str());
@@ -143,10 +143,10 @@ void Stage::StageSet()
 
 	//csvから読み込み
 	CsvReader csv;
-	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
+	//bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
 
 	//新しい地面用
-	//bool ret = csv.Load((folder + "test3.csv").c_str());
+	bool ret = csv.Load((folder + "Stage100.csv").c_str());
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る

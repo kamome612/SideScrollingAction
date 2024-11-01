@@ -79,7 +79,7 @@ void AttackSkill::Update()
 		}
 	}
 
-	//ステージとの当たり反t寧
+	//ステージとの当たり判定
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	bool isHitLeft = pStage->CollisionLeft(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
 	bool isHitRight = pStage->CollisionRight(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
@@ -91,7 +91,7 @@ void AttackSkill::Update()
 void AttackSkill::Draw()
 {
 	int x = (int)transform_.position_.x;
-	int y = (int)transform_.position_.y+32.0f;
+	int y = (int)transform_.position_.y + 32.0f;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValueX();

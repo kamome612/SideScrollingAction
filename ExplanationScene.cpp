@@ -2,7 +2,8 @@
 #include "Engine/SceneManager.h"
 
 ExplanationScene::ExplanationScene(GameObject* parent)
-	:GameObject(parent, "ExplanationScene"),select_(0),ePict_(-1), prevUpKey_(false), prevDownKey_(false)
+	:GameObject(parent, "ExplanationScene"),select_(0),ePict_(-1), 
+	 prevUpKey_(false), prevDownKey_(false),prevEnterKey_(false)
 {
 }
 
