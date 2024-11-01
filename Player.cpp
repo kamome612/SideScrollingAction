@@ -250,7 +250,7 @@ void Player::UpdateNormal()
 		if (prevMoveKey_ == 0) {
 			animType_ = 5;
 		}
-		else{
+		else {
 			animType_ = 15;
 		}
 	}
@@ -291,12 +291,13 @@ void Player::UpdateNormal()
 	//なんか動くならS_Moveに移動
 	if (CheckHitKey(KEY_INPUT_D) || CheckHitKey(KEY_INPUT_A)
 		|| CheckHitKey(KEY_INPUT_SPACE) || x > 0.3f || x < -0.3f
-		||((input.Buttons[0] &0x80) != 0)) {
+		|| ((input.Buttons[0] & 0x80) != 0)) {
 		state_ = S_Move;
 	}
 
 	//ミサイルを飛ばしての攻撃
-	if ((CheckHitKey(KEY_INPUT_E) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//横に飛ばす
+	//if (onGround_) {//地面に立っている時しか使えないようにする場合
+	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//横に飛ばす
 		ReadyAttack(isTypeA);//弾の準備
 	}
 	else {
@@ -304,15 +305,16 @@ void Player::UpdateNormal()
 		isTypeA = false;
 	}
 
-	if ((CheckHitKey(KEY_INPUT_R) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
+	if ((CheckHitKey(KEY_INPUT_K) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
 		ReadyAttack(isTypeB);//弾の準備
 	}
 	else {
 		prevAttackKey_ = false;
 		isTypeB = false;
 	}
+    //}
 
-	if (CheckHitKey(KEY_INPUT_H) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
+	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
 		Reload();
 	}
@@ -499,23 +501,25 @@ void Player::UpdateMove()
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	//ミサイルを飛ばしての攻撃
-	if ((CheckHitKey(KEY_INPUT_E) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
-		ReadyAttack(isTypeA);//弾の準備
-	}
-	else {
-		prevAttackKey_ = false;
-		isTypeA = false;
-	}
+	//if (onGround_) {//地面に立っている時しか使えないようにする場合
+		if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
+			ReadyAttack(isTypeA);//弾の準備
+		}
+		else {
+			prevAttackKey_ = false;
+			isTypeA = false;
+		}
 
-	if ((CheckHitKey(KEY_INPUT_R) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
-		ReadyAttack(isTypeB);//弾の準備
-	}
-	else {
-		prevAttackKey_ = false;
-		isTypeB = false;
-	}
+		if ((CheckHitKey(KEY_INPUT_K) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
+			ReadyAttack(isTypeB);//弾の準備
+		}
+		else {
+			prevAttackKey_ = false;
+			isTypeB = false;
+		}
 
-	if (CheckHitKey(KEY_INPUT_H) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
+	//}
+	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
 		Reload();
 	}

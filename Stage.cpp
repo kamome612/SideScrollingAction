@@ -82,14 +82,17 @@ void Stage::Draw()
 		for (int w = 0; w < width_; w++) {
 			int chip = map_[h * width_ + w];
 
-			/*DrawRectGraph(w * CHIP_SIZE-scrollX, h * CHIP_SIZE - scrollY, 
-				          CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16), 
-				          CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);*/
-
-			//新しい地面用
-			DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE,
-				CHIP_SIZE * (chip % 26), CHIP_SIZE * (chip / 26),
-				CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+			if (mapNo_ != 1) {
+				DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE - scrollY,
+					CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16),
+					CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+			}
+			else {
+				//新しい地面用
+				DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE,
+					CHIP_SIZE * (chip % 26), CHIP_SIZE * (chip / 26),
+					CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
+			}
 		}
 	}
 }
@@ -122,18 +125,32 @@ void Stage::StageSet()
 
 	//ステージ素材の画像の読み込み
 	std::string n = std::to_string(mapNo_);
-	//hImage_ = LoadGraph((folder + "bgchar" + n + ".png").c_str());
-	//hImage_ = LoadGraph("Assets/Stage/spritesheet_ground.png");
-	//hImage_ = LoadGraph("Assets/Stage/ground2.png");
 
-	if (mapNo_ != 3) {
-		//hImage_ = LoadGraph((folder + "ground3.png").c_str());
-		
+	//if (mapNo_ != 3) {
+	//	//hImage_ = LoadGraph((folder + "ground3.png").c_str());
+	//	
+	//	//新しい地面用
+	//	hImage_ = LoadGraph((folder + "ground.png").c_str());
+	//}
+	//else {
+	//	hImage_ = LoadGraph((folder + "ground2.png").c_str());
+	//}
+	//assert(hImage_ > 0);
+
+	//ステージに応じて読み込む画像の変更
+	switch (mapNo_) {
+	case 1:
 		//新しい地面用
 		hImage_ = LoadGraph((folder + "ground.png").c_str());
-	}
-	else {
+		break;
+	case 2:
+		hImage_ = LoadGraph((folder + "ground3.png").c_str());
+		break;
+	case 3:
 		hImage_ = LoadGraph((folder + "ground2.png").c_str());
+		break;
+	default:
+		break;
 	}
 	assert(hImage_ > 0);
 
@@ -143,10 +160,10 @@ void Stage::StageSet()
 
 	//csvから読み込み
 	CsvReader csv;
-	//bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
+	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
 
 	//新しい地面用
-	bool ret = csv.Load((folder + "Stage100.csv").c_str());
+	//bool ret = csv.Load((folder + "Stage100.csv").c_str());
 	assert(ret);
 
 	//csvで読んだステージの横と縦を取る
