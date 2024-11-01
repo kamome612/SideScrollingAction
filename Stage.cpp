@@ -422,6 +422,20 @@ bool Stage::IsWallBlock(int x, int y)
 		//V‚µ‚¢’n–Ê‚Ì“–‚½‚è”»’è
 	case 46:
 	case 47:
+	case 42:
+	case 43:
+	case 50:
+	case 51:
+	case 24:
+	case 25:
+	case 28:
+	case 29:
+	case 14:
+	case 15:
+	case 40:
+	case 41:
+	case 6:
+	case 7:
 		return true;
 	}
 	return false;
