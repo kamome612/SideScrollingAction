@@ -65,10 +65,6 @@ void FlyEnemy::Update()
 
 	if (x > SCREEN_WIDTH)//画面外(右側)にいるならなにもしない
 		return;
-	//else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
-	//	KillMe();
-	//	return;
-	//}
 
 	switch (state_) {
 	case 0:
@@ -81,9 +77,7 @@ void FlyEnemy::Update()
 		break;
 	}
 
-	//アニメーションに使うタイムの更新
-	//time_ += Time::DeltaTime();
-
+	//ステージとの上下の当たり判定
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
 		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE - X_MARGIN, transform_.position_.y + CHIP_SIZE);
@@ -105,6 +99,8 @@ void FlyEnemy::Update()
 			underbrock_ = false;
 		}
 	}
+
+	//前フレームの位置を持っておく
 	prevPosX_ = transform_.position_.x;
 	prevPosY_ = transform_.position_.y;
 }
@@ -153,19 +149,6 @@ void FlyEnemy::UpdateNormal()
 		KillMe();
 	}
 
-	//int hitX = transform_.position_.x;
-	//int hitY = transform_.position_.y + CHIP_SIZE -Y_MARGIN ;
-	//if (pStage != nullptr) {
-	//	int push = pStage->CollisionLeft(hitX, hitY);
-	//	transform_.position_.x += push;
-	//	//KillMe();
-	//}
-
-	/*else {
-		animFrame_ = 0;
-		frameCounter_ = 0;
-	}*/
-
 	//アニメーション
 	time_ += Time::DeltaTime();
 	if (time_ > 0.1f) {
@@ -192,30 +175,11 @@ void FlyEnemy::UpdateAttack()
 	float myCenterX = transform_.position_.x + (float)CHIP_SIZE / 2 - X_MARGIN;
 	float myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2 + Y_MARGIN;
 
-	//Playerの中心位置
-	//float playerCenterX = player->GetPosition().x + (float)PLAYER_CHIP_SIZE / 4;
-	//float playerCenterY = player->GetPosition().y + (float)PLAYER_CHIP_SIZE / 2;
-
-	//Playerとの距離
-	/*float dx = myCenterX - playerCenterX;
-	float dy = myCenterY - playerCenterY;
-	float distance = sqrt(dx * dx + dy * dy);*/
-
 	//Playerが視界内にいたら追尾
 	if (InRange(player)) {
 		float moveX = 0.0f;
 		float moveY = 0.0f;
 
-		/*if (transform_.position_.y == prevPosY_) {
-			if (animType_ == 1) {
-				moveX = FLY_SPEED * Time::DeltaTime();
-				animType_ = 1;
-			}
-			else {
-				moveX = -FLY_SPEED * Time::DeltaTime();
-				animType_ = 0;
-			}
-		}*/
 		if (underbrock_ == true && transform_.position_.y == prevPosY_) {
 			if (animType_ == 1) {
 				moveX = FLY_SPEED * Time::DeltaTime();

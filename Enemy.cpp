@@ -64,10 +64,6 @@ void Enemy::Update()
 
 	if (x > SCREEN_WIDTH)//画面外(右側)にいるならなにもしない
 		return;
-	//else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
-	//	KillMe();
-	//	return;
-	//}
 
 	switch (state_) {
 	case 0:
@@ -137,7 +133,6 @@ void Enemy::UpdateNormal()
 	if (pStage != nullptr) {
 		int push = pStage->CollisionLeft(hitX,hitY);
 		transform_.position_.x += push;
-		//KillMe();
 	}
 	else {
 	animFrame_ = 0;
@@ -163,6 +158,7 @@ void Enemy::Draw()
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
 
+	//当たり判定見る用
 	//DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 2, 12.0f, GetColor(0, 0, 255), FALSE);
 
 }

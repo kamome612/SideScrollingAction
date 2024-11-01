@@ -22,12 +22,14 @@ Explosion::~Explosion()
 
 void Explosion::Initialize()
 {
+	//画像のロード
 	eImage_ = LoadGraph("Assets/Image/explosion2.png");
 	assert(eImage_ > 0);
 }
 
 void Explosion::Update()
 {
+	//アニメーション
 	if (exTime_ > 0.01) {
 		animColumn_++;
 		exTime_ = 0.0;
@@ -54,7 +56,6 @@ void Explosion::Draw()
 	}
 	DrawRectGraph(x - CHIP_SIZE/3, y -CHIP_SIZE/5, animFrame_ * CHIP_SIZE, animLine_ * CHIP_SIZE,
 		          CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
-	
 }
 
 void Explosion::SetPosition(float _x, float _y)

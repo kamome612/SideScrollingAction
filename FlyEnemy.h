@@ -37,19 +37,17 @@ private:
     int eImage_;
     bool onGround_;  //地面の上にいるか
     bool underbrock_;//ブロックの下にいるか
-    float ground_;   //地面の高さ
     float time_;     //タイム
     int animType_;   //状況
-    int animFrame_;//コマ
-    int frameCounter_;
-    float moveTime_;//上下入れ替え時間を測る
-    int moveDirection_;//上下入れ替え（1が上、-1が下）
-    bool chasingPlayer_;//視界内に入ったか
+    int animFrame_;  //コマ
+    float moveTime_; //上下入れ替え時間を測る
+    int moveDirection_;   //上下入れ替え（1が上、-1が下）
+    bool chasingPlayer_;  //視界内に入ったか
     float chaseDelayTime_;//追尾遅延時間
-    float lastPlayerX_;//Playerの居たX座標
-    float lastPlayerY_;//Playerの居たY座標
-    float prevPosX_;//前回いた位置X
-    float prevPosY_;//前回いた位置Y
+    float lastPlayerX_;   //Playerの居たX座標
+    float lastPlayerY_;   //Playerの居たY座標
+    float prevPosX_;      //前回いた位置X
+    float prevPosY_;      //前回いた位置Y
 
     enum State {
         S_Normal = 0,

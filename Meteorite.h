@@ -32,8 +32,8 @@ public:
 	void SetMoveType(int _type);
 private:
 	int mImage_;
-	float gravity_;
-	float moveSpeed_;
-	int moveType_;
+	float gravity_;   //d—Í
+	float moveSpeed_; //“®‚­‘¬‚³
+	int moveType_;    //Œü‚«‚Ìí—Ş
 };
 

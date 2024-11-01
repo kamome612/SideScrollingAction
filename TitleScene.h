@@ -22,9 +22,9 @@ public:
 
 private:
 	int tPict_;
-	int select_;
-	bool prevUpKey_;
-	bool prevDownKey_;
-	bool prevEnterKey_;
+	int select_;        //選択
+	bool prevUpKey_;    //前フレームの上キー状態
+	bool prevDownKey_;  //前フレームの下キー状態
+	bool prevEnterKey_; //前フレームの決定キー状態
 };
 

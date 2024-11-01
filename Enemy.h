@@ -33,20 +33,17 @@ public:
     
     bool CollideCircle(float x,float y,float r);
 private:
-    int eImage_; //プレイヤーの画像
-    //float walkSpeed_; //歩く速さ(後でnamespaceの方に入れるかも)
+    int eImage_;      //プレイヤーの画像
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
-    float ground_;    //地面の高さ
-    bool onGround_;     //地面の上にいるか
-    float time_;        //タイム
-    int animType_;//状況
-    int animFrame_;//コマ
-    int frameCounter_;
+    bool onGround_;   //地面の上にいるか
+    float time_;      //タイム
+    int animType_;    //状況
+    int animFrame_;   //コマ
    
     enum State {
-        S_Normal = 0,
-        S_Attack,
+        S_Normal = 0, //通常時
+        S_Attack,     //攻撃時(今のところ無し)
     };
     State state_;
 };

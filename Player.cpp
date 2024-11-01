@@ -479,8 +479,6 @@ void Player::UpdateMove()
 		}
 	}
 	else if (!onGround_ && jumpSpeed_ > 0) {//地面にいなくて、ジャンプで下がっているなら
-		/*animType_ = 2;
-		animFrame_ = 1;*/
 		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
 			animFrame_ = 2;
@@ -641,7 +639,6 @@ void Player::Draw()
 	}*/
 
 	//残弾数がわかりやすいように
-
 	DrawExtendGraph(120, -130, 610, 200, bImage_, TRUE);//バナー
 
 	for (int i = 0; i < currentNum_; i++) {
@@ -695,7 +692,6 @@ void Player::ReadyAttack(bool &_isType)
 		}
 		time_ = 0.0f;
 		_isType = true;
-		//currentNum_ -= 1;
 		state_ = S_Attack;//攻撃の状態に移る
 	}
 	prevAttackKey_ = true;

@@ -26,10 +26,10 @@ public:
 	void ChangeResult() { isClear_ = true; }
 
 private:
-	bool isClear_;
+	bool isClear_; //クリアか否か
 	int rPict_;
-	int select_;
-	bool prevUpKey_;
-	bool prevDownKey_;
+	int select_;   //選択
+	bool prevUpKey_;   //前フレームの上キー状態
+	bool prevDownKey_; //前フレームの下キー状態
 };
 

@@ -17,15 +17,10 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
-	//プレイシーンへの遷移(仮だから後で変える)
-	/*if (CheckHitKey(KEY_INPUT_P)) {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
-	}*/
-
 	//コントローラの情報とる
 	DINPUT_JOYSTATE input;
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
+
 	//上限を超えないように
 	if (select_ > 0) {
 		if (CheckHitKey(KEY_INPUT_UP) || CheckHitKey(KEY_INPUT_W)
@@ -77,7 +72,8 @@ void TitleScene::Draw()
 {
 	//画像の表示
 	DrawGraph(0, 0, tPict_, TRUE);
-	//選択するときの三角
+
+	//選択するときの三角描画
 	int tmp = 440 + select_ * 60;
 	DrawTriangle(480, tmp, 480 - 30, tmp + 20, 480 - 30, tmp - 20,
 		GetColor(255, 255, 0), TRUE);
@@ -85,4 +81,7 @@ void TitleScene::Draw()
 
 void TitleScene::Release()
 {
+	if (tPict_ > 0) {
+		DeleteGraph(tPict_);
+	}
 }

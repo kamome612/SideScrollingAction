@@ -60,24 +60,23 @@ private:
     float ground_;    //地面の高さ
     bool prevAttackKey_;//ひとつ前のフレームでEキーを押したから
     bool onGround_;     //地面の上にいるか
-    bool hitFlag_; //当った時のフラグ
+    bool hitFlag_;      //当った時のフラグ
     float time_;        //タイム
-    float invTime_; //無敵時間
-    int animType_;//状況
-    int animFrame_;//コマ
-    int frameCounter_;
-    int pLife_;//プレイヤーの体力
-    bool isTypeA{ false };
-    bool isTypeB{ false };
-    int prevMoveKey_;//左右どっちのキーが前回押されたか
-    int currentNum_;//現在の弾数
-    float ReloadTime_;//リロードの時間
+    float invTime_;     //無敵時間
+    int animType_;      //状況
+    int animFrame_;     //コマ
+    int pLife_;         //プレイヤーの体力
+    bool isTypeA{ false }; //ミサイル(横向き)
+    bool isTypeB{ false }; //〃(斜め上)
+    int prevMoveKey_;      //左右どっちのキーが前回押されたか
+    int currentNum_;       //現在の弾数
+    float ReloadTime_;     //リロードの時間
 
     enum State {
-        S_Normal = 0,
-        S_Move,
-        S_Attack,
-        S_Die,
+        S_Normal = 0, //通常時
+        S_Move,       //なにかしら動きがある時
+        S_Attack,     //攻撃時
+        S_Die,        //〇ぬ時
     };
 
     State state_;
