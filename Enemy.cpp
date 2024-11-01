@@ -136,7 +136,6 @@ void Enemy::UpdateNormal()
 	}
 	else {
 	animFrame_ = 0;
-	frameCounter_ = 0;
 	}
 
 	jumpSpeed_ += gravity_;//ë¨ìx += èdóÕ
@@ -167,7 +166,6 @@ void Enemy::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
-	ground_ = _y;
 }
 
 void Enemy::SetGravity(float _gravity)

@@ -32,7 +32,7 @@ namespace {
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), pImage_(-1), gravity_(INIT_GRAVITY),
 	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
-	 animFrame_(0), frameCounter_(0),prevAttackKey_(false), pLife_(3),
+	 animFrame_(0),prevAttackKey_(false), pLife_(3),
 	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
 	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0),mImage_(-1),
 	 bImage_(-1)

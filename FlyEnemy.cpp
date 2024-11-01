@@ -243,7 +243,6 @@ void FlyEnemy::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
-	ground_ = _y;
 }
 
 bool FlyEnemy::CollideCircle(float x, float y, float r)
