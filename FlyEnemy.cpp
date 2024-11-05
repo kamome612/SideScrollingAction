@@ -161,51 +161,89 @@ void FlyEnemy::UpdateAttack()
 {
 	Player* player = GetParent()->FindGameObject<Player>();
 
-	if (player == nullptr) return;
+	//if (player == nullptr) return;
 
-	// Playerの位置更新間隔
+	//// Playerの位置更新間隔
+	//chaseDelayTime_ += Time::DeltaTime();
+	//if (chaseDelayTime_ >= 0.5f) {  // 0.5秒ごとに位置を更新
+	//	lastPlayerX_ = player->GetPosition().x + (float)PLAYER_CHIP_SIZE / 4;
+	//	lastPlayerY_ = player->GetPosition().y + (float)PLAYER_CHIP_SIZE / 2;
+	//	chaseDelayTime_ = 0.0f;  // 更新したらカウントをリセット
+	//}
+
+	////自分の中心位置
+	//float myCenterX = transform_.position_.x + (float)CHIP_SIZE / 2 - X_MARGIN;
+	//float myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2 + Y_MARGIN;
+
+	////Playerが視界内にいたら追尾
+	//if (InRange(player)) {
+	//	float moveX = 0.0f;
+	//	float moveY = 0.0f;
+
+	//	if (underbrock_ == true && transform_.position_.y == prevPosY_) {
+	//		if (animType_ == 1) {
+	//			moveX = FLY_SPEED * Time::DeltaTime();
+	//			//animType_ = 1;
+	//		}
+	//		else {
+	//			moveX = -FLY_SPEED * Time::DeltaTime();
+	//			//animType_ = 0;
+	//		}
+	//	}
+	//	else {
+	//		//Playerがいた場所の中心に向かって移動
+	//		if (lastPlayerX_ > myCenterX) {
+	//			moveX = FLY_SPEED * Time::DeltaTime();
+	//			animType_ = 1;
+	//		}
+	//		else {
+	//			moveX = -FLY_SPEED * Time::DeltaTime();
+	//			animType_ = 0;
+	//		}
+	//		if (lastPlayerY_ > myCenterY) {
+	//			moveY = FLY_SPEED * Time::DeltaTime();
+	//		}
+	//		else {
+	//			moveY = -FLY_SPEED * Time::DeltaTime();
+	//		}
+	//	}
+
+	//	transform_.position_.x += moveX;
+	//	transform_.position_.y += moveY;
+	//}
+	//else {
+	//	//視界外に出たらS_Normalに
+	//	state_ = S_Normal;
+	//}
+
+	if (player == nullptr) return;
 	chaseDelayTime_ += Time::DeltaTime();
 	if (chaseDelayTime_ >= 0.5f) {  // 0.5秒ごとに位置を更新
 		lastPlayerX_ = player->GetPosition().x + (float)PLAYER_CHIP_SIZE / 4;
 		lastPlayerY_ = player->GetPosition().y + (float)PLAYER_CHIP_SIZE / 2;
-		chaseDelayTime_ = 0.0f;  // 更新したらカウントをリセット
+		chaseDelayTime_ = 0.0f;  //更新したらカウントをリセット
 	}
 
-	//自分の中心位置
 	float myCenterX = transform_.position_.x + (float)CHIP_SIZE / 2 - X_MARGIN;
 	float myCenterY = transform_.position_.y + (float)CHIP_SIZE / 2 + Y_MARGIN;
 
-	//Playerが視界内にいたら追尾
 	if (InRange(player)) {
 		float moveX = 0.0f;
 		float moveY = 0.0f;
 
-		if (underbrock_ == true && transform_.position_.y == prevPosY_) {
-			if (animType_ == 1) {
-				moveX = FLY_SPEED * Time::DeltaTime();
-				//animType_ = 1;
-			}
-			else {
-				moveX = -FLY_SPEED * Time::DeltaTime();
-				//animType_ = 0;
-			}
+		if (lastPlayerX_ > myCenterX) {
+			moveX = FLY_SPEED * Time::DeltaTime();
+			animType_ = 1;
 		}
 		else {
-			//Playerがいた場所の中心に向かって移動
-			if (lastPlayerX_ > myCenterX) {
-				moveX = FLY_SPEED * Time::DeltaTime();
-				animType_ = 1;
-			}
-			else {
-				moveX = -FLY_SPEED * Time::DeltaTime();
-				animType_ = 0;
-			}
-			if (lastPlayerY_ > myCenterY) {
-				moveY = FLY_SPEED * Time::DeltaTime();
-			}
-			else {
-				moveY = -FLY_SPEED * Time::DeltaTime();
-			}
+			moveX = -FLY_SPEED * Time::DeltaTime();
+			animType_ = 0;
+		}
+		if (lastPlayerY_ > myCenterY) {
+			moveY = FLY_SPEED * Time::DeltaTime();
+		}
+		else {
+			moveY = -FLY_SPEED * Time::DeltaTime();
 		}
 
 		transform_.position_.x += moveX;

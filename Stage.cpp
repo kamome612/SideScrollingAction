@@ -90,7 +90,7 @@ void Stage::Draw()
 			else {
 				//新しい地面用
 				DrawRectGraph(w * CHIP_SIZE - scrollX, h * CHIP_SIZE,
-					CHIP_SIZE * (chip % 26), CHIP_SIZE * (chip / 26),
+					CHIP_SIZE * (chip % 16), CHIP_SIZE * (chip / 16),
 					CHIP_SIZE, CHIP_SIZE, hImage_, TRUE, FALSE);
 			}
 		}
@@ -141,7 +141,8 @@ void Stage::StageSet()
 	switch (mapNo_) {
 	case 1:
 		//新しい地面用
-		hImage_ = LoadGraph((folder + "ground.png").c_str());
+		//hImage_ = LoadGraph((folder + "ground.png").c_str());
+		hImage_ = LoadGraph((folder + "ground3.png").c_str());
 		break;
 	case 2:
 		hImage_ = LoadGraph((folder + "ground3.png").c_str());
@@ -436,6 +437,8 @@ bool Stage::IsWallBlock(int x, int y)
 	case 41:
 	case 6:
 	case 7:
+	case 10:
+	case 11:
 		return true;
 	}
 	return false;
