@@ -71,10 +71,10 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	DrawGraph(0, 0, rPict_, TRUE);
-	int tmp = 440 + select_ * 60;
-	
+	int tmp = 335 + select_ * 97;
+	int len = 400;
 	//‘I‘ð‚·‚é‚Æ‚«‚ÌŽOŠp•`‰æ
-	DrawTriangle(480, tmp,480 - 30, tmp + 20, 480 - 30, tmp - 20,
+	DrawTriangle(len, tmp,len - 30, tmp + 20, len - 30, tmp - 20,
 		GetColor(255, 255, 0), TRUE);
 }
 
