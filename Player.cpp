@@ -222,8 +222,8 @@ void Player::Update()
 	if (transform_.position_.x < 0) {
 		transform_.position_.x = 0;
 	}
-	if (transform_.position_.x > 4600) {
-		transform_.position_.x = 4600;
+	if (transform_.position_.x > 4320) {
+		transform_.position_.x = 4320;
 	}
 
 	//‚±‚±‚ÅƒJƒƒ‰ˆÊ’u‚Ì’²®
@@ -236,10 +236,10 @@ void Player::Update()
 	}
 	if (x < 0) {
 		x = 0;
-		cam->SetValueX((int)transform_.position_.x + x);
+		cam->SetValueX((int)transform_.position_.x - x);
 	}
-	if (x > 3800) {
-		x = 3800;
+	if (x > 3600) {
+		x = 3600;
 		cam->SetValueX((int)transform_.position_.x - x);
 	}
 }

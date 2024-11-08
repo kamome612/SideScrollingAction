@@ -18,7 +18,7 @@ namespace {
 	//const int LIFE_IMAGE_SIZE = 64;
 	const int MAP_WIDTH = 1280;
 	const int MAP_HEIGHT = 720;
-	const int CHIP_NULL = -1;
+	const int CHIP_NULL = 255;
 }
 
 Stage::Stage(GameObject* parent)
@@ -376,70 +376,71 @@ bool Stage::IsWallBlock(int x, int y)
 	int chipX = x / CHIP_SIZE;
 	int chipY = y / CHIP_SIZE;
 	switch (map_[chipY * width_ + chipX]) {
-	case 2://土の左上
-	case 3://土の右上
-	case 18://土の左下
-	case 19://土の右下
-	case 32://地面の左上
-	case 33://地面の右上
-	case 48://地面の左下
-	case 49://地面の右下
-	case 160://浮いてる足場(右)の左上
-	case 161://浮いてる足場(右)の右上
-	case 192://浮いてる足場(中央)の左上
-	case 193://浮いてる足場(中央)の右上
-	case 224://浮いてる足場(左)の左上
-	case 225://浮いてる足場(左)の右上
-	case 520://橋の左
-	case 521://橋の右
-		//月の方のマップチップ
-	case 134://地中の左上
-	case 135://地中の右上
-	case 150://地中の左下
-	case 151://地中の右下
-	case 164://地面(表面)の左上
-	case 165://地面(表面)の右上
-	case 180://地面(表面)の左下
-	case 181://地面(表面)の右下
-	case 292://浮いてる足場(右)の左上
-	case 293://〃の右上
-	case 324://浮いてる足場(中央)の左上
-	case 325://〃の右上
-	case 356://浮いてる足場(左)の左上
-	case 357://〃の右上
-		//火星の方のマップチップ
-	case 4://地面(表面)の左上
-	case 5://〃の右上
-	case 20://〃の左下
-	case 21://〃の右下
-	case 0://地中の左上
-	case 1://〃の右上
-	case 16://〃の左下
-	case 17://〃の右下
-	case 64://地中2の左上
-	case 65://〃の右上
-	case 80://〃の左下
-	case 81://〃の右下
-		//新しい地面の当たり判定
-	case 46:
-	case 47:
-	case 42:
-	case 43:
-	case 50:
-	case 51:
-	case 24:
-	case 25:
-	case 28:
-	case 29:
-	case 14:
-	case 15:
-	case 40:
-	case 41:
-	case 6:
-	case 7:
-	case 10:
-	case 11:
-		return true;
+	//case 2://土の左上
+	//case 3://土の右上
+	//case 18://土の左下
+	//case 19://土の右下
+	//case 32://地面の左上
+	//case 33://地面の右上
+	//case 48://地面の左下
+	//case 49://地面の右下
+	//case 160://浮いてる足場(右)の左上
+	//case 161://浮いてる足場(右)の右上
+	//case 192://浮いてる足場(中央)の左上
+	//case 193://浮いてる足場(中央)の右上
+	//case 224://浮いてる足場(左)の左上
+	//case 225://浮いてる足場(左)の右上
+	//case 520://橋の左
+	//case 521://橋の右
+	//	//月の方のマップチップ
+	//case 134://地中の左上
+	//case 135://地中の右上
+	//case 150://地中の左下
+	//case 151://地中の右下
+	//case 164://地面(表面)の左上
+	//case 165://地面(表面)の右上
+	//case 180://地面(表面)の左下
+	//case 181://地面(表面)の右下
+	//case 292://浮いてる足場(右)の左上
+	//case 293://〃の右上
+	//case 324://浮いてる足場(中央)の左上
+	//case 325://〃の右上
+	//case 356://浮いてる足場(左)の左上
+	//case 357://〃の右上
+	//	//火星の方のマップチップ
+	//case 4://地面(表面)の左上
+	//case 5://〃の右上
+	//case 20://〃の左下
+	//case 21://〃の右下
+	//case 0://地中の左上
+	//case 1://〃の右上
+	//case 16://〃の左下
+	//case 17://〃の右下
+	//case 64://地中2の左上
+	//case 65://〃の右上
+	//case 80://〃の左下
+	//case 81://〃の右下
+	//	//新しい地面の当たり判定
+	//case 46:
+	//case 47:
+	//case 42:
+	//case 43:
+	//case 50:
+	//case 51:
+	//case 24:
+	//case 25:
+	//case 28:
+	//case 29:
+	//case 14:
+	//case 15:
+	//case 40:
+	//case 41:
+	//case 6:
+	//case 7:
+	//case 10:
+	//case 11:
+	case 255:
+		return false;
 	}
-	return false;
+	return true;
 }
