@@ -228,20 +228,20 @@ void Player::Update()
 
 	//ここでカメラ位置の調整
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	int x = (int)transform_.position_.x - cam->GetValueX();
+	int x = (int)transform_.position_.x + cam->GetValueX();
 	//画面の１/３ぐらいまでくるとカメラが動くように
 	if (x > MAX_POS) {
 		x = MAX_POS;
 		cam->SetValueX((int)transform_.position_.x - x);
 	}
-	if (x < 0) {
+	/*if (x < 0) {
 		x = 0;
 		cam->SetValueX((int)transform_.position_.x - x);
 	}
 	if (x > 3600) {
 		x = 3600;
 		cam->SetValueX((int)transform_.position_.x - x);
-	}
+	}*/
 }
 
 void Player::UpdateNormal()
@@ -576,6 +576,9 @@ void Player::UpdateAttack()
 			time_ = 0.0f;
 		}
 	}
+
+	jumpSpeed_ += gravity_;//速度 += 重力
+	transform_.position_.y += jumpSpeed_; //座標 += 速度
 }
 
 void Player::UpdateDie()

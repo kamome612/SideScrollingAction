@@ -104,16 +104,19 @@ void Stage::StageSet()
 		delete[] map_;
 		map_ = nullptr;
 	}
+
 	//プレイヤーや隕石、ミサイルがステージのリセットやセット時に消されるように
 	if (Player* sPlayer = GetParent()->FindGameObject<Player>()) {
 		sPlayer->KillMe();
 	}
+
 	if (Meteorite* sMeteo = GetParent()->FindGameObject<Meteorite>()) {
 		std::list<Meteorite*> meteos = GetParent()->FindGameObjects<Meteorite>();
 		for (Meteorite* m : meteos) {
 			m->KillMe();
 		}
 	}
+
 	if (AttackSkill* sAttack = GetParent()->FindGameObject<AttackSkill>()) {
 		sAttack->KillMe();
 	}
