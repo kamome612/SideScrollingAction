@@ -18,7 +18,7 @@ namespace {
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
-	const int SPEED = 150;    //スピード
+	const int SPEED = 200;    //スピード
 	const int MARGIN = 24;    //プレイヤーのチップの余白
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
 	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
@@ -229,6 +229,7 @@ void Player::Update()
 	//ここでカメラ位置の調整
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int x = (int)transform_.position_.x - cam->GetValueX();
+	//画面の１/３ぐらいまでくるとカメラが動くように
 	if (x > MAX_POS) {
 		x = MAX_POS;
 		cam->SetValueX((int)transform_.position_.x - x);
@@ -543,29 +544,29 @@ void Player::UpdateAttack()
 	}
 
 	//アニメーションが最後になったら弾を打ち出す
-	if (prevMoveKey_ == 0) {//右向きなら
-		if (animFrame_ + 1 == 5)
-		{
-			Attack(0,1);
+	if (time_ > 0.05f) {
+		if (prevMoveKey_ == 0) {//右向きなら
+			if (animFrame_ + 1 == 5)
+			{
+				Attack(0, 1);
+			}
 		}
-	}
-	else{//左向きなら
-		if (animFrame_ - 1 == 0)
-		{
-			Attack(1,3);
-			animFrame_ = 5;
+		else {//左向きなら
+			if (animFrame_ - 1 == 0)
+			{
+				Attack(1, 3);
+				animFrame_ = 5;
+			}
 		}
 	}
 
 	//アニメーションの更新
-	if (prevMoveKey_ == 0) {//右向きなら
-		if (time_ > 0.1f) {
+	if (time_ > 0.05f) {
+		if (prevMoveKey_ == 0) {//右向きなら
 			animFrame_ = animFrame_ % 5 + 1;
 			time_ = 0.0f;
 		}
-	}
-	else {//左向きなら
-		if (time_ > 0.1f) {
+		else {//左向きなら
 			if (animFrame_ == 0) {
 				animFrame_ = 5;
 			}

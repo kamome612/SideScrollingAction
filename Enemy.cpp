@@ -23,7 +23,7 @@ namespace {
 Enemy::Enemy(GameObject* parent)
 	:GameObject(parent, "Enemy"), eImage_(-1), gravity_(INIT_GRAVITY),
 	jumpSpeed_(0.0f), onGround_(true),
-	time_(0.0f), animType_(0), animFrame_(0)
+	time_(0.0f), animType_(0), animFrame_(0),moveDirection_(-1),turn_(false)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -64,6 +64,10 @@ void Enemy::Update()
 
 	if (x > SCREEN_WIDTH)//画面外(右側)にいるならなにもしない
 		return;
+	//else if (x < 0 - CHIP_SIZE) {//マップ外に出たらさよなら
+	//	KillMe();
+	//	return;
+	//}
 
 	switch (state_) {
 	case 0:
@@ -75,26 +79,27 @@ void Enemy::Update()
 	default:
 		break;
 	}
-	
+
 	//アニメーションに使うタイムの更新
 	time_ += Time::DeltaTime();
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
 		int pushR = pStage->CollisionDown(transform_.position_.x + 50, transform_.position_.y + CHIP_SIZE);
-		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + CHIP_SIZE);
+		int pushL = pStage->CollisionDown(transform_.position_.x +24, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y -= push - 1;
 			jumpSpeed_ = 0.0f;
 			onGround_ = true;
+			//turn_ = false;
 		}
 		else {
 			onGround_ = false;
 		}
 
 		pushR = pStage->CollisionUp(transform_.position_.x + 50, transform_.position_.y);
-		pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y);
+		pushL = pStage->CollisionUp(transform_.position_.x +24, transform_.position_.y);
 		push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
@@ -109,37 +114,77 @@ void Enemy::Update()
 
 void Enemy::UpdateNormal()
 {
-	animType_ = 0;//歩くモーション
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
+
+	//if (turn_ == true) {
+	//	moveDirection_ *= -1;
+	//	animFrame_ = 1;
+	//}
+	//else {
+	//	moveDirection_ *= -1;
+	//	animFrame_ = 0;
+	//}
 
 	//移動量とその初期化
 	float moveX, moveY;
 	moveX = 0.0f;
 	moveY = 0.0f;
 
-	if (transform_.position_.x<0) {//左画面端で止まるように
+
+	if (transform_.position_.x < 0) {//左画面端で止まるように
 		KillMe();
 	}
-	moveX += SPEED * Time::DeltaTime();//移動量
-	transform_.position_.x -= moveX;
-	if (time_ > 0.2f) {
-		if (onGround_) {
-			animFrame_ = animFrame_ % 12 +1;
-			time_ = 0.0f;
-		}
-	}
-	int hitX = transform_.position_.x + 10;
-	int hitY = transform_.position_.y + CHIP_SIZE - 1;
+	
+	moveX = SPEED * Time::DeltaTime()*moveDirection_;
+	transform_.position_.x += moveX;
+
+	//左の当たり判定と左右反転
+	int LhitX = transform_.position_.x+24 ;
+	int LhitY = transform_.position_.y + CHIP_SIZE / 2;
 	if (pStage != nullptr) {
-		int push = pStage->CollisionLeft(hitX,hitY);
-		transform_.position_.x += push;
-	}
-	else {
-	animFrame_ = 0;
+		int pushL = pStage->CollisionLeft(LhitX, LhitY);
+		transform_.position_.x += pushL;
+		if (pStage->CollisionLeft(LhitX, LhitY)) {
+			moveDirection_ = 1;
+			turn_ = true;
+		}
+		
 	}
 
+	//右の当たり判定と左右反転
+	int RhitX = transform_.position_.x +50;
+	int RhitY = transform_.position_.y + CHIP_SIZE / 2;
+	if (pStage != nullptr) {
+		int pushR = pStage->CollisionRight(RhitX, RhitY);
+		transform_.position_.x -= pushR;
+		if (pStage->CollisionRight(RhitX, RhitY)) {
+			moveDirection_ = -1;
+			turn_ = false;
+		}
+
+	}
+	
+	//左右のアニメーション
+	if (time_ > 0.2f) {
+		if (turn_ == false) {
+			animType_ = 0;
+			//moveDirection_ = -1;
+			animFrame_ = animFrame_ % 6 + 1;
+			time_ = 0.0f;
+			
+		}
+		if (turn_ == true) {
+			animType_ = 1;
+			//moveDirection_ = 1;
+			animFrame_ = animFrame_ % 6 + 1;
+			time_ = 0.0f;
+			
+		}
+	}
+	
 	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
 }
 
 void Enemy::UpdateAttack()
@@ -157,7 +202,6 @@ void Enemy::Draw()
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, eImage_, TRUE);
 
-	//当たり判定見る用
 	//DrawCircle(x + CHIP_SIZE / 2, y + CHIP_SIZE / 2, 12.0f, GetColor(0, 0, 255), FALSE);
 
 }
@@ -166,6 +210,7 @@ void Enemy::SetPosition(float _x, float _y)
 {
 	transform_.position_.x = _x;
 	transform_.position_.y = _y;
+	ground_ = _y;
 }
 
 void Enemy::SetGravity(float _gravity)
