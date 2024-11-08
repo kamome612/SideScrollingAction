@@ -267,7 +267,9 @@ void Player::UpdateNormal()
 	//アニメーション更新
 	if (time_ > 0.2f) {
 		if (onGround_) {
-			if (prevMoveKey_ == 0) {
+			animFrame_ = animFrame_ % 3 + 1;
+			time_ = 0.0f;
+			/*if (prevMoveKey_ == 0) {
 				animFrame_ = animFrame_ % 3 + 1;
 				time_ = 0.0f;
 			}
@@ -279,7 +281,7 @@ void Player::UpdateNormal()
 					animFrame_--;
 				}
 				time_ = 0.0f;
-			}
+			}*/
 		}
 	}
 
@@ -381,79 +383,102 @@ void Player::UpdateMove()
 	if (moveX == 0) {
 		if (onGround_) {            //地面にいるなら
 			state_ = S_Normal;      //ノーマルに戻したる
-			if (prevMoveKey_ == 0) {//最終が右向きなら
-				animFrame_ = 0;
-			}
-			else {//最終が左向きなら
-				animFrame_ = 5;
-			}
+			animFrame_ = 0;
+			//if (prevMoveKey_ == 0) {//最終が右向きなら
+			//	animFrame_ = 0;
+			//}
+			//else {//最終が左向きなら
+			//	animFrame_ = 5;
+			//}
 			time_ = 0;
 		}
 	}
 
 	transform_.position_.x += moveX;//移動量
 
-	if (prevMoveKey_ == 0) {//右向きなら
-		//アニメーション
-		if (time_ > 0.15f) {
-			if (onGround_) {
-				animFrame_ = animFrame_ % 5 + 1;
-				time_ = 0.0f;
-			}
+	if (time_ > 0.15f) {
+		if (onGround_) {
+			animFrame_ = animFrame_ % 5 + 1;
+			time_ = 0.0f;
 		}
 	}
-	else {//左向きなら
-		//左向きの歩き
-		if (time_ > 0.15f) {
-			if (onGround_) {
-				if (animFrame_ == 0) {
-					animFrame_ = 5;
-				}
-				else {
-					animFrame_--;
-				}
 
-				time_ = 0.0f;
-			}
-		}
-	}
+	//if (prevMoveKey_ == 0) {//右向きなら
+	//	//アニメーション
+	//	if (time_ > 0.15f) {
+	//		if (onGround_) {
+	//			animFrame_ = animFrame_ % 5 + 1;
+	//			time_ = 0.0f;
+	//		}
+	//	}
+	//}
+	//else {//左向きなら
+	//	//左向きの歩き
+	//	if (time_ > 0.15f) {
+	//		if (onGround_) {
+	//			if (animFrame_ == 0) {
+	//				animFrame_ = 5;
+	//			}
+	//			else {
+	//				animFrame_--;
+	//			}
+	//			time_ = 0.0f;
+	//		}
+	//	}
+	//}
 
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
-	if (prevMoveKey_ == 0) {//右向き
-		//プレイヤーの右側のステージとの当たり判定
-		int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
-		int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
-		if (pStage != nullptr) {
-			int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
-			transform_.position_.x -= push;//のめりこんでる分戻す
-		}
+	//プレイヤーの右側のステージとの当たり判定
+	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+	if (pStage != nullptr) {
+		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+		transform_.position_.x -= push;//のめりこんでる分戻す
+	}
 
-		//プレイヤーの左側のステージとの当たり判定
-		hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
-		hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
-		if (pStage != nullptr) {
-			int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
-			transform_.position_.x += push;//のめりこんでる分戻す
-		}
+	//プレイヤーの左側のステージとの当たり判定
+	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+	if (pStage != nullptr) {
+		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+		transform_.position_.x += push;//のめりこんでる分戻す
 	}
-	else {//左向き
-		//プレイヤーの右側のステージとの当たり判定
-		int hitX = transform_.position_.x + (CHIP_SIZE -MARGIN);//ブロックとプレイヤーの余白をなくすために引く
-		int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
-		if (pStage != nullptr) {
-			int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
-			transform_.position_.x -= push;//のめりこんでる分戻す
-		}
-		
-		//プレイヤーの左側のステージとの当たり判定
-		hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
-		hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
-		if (pStage != nullptr) {
-			int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
-			transform_.position_.x += push;//のめりこんでる分戻す
-		}
-	}
+
+	//if (prevMoveKey_ == 0) {//右向き
+	//	//プレイヤーの右側のステージとの当たり判定
+	//	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	//	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+	//	if (pStage != nullptr) {
+	//		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+	//		transform_.position_.x -= push;//のめりこんでる分戻す
+	//	}
+
+	//	//プレイヤーの左側のステージとの当たり判定
+	//	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+	//	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+	//	if (pStage != nullptr) {
+	//		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+	//		transform_.position_.x += push;//のめりこんでる分戻す
+	//	}
+	//}
+	//else {//左向き
+	//	//プレイヤーの右側のステージとの当たり判定
+	//	int hitX = transform_.position_.x + (CHIP_SIZE -MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	//	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+	//	if (pStage != nullptr) {
+	//		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+	//		transform_.position_.x -= push;//のめりこんでる分戻す
+	//	}
+	//	
+	//	//プレイヤーの左側のステージとの当たり判定
+	//	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+	//	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+	//	if (pStage != nullptr) {
+	//		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+	//		transform_.position_.x += push;//のめりこんでる分戻す
+	//	}
+	//}
 
 	if (onGround_) {//地面にいるか
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {//SPACEキーを押すとジャンプ
@@ -466,33 +491,41 @@ void Player::UpdateMove()
 	if (!onGround_ && jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
 		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
-			animFrame_ = 0;
+			/*animFrame_ = 0;
 			if (time_ > 0.5) {
 				animFrame_ = 1;
-			}
+			}*/
 		}
 		if (prevMoveKey_ == 1) {//左向きなら
 			animType_ = 12;
-			animFrame_ = 5;
+			/*animFrame_ = 5;
 			if (time_ > 0.5) {
 				animFrame_ = 4;
-			}
+			}*/
+		}
+		animFrame_ = 0;
+		if (time_ > 0.5) {
+			animFrame_ = 1;
 		}
 	}
 	else if (!onGround_ && jumpSpeed_ > 0) {//地面にいなくて、ジャンプで下がっているなら
 		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
-			animFrame_ = 2;
+			/*animFrame_ = 2;
 			if (time_ > 0.5) {
 				animFrame_ = 3;
-			}
+			}*/
 		}
 		if (prevMoveKey_ == 1) {//左向きなら
 			animType_ = 12;
-			animFrame_ = 3;
+			/*animFrame_ = 3;
 			if (time_ > 0.5) {
 				animFrame_ = 2;
-			}
+			}*/
+		}
+		animFrame_ = 2;
+		if (time_ > 0.5) {
+			animFrame_ = 3;
 		}
 	}
 
@@ -552,29 +585,35 @@ void Player::UpdateAttack()
 			}
 		}
 		else {//左向きなら
-			if (animFrame_ - 1 == 0)
+			if (animFrame_ + 1 == 5)
+			{
+				Attack(1, 3);
+			}
+			/*if (animFrame_ - 1 == 0)
 			{
 				Attack(1, 3);
 				animFrame_ = 5;
-			}
+			}*/
 		}
 	}
 
 	//アニメーションの更新
 	if (time_ > 0.05f) {
-		if (prevMoveKey_ == 0) {//右向きなら
-			animFrame_ = animFrame_ % 5 + 1;
-			time_ = 0.0f;
-		}
-		else {//左向きなら
-			if (animFrame_ == 0) {
-				animFrame_ = 5;
-			}
-			else {
-				animFrame_--;
-			}
-			time_ = 0.0f;
-		}
+		animFrame_ = animFrame_ % 5 + 1;
+		time_ = 0.0f;
+		//if (prevMoveKey_ == 0) {//右向きなら
+		//	animFrame_ = animFrame_ % 5 + 1;
+		//	time_ = 0.0f;
+		//}
+		//else {//左向きなら
+		//	if (animFrame_ == 0) {
+		//		animFrame_ = 5;
+		//	}
+		//	else {
+		//		animFrame_--;
+		//	}
+		//	time_ = 0.0f;
+		//}
 	}
 
 	jumpSpeed_ += gravity_;//速度 += 重力
@@ -593,34 +632,43 @@ void Player::UpdateDie()
 	//死んだ時に地面にいないなら地面に落としてから〇す
 	if (!onGround_) {
 		transform_.position_.y += 3.0f;
-		if (prevMoveKey_ == 0) {
+		animFrame_ = 1;
+		/*if (prevMoveKey_ == 0) {
 			animFrame_ = 1;
 		}
 		else {
 			animFrame_ = 4;
-		}
+		}*/
 	}
 	else {
-		if (prevMoveKey_ == 0) {
-			if (animFrame_ + 1 == 6) {//最後のフレームになったら
-				Die();//〇ぬ
-				animFrame_ = 0;
-			}
-			if (time_ > 0.2f) {
-				animFrame_ = animFrame_ % 5 + 1;
-				time_ = 0.0f;
-			}
+		if (animFrame_ + 1 == 6) {//最後のフレームになったら
+			Die();//〇ぬ
+			animFrame_ = 0;
 		}
-		else {
-			if (animFrame_ == 0) {//最後のフレームになったら
-				Die();//〇ぬ
-				animFrame_ = 5;
-			}
-			if (time_ > 0.2f) {
-				animFrame_--;
-				time_ = 0.0f;
-			}
+		if (time_ > 0.2f) {
+			animFrame_ = animFrame_ % 5 + 1;
+			time_ = 0.0f;
 		}
+		//if (prevMoveKey_ == 0) {
+		//	if (animFrame_ + 1 == 6) {//最後のフレームになったら
+		//		Die();//〇ぬ
+		//		animFrame_ = 0;
+		//	}
+		//	if (time_ > 0.2f) {
+		//		animFrame_ = animFrame_ % 5 + 1;
+		//		time_ = 0.0f;
+		//	}
+		//}
+		//else {
+		//	if (animFrame_ == 0) {//最後のフレームになったら
+		//		Die();//〇ぬ
+		//		animFrame_ = 5;
+		//	}
+		//	if (time_ > 0.2f) {
+		//		animFrame_--;
+		//		time_ = 0.0f;
+		//	}
+		//}
 	}
 }
 
@@ -691,7 +739,8 @@ void Player::ReadyAttack(bool &_isType)
 			animType_ = 3;
 		}
 		else {
-			animFrame_ = 5;
+			//animFrame_ = 5;
+			animFrame_ = 0;
 			animType_ = 13;
 		}
 		time_ = 0.0f;
