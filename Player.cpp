@@ -755,7 +755,13 @@ void Player::Attack(int angleA, int angleB)
 	AttackSkill* attack = Instantiate<AttackSkill>(GetParent());
 	int x = (int)transform_.position_.x;
 	int y = (int)transform_.position_.y;
-	attack->SetPosition(x + CHIP_SIZE, y);
+
+	if (prevMoveKey_ == 0) {
+		attack->SetPosition(x + CHIP_SIZE, y);
+	}
+	else {
+		attack->SetPosition(x, y);
+	}
 
 	//‰¡‚ÉŒ‚‚Â‚©AÎ‚ß‚ÉŒ‚‚Â‚©
 	if (isTypeA == true) {//‰¡‚ÉŒ‚‚Â
