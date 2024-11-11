@@ -438,7 +438,8 @@ void Player::UpdateMove()
 	}
 
 	//プレイヤーの左側のステージとの当たり判定
-	hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+	//hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
+	hitX = transform_.position_.x;
 	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
 	if (pStage != nullptr) {
 		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
