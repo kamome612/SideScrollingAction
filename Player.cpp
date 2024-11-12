@@ -19,7 +19,8 @@ namespace {
 	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
 	const int SPEED = 200;    //スピード
-	const int MARGIN = 24;    //プレイヤーのチップの余白
+	const int R_MARGIN = 24;    //プレイヤーのチップの余白
+	const int L_MARGIN = 1;
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
 	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
 	const float FINV_TIME = 1.0f;  //無敵が終わる時間
@@ -70,7 +71,7 @@ Player::~Player()
 void Player::Initialize()
 {
 	//プレイヤーの画像の読み込み
-	pImage_ = LoadGraph("Assets\\Image\\cyborg3.png");
+	pImage_ = LoadGraph("Assets\\Image\\cyborg.png");
 	assert(pImage_ >= 0); 
 
 	//体力画像の読み込み
@@ -131,8 +132,8 @@ void Player::Update()
 	//ステージとの上下の当たり判定
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
-		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE - MARGIN, transform_.position_.y + CHIP_SIZE);
-		int pushL = pStage->CollisionDown(transform_.position_.x + MARGIN, transform_.position_.y + CHIP_SIZE);
+		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y + CHIP_SIZE);
+		int pushL = pStage->CollisionDown(transform_.position_.x + L_MARGIN, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y -= push - 1;
@@ -143,8 +144,8 @@ void Player::Update()
 			onGround_ = false;
 		}
 
-		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE -MARGIN, transform_.position_.y);
-		pushL = pStage->CollisionUp(transform_.position_.x + MARGIN, transform_.position_.y);
+		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y);
+		pushL = pStage->CollisionUp(transform_.position_.x + L_MARGIN, transform_.position_.y);
 		push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
@@ -430,7 +431,7 @@ void Player::UpdateMove()
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
 	//プレイヤーの右側のステージとの当たり判定
-	int hitX = transform_.position_.x + (CHIP_SIZE - MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	int hitX = transform_.position_.x + (CHIP_SIZE - R_MARGIN);//ブロックとプレイヤーの余白をなくすために引く
 	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
 	if (pStage != nullptr) {
 		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
@@ -439,7 +440,7 @@ void Player::UpdateMove()
 
 	//プレイヤーの左側のステージとの当たり判定
 	//hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
-	hitX = transform_.position_.x;
+	hitX = transform_.position_.x + L_MARGIN;
 	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
 	if (pStage != nullptr) {
 		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
