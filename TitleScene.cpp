@@ -74,8 +74,9 @@ void TitleScene::Draw()
 	DrawGraph(0, 0, tPict_, TRUE);
 
 	//‘I‘ð‚·‚é‚Æ‚«‚ÌŽOŠp•`‰æ
-	int tmp = 440 + select_ * 60;
-	DrawTriangle(480, tmp, 480 - 30, tmp + 20, 480 - 30, tmp - 20,
+	int tmp = 410 + select_ * 110;
+	int len = 430;
+	DrawTriangle(len, tmp, len - 30, tmp + 20, len - 30, tmp - 20,
 		GetColor(255, 255, 0), TRUE);
 }
 
