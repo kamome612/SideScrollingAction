@@ -7,6 +7,8 @@ public:
 	//コンストラクタ
 	MeteoSpawner(GameObject* parent);
 
+	MeteoSpawner(GameObject* parent, int _type);
+
 	//デストラクタ
 	~MeteoSpawner();
 
@@ -18,8 +20,12 @@ public:
 
 	//位置のセッター
 	void SetPosition(float _x, float _y);
+
+	//タイプ指定
+	void SetType(int _type) { type_ = _type; }
 private:
 	float timer_;
 	float interval = 5.0f;
+	int type_;
 };
 

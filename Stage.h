@@ -80,5 +80,6 @@ private:
 	int height_;        //ステージの縦
 	int mapNo_;         //どのステージかの識別
 	bool IsWallBlock(int x, int y);
+	float timer_;
 };
 

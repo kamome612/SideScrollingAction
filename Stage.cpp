@@ -298,9 +298,32 @@ void Stage::StageSet()
 				break;
 			}
 			case 20://MeteoSpawner
-				MeteoSpawner * meteoS = Instantiate<MeteoSpawner>(GetParent());
+			{
+				MeteoSpawner* meteoS = Instantiate<MeteoSpawner>(GetParent());
+				meteoS->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
+			case 21://¶Œü‚«ŒÀ
+			{
+				MeteoSpawner* meteoS = Instantiate<MeteoSpawner>(GetParent());
+				meteoS->SetType(0);
 				meteoS->SetPosition(w* CHIP_SIZE, h* CHIP_SIZE);
 				break;
+			}
+			case 22://‰EŒü‚«ŒÀ
+			{
+				MeteoSpawner* meteoS = Instantiate<MeteoSpawner>(GetParent());
+				meteoS->SetType(1);
+				meteoS->SetPosition(w* CHIP_SIZE, h* CHIP_SIZE);
+				break;
+			}
+			case 23://‰ºŒü‚«ŒÀ
+			{
+				MeteoSpawner* meteoS = Instantiate<MeteoSpawner>(GetParent());
+				meteoS->SetType(2);
+				meteoS->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
+				break;
+			}
 			}
 		}
 	}

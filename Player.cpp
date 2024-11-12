@@ -144,9 +144,9 @@ void Player::Update()
 			onGround_ = false;
 		}
 
-		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y);
-		pushL = pStage->CollisionUp(transform_.position_.x + L_MARGIN, transform_.position_.y);
-		push = max(pushR, pushL);//‚Q‚Â‚Ì‘«Œ³‚Ì‚ß‚èž‚Ý‚Ì‘å‚«‚¢•û
+		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y + CHIP_SIZE / 4);
+		pushL = pStage->CollisionUp(transform_.position_.x + 5, transform_.position_.y + CHIP_SIZE / 4);
+		push = max(pushR, pushL);//‚Q‚Â‚Ì“ªã‚Ì‚ß‚èž‚Ý‚Ì‘å‚«‚¢•û
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
 			jumpSpeed_ = 0.0f;
