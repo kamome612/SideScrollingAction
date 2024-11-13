@@ -21,36 +21,38 @@ void MeteoSpawner::Update()
 	if (timer_ > interval )
 	{
 		int type;
+		Meteorite* MR = Instantiate<Meteorite>(GetParent());
 		switch (type_)
 		{
 		case 0:
-			Meteorite * MR = Instantiate<Meteorite>(GetParent());
+			//Meteorite * MR = Instantiate<Meteorite>(GetParent());
 			MR->SetPosition(x, y);
 			//三種類からランダムで選択
 			type = rand() % 3;
 			MR->SetMoveType(type);
 			break;
 		case 1:
-			Meteorite * MR = Instantiate<Meteorite>(GetParent());
+			//Meteorite * MR = Instantiate<Meteorite>(GetParent());
 			MR->SetPosition(x, y);
 			//三種類からランダムで選択
 			type = 0;
 			MR->SetMoveType(type);
 			break;
 		case 2:
-			Meteorite * MR = Instantiate<Meteorite>(GetParent());
+			//Meteorite * MR = Instantiate<Meteorite>(GetParent());
 			MR->SetPosition(x, y);
 			//三種類からランダムで選択
 			type = 1;
 			MR->SetMoveType(type);
-		case 3:
-			Meteorite * MR = Instantiate<Meteorite>(GetParent());
+			break;
+		case3:
+			//Meteorite * MR = Instantiate<Meteorite>(GetParent());
 			MR->SetPosition(x, y);
 			//三種類からランダムで選択
 			type = 2;
 			MR->SetMoveType(type);
 			break;
-		case default:
+		default:
 			break;
 		}
 		timer_ = 0.0f;
