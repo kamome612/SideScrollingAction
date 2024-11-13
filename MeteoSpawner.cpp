@@ -6,7 +6,7 @@
 #include <random>
 
 MeteoSpawner::MeteoSpawner(GameObject* parent)
-	:GameObject(parent,"MeteoSpawner"),timer_(0.0f)
+	:GameObject(parent,"MeteoSpawner"),timer_(0.0f),type_(0)
 {
 }
 
@@ -56,6 +56,7 @@ void MeteoSpawner::Update()
 			break;
 		}
 		timer_ = 0.0f;
+		interval = float(rand() % 2) + 3.0f;
 	}
 	timer_ += Time::DeltaTime();
 }

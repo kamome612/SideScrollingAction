@@ -63,6 +63,7 @@ void Stage::Draw()
 	switch (mapNo_) {
 	case 1:
 		DrawGraph(0, -240, gPict_, TRUE);
+		//DrawGraph(0, 0, gPict_, TRUE);
 		break;
 	case 2:
 	case 3:
@@ -158,7 +159,7 @@ void Stage::StageSet()
 	}
 	assert(hImage_ > 0);
 
-	//バックグランドの画像読み込み
+	//バックグラウンドの画像読み込み
 	gPict_ = LoadGraph(("Assets/Picture/background" + n + ".png").c_str());
 	assert(gPict_ > 0);
 
