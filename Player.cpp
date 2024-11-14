@@ -124,16 +124,16 @@ void Player::Update()
 		colX = transform_.position_.x + CHIP_SIZE / 4;
 	}
 	else {
-		colX = transform_.position_.x + CHIP_SIZE / 4 * 3;
+		colX = transform_.position_.x + CHIP_SIZE / 10 * 3;
 	}
-	colY = transform_.position_.y + CHIP_SIZE / 2;
+	colY = transform_.position_.y + CHIP_SIZE / 5 * 3;
 	colR = 20.0f;
 
 	//ステージとの上下の当たり判定
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
-		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y + CHIP_SIZE);
-		int pushL = pStage->CollisionDown(transform_.position_.x + 8, transform_.position_.y + CHIP_SIZE);
+		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 15 * 7, transform_.position_.y + CHIP_SIZE);
+		int pushL = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 7, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//２つの足元のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y -= push - 1;
@@ -223,9 +223,9 @@ void Player::Update()
 	if (transform_.position_.x < 0) {
 		transform_.position_.x = 0;
 	}
-	if (transform_.position_.x > 4320) {
+	/*if (transform_.position_.x > 4320) {
 		transform_.position_.x = 4320;
-	}
+	}*/
 
 	//ここでカメラ位置の調整
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -685,12 +685,17 @@ void Player::Draw()
 	}
 	DrawRectGraph(x, y, animFrame_ * CHIP_SIZE, animType_ * CHIP_SIZE, CHIP_SIZE, CHIP_SIZE, pImage_, TRUE);
 	//当たり判定を見るよう
-	/*if (prevMoveKey_ == 0) {
-		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
+	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 5 * 3, 20.0f, GetColor(0, 0, 255), FALSE);
+	if (prevMoveKey_ == 0) {
+		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 5 * 3, 20.0f, GetColor(0, 0, 255), FALSE);
 	}
 	else {
-		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 20.0f, GetColor(0, 0, 255), FALSE);
-	}*/
+		DrawCircle(x + CHIP_SIZE / 10 * 3, y + CHIP_SIZE / 5 * 3, 20.0f, GetColor(0, 0, 255), FALSE);
+	}
+
+	//足元の点
+	DrawCircle(x + CHIP_SIZE / 15 * 7, y + CHIP_SIZE, 2.0f, GetColor(0, 0, 255), TRUE);
+	DrawCircle(x + CHIP_SIZE / 7, y + CHIP_SIZE, 2.0f, GetColor(0, 0, 255), TRUE);
 
 	//残弾数がわかりやすいように
 	DrawExtendGraph(120, -130, 610, 200, bImage_, TRUE);//バナー

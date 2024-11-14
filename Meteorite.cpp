@@ -67,26 +67,32 @@ void Meteorite::Update()
 		return;
 	}
 
-	bool isGround = false;
+	//地面に当たったか
+	bool hitGround = false;
+	float hitX, hitY;
 	switch (moveType_)//隕石の種類によって変える
 	{
 	case 0://左向き
-	    isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y + CHIP_SIZE / 2.0);
+		//hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y + CHIP_SIZE / 2.0);
+		hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 8.0, transform_.position_.y + CHIP_SIZE / 24.0 * 15.0);
 		break;
 	case 1://右向き
-		isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0 * 3.0, transform_.position_.y + CHIP_SIZE / 2.0);
+		//hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0 * 3.0, transform_.position_.y + CHIP_SIZE / 2.0);
+		hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 8.0 * 7.0, transform_.position_.y + CHIP_SIZE / 24.0 * 15.0);
 		break;
 	case 2://下向き
-		isGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 2.0, transform_.position_.y + CHIP_SIZE / 4 * 3);
+		//hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 2.0, transform_.position_.y + CHIP_SIZE / 4 * 3);
+		hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 8.0 * 3.0, transform_.position_.y + CHIP_SIZE / 16.0 * 15.0);
 		break;
 	}
 
-	if (isGround) {//地面などのステージの一部に当たったらさようなら
+	if (hitGround) {//地面などのステージの一部に当たったらさようなら
 		KillMe();
 		if (!(x > SCREEN_WIDTH)) {//画面外(右側)にいるならステージ壊したりしないように
 			mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
 			Explosion* mEx = Instantiate<Explosion>(GetParent());
 			mEx->SetPosition(transform_.position_.x, transform_.position_.y);
+			//mEx->SetPosition(hitX, hitY);
 		}
 	}
 
@@ -121,12 +127,15 @@ void Meteorite::Draw()
 	{
 	case 0://左向き
 		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
+		DrawCircle(x + CHIP_SIZE / 8, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
 		break;
 	case 1://右向き
 		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
+		DrawCircle(x + CHIP_SIZE / 8 * 7, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
 		break;
 	case 2://下向き
-		DrawCircle(x + CHIP_SIZE / 4 * 3 / 2, y + CHIP_SIZE / 4 * 3, 24.0f, GetColor(0, 0, 255), FALSE);
+		DrawCircle(x + CHIP_SIZE / 8 * 3, y + CHIP_SIZE / 4 * 3, 24.0f, GetColor(0, 0, 255), FALSE);
+		DrawCircle(x + CHIP_SIZE / 8 * 3, y + CHIP_SIZE / 16 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
 		break;
 	default:
 		break;
