@@ -106,11 +106,11 @@ void Meteorite::Update()
 			/*hitXU = transform_.position_.x + CHIP_SIZE / 4;
 			hitYU = transform_.position_.y + CHIP_SIZE / 24 * 17;
 			mStage->OneSquareBreak(hitXU, hitYU);*/
-			//if (!isDead_) {//Å‰‚¾‚¯”š”­‚ğo‚·
+			if (!isDead_) {//Å‰‚¾‚¯”š”­‚ğo‚·
 				isDead_ = true;
 				Explosion* mEx = Instantiate<Explosion>(GetParent());
 				mEx->SetPosition(transform_.position_.x, transform_.position_.y);
-			//}
+			}
 		}
 		else {
 			KillMe();

@@ -178,6 +178,7 @@ void Player::Update()
 			if (pEnemy->CollideCircle(colX,colY,colR)) {
 				pLife_ -= 1;
 				hitFlag_ = true;
+				pEnemy->KillMe();
 			}
 		}
 	}
@@ -189,6 +190,7 @@ void Player::Update()
 			if (fEnemy->CollideCircle(colX, colY, colR)) {
 				pLife_ -= 1;
 				hitFlag_ = true;
+				fEnemy->KillMe();
 			}
 		}
 	}
