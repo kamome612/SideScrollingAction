@@ -146,24 +146,24 @@ void Meteorite::Draw()
 		DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 	//}
 	//ìñÇΩÇËîªíËÇâ¬éãâªÇ∑ÇÈÇΩÇﬂóp
-	switch (moveType_)//Ë¶êŒÇÃéÌóﬁÇ…ÇÊÇ¡Çƒï™ÇØÇÈ
-	{
-	case 0://ç∂å¸Ç´
-		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
-		DrawCircle(x + CHIP_SIZE / 8, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
-		//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 24 * 17, 2.0f, GetColor(0, 0, 255), TRUE);
-		break;
-	case 1://âEå¸Ç´
-		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
-		DrawCircle(x + CHIP_SIZE / 8 * 7, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
-		break;
-	case 2://â∫å¸Ç´
-		DrawCircle(x + CHIP_SIZE / 8 * 3, y + CHIP_SIZE / 4 * 3, 24.0f, GetColor(0, 0, 255), FALSE);
-		DrawCircle(x + CHIP_SIZE / 8 * 3, y + CHIP_SIZE / 16 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
-		break;
-	default:
-		break;
-	}
+	//switch (moveType_)//Ë¶êŒÇÃéÌóﬁÇ…ÇÊÇ¡Çƒï™ÇØÇÈ
+	//{
+	//case 0://ç∂å¸Ç´
+	//	DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
+	//	DrawCircle(x + CHIP_SIZE / 8, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
+	//	//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 24 * 17, 2.0f, GetColor(0, 0, 255), TRUE);
+	//	break;
+	//case 1://âEå¸Ç´
+	//	DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
+	//	DrawCircle(x + CHIP_SIZE / 8 * 7, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
+	//	break;
+	//case 2://â∫å¸Ç´
+	//	DrawCircle(x + CHIP_SIZE / 8 * 3, y + CHIP_SIZE / 4 * 3, 24.0f, GetColor(0, 0, 255), FALSE);
+	//	DrawCircle(x + CHIP_SIZE / 8 * 3, y + CHIP_SIZE / 16 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
+	//	break;
+	//default:
+	//	break;
+	//}
 }
 
 void Meteorite::SetPosition(float _x, float _y)
