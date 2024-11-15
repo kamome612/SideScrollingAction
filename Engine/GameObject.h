@@ -55,7 +55,11 @@ public:
 
 	//Šeƒtƒ‰ƒO‚Ì§Œä
 	bool IsDead();			// íœ‚·‚é‚©‚Ç‚¤‚©
-	void KillMe();			// ©•ª‚ğíœ‚·‚é
+	// ©•ª‚ğíœ‚·‚é
+	void KillMe()
+	{
+		state_.dead = 1;
+	}			// ©•ª‚ğíœ‚·‚é
 	void Enter();			// Update‚ğ‹–‰Â
 	void Leave();			// Update‚ğ‹‘”Û
 	void Visible();			// Draw‚ğ‹–‰Â

@@ -72,6 +72,9 @@ public:
 	//隕石が当たった時の地面などの破壊
 	void BreakGround(int x, int y);
 
+	//隕石が当たった時の地面の破壊(当たったとこだけver)
+	void OneSquareBreak(int x, int y);
+
 private:
 	int hImage_;        //ステージの素材
 	int gPict_;         //背景の画像

@@ -17,7 +17,7 @@ namespace {
 
 Meteorite::Meteorite(GameObject* parent)
 	:GameObject(parent, "Meteorite"), mImage_(-1), gravity_(INIT_GRAVITY),
-	moveSpeed_(MOVE_SPEED), moveType_(0)
+	moveSpeed_(MOVE_SPEED), moveType_(0),isDead_(false)
 {
 }
 
@@ -69,30 +69,51 @@ void Meteorite::Update()
 
 	//地面に当たったか
 	bool hitGround = false;
-	float hitX, hitY;
+	float hitX, hitY; //隕石の先端の点
+	//float hitXU, hitYU; //隕石の下ら辺の点
 	switch (moveType_)//隕石の種類によって変える
 	{
 	case 0://左向き
 		//hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0, transform_.position_.y + CHIP_SIZE / 2.0);
-		hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 8.0, transform_.position_.y + CHIP_SIZE / 24.0 * 15.0);
+		hitX = transform_.position_.x + CHIP_SIZE / 8.0;
+		hitY = transform_.position_.y + CHIP_SIZE / 24.0 * 15.0;
+		hitGround = mStage->CollisionDown(hitX, hitY);
 		break;
 	case 1://右向き
 		//hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 4.0 * 3.0, transform_.position_.y + CHIP_SIZE / 2.0);
-		hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 8.0 * 7.0, transform_.position_.y + CHIP_SIZE / 24.0 * 15.0);
+		hitX = transform_.position_.x + CHIP_SIZE / 8.0 * 7.0;
+		hitY = transform_.position_.y + CHIP_SIZE / 24.0 * 15.0;
+		hitGround = mStage->CollisionDown(hitX, hitY);
 		break;
 	case 2://下向き
 		//hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 2.0, transform_.position_.y + CHIP_SIZE / 4 * 3);
-		hitGround = mStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 8.0 * 3.0, transform_.position_.y + CHIP_SIZE / 16.0 * 15.0);
+		hitX = transform_.position_.x + CHIP_SIZE / 8.0 * 3.0;
+		hitY = transform_.position_.y + CHIP_SIZE / 16.0 * 15.0;
+		hitGround = mStage->CollisionDown(hitX, hitY);
 		break;
 	}
 
-	if (hitGround) {//地面などのステージの一部に当たったらさようなら
-		KillMe();
-		if (!(x > SCREEN_WIDTH)) {//画面外(右側)にいるならステージ壊したりしないように
-			mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
-			Explosion* mEx = Instantiate<Explosion>(GetParent());
-			mEx->SetPosition(transform_.position_.x, transform_.position_.y);
-			//mEx->SetPosition(hitX, hitY);
+	if (hitGround) {//地面などのステージの一部に当たったら壊す
+		//KillMe();
+		//if (!(x > SCREEN_WIDTH)) {//画面外(右側)にいるならステージ壊したりしないように
+		//	mStage->BreakGround(transform_.position_.x, transform_.position_.y + CHIP_SIZE / 1.5);
+		//	Explosion* mEx = Instantiate<Explosion>(GetParent());
+		//	mEx->SetPosition(transform_.position_.x, transform_.position_.y);
+		//	//mEx->SetPosition(hitX, hitY);
+		//}
+		if (!(x > SCREEN_WIDTH ) && !(x < 0)) {//画面内にいるならステージを壊す
+			mStage->OneSquareBreak(hitX, hitY);
+			/*hitXU = transform_.position_.x + CHIP_SIZE / 4;
+			hitYU = transform_.position_.y + CHIP_SIZE / 24 * 17;
+			mStage->OneSquareBreak(hitXU, hitYU);*/
+			//if (!isDead_) {//最初だけ爆発を出す
+				isDead_ = true;
+				Explosion* mEx = Instantiate<Explosion>(GetParent());
+				mEx->SetPosition(transform_.position_.x, transform_.position_.y);
+			//}
+		}
+		else {
+			KillMe();
 		}
 	}
 
@@ -120,14 +141,17 @@ void Meteorite::Draw()
 		x -= cam->GetValueX();
 		//y -= cam->GetValueY();
 	}
-	DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
 
+	//if (!isDead_) {
+		DrawRectGraph(x, y, 0, 0, CHIP_SIZE, CHIP_SIZE, mImage_, TRUE);
+	//}
 	//当たり判定を可視化するため用
 	switch (moveType_)//隕石の種類によって分ける
 	{
 	case 0://左向き
 		DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);
 		DrawCircle(x + CHIP_SIZE / 8, y + CHIP_SIZE / 24 * 15, 2.0f, GetColor(0, 0, 255), TRUE);
+		//DrawCircle(x + CHIP_SIZE / 4, y + CHIP_SIZE / 24 * 17, 2.0f, GetColor(0, 0, 255), TRUE);
 		break;
 	case 1://右向き
 		DrawCircle(x + CHIP_SIZE / 4 * 3, y + CHIP_SIZE / 2, 24.0f, GetColor(0, 0, 255), FALSE);

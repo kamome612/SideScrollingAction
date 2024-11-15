@@ -7,8 +7,6 @@ public:
 	//コンストラクタ
 	MeteoSpawner(GameObject* parent);
 
-	MeteoSpawner(GameObject* parent, int _type);
-
 	//デストラクタ
 	~MeteoSpawner();
 

@@ -30,6 +30,8 @@ public:
 
 	//隕石の落ちるタイプをセットする(画像もここでセットするか)
 	void SetMoveType(int _type);
+
+	bool isDead_;     //〇んでるか
 private:
 	int mImage_;
 	float gravity_;   //重力

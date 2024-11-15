@@ -397,6 +397,20 @@ void Stage::BreakGround(int x, int y)
 	}
 }
 
+void Stage::OneSquareBreak(int x, int y)
+{
+	int chipX = x / CHIP_SIZE;
+	int chipY = y / CHIP_SIZE;
+
+	//壊すチップの場所
+	int desChip = chipY * width_ + chipX;
+	map_[desChip] = CHIP_NULL;
+	desChip = chipY * width_ + chipX - 1;
+	map_[desChip] = CHIP_NULL;
+	desChip = chipY * width_ + chipX + 1;
+	map_[desChip] = CHIP_NULL;
+}
+
 bool Stage::IsWallBlock(int x, int y)
 {
 	//地面などの当たり判定のあるチップなのか(ステージごとに変えてもあり)

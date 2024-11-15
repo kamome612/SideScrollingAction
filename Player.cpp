@@ -143,9 +143,10 @@ void Player::Update()
 		else {
 			onGround_ = false;
 		}
-
-		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y + CHIP_SIZE / 4);
-		pushL = pStage->CollisionUp(transform_.position_.x + 9, transform_.position_.y + CHIP_SIZE / 4);
+		/*pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE - R_MARGIN, transform_.position_.y + CHIP_SIZE / 4);
+		pushL = pStage->CollisionUp(transform_.position_.x + 9, transform_.position_.y + CHIP_SIZE / 4);*/
+		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE / 15 * 7, transform_.position_.y + CHIP_SIZE / 4);
+		pushL = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE / 7, transform_.position_.y + CHIP_SIZE / 4);
 		push = max(pushR, pushL);//２つの頭上のめり込みの大きい方
 		if (push >= 1) {
 			transform_.position_.y += push + 1;
@@ -156,7 +157,7 @@ void Player::Update()
 	//隕石との当たり判定
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
-		if (pMeteo->CollideCircle(colX, colY,colR)) {
+		if (pMeteo->CollideCircle(colX, colY,colR) && !pMeteo->isDead_) {
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
@@ -431,21 +432,47 @@ void Player::UpdateMove()
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
 	//プレイヤーの右側のステージとの当たり判定
-	int hitX = transform_.position_.x + (CHIP_SIZE - R_MARGIN);//ブロックとプレイヤーの余白をなくすために引く
-	int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+	//int hitX = transform_.position_.x + (CHIP_SIZE - R_MARGIN);//ブロックとプレイヤーの余白をなくすために引く
+	//int hitX = transform_.position_.x + CHIP_SIZE / 15 * 7;
+	//int hitY = transform_.position_.y + CHIP_SIZE - 1; //そのまま足すと落ちていくから-1
+	////int hitY = transform_.position_.y + CHIP_SIZE / 4;
+	//if (pStage != nullptr) {
+	//	int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+	//	transform_.position_.x -= push;//のめりこんでる分戻す
+	//}
+
+	//新・右側のステージとの当たり判定
+	int pushT, pushB, push;
+	int hitX = transform_.position_.x + CHIP_SIZE / 15 * 7;
+	int hitY = transform_.position_.y + CHIP_SIZE - 1;
 	if (pStage != nullptr) {
-		int push = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+	    pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+		hitY = transform_.position_.y + CHIP_SIZE / 4;
+		pushB = pStage->CollisionRight(hitX, hitY);
+		push = max(pushT, pushB);
 		transform_.position_.x -= push;//のめりこんでる分戻す
+	}
+	//新・左側のステージとの当たり判定
+	hitX = transform_.position_.x + CHIP_SIZE / 7;
+	hitY = transform_.position_.y + CHIP_SIZE - 1;
+	if (pStage != nullptr) {
+		pushT = pStage->CollisionLeft(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 4;
+		pushB = pStage->CollisionLeft(hitX, hitY);
+		push = max(pushT, pushB);
+		transform_.position_.x += push;//のめりこんでる分戻す
 	}
 
 	//プレイヤーの左側のステージとの当たり判定
 	//hitX = transform_.position_.x + MARGIN;//ブロックとプレイヤーの余白をなくすために足す(なぜかこれだと後ろ下がり続けるとがたがたする)
-	hitX = transform_.position_.x + L_MARGIN;
-	hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
-	if (pStage != nullptr) {
-		int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
-		transform_.position_.x += push;//のめりこんでる分戻す
-	}
+	//hitX = transform_.position_.x + L_MARGIN;
+	//hitX = transform_.position_.x + CHIP_SIZE / 7;
+	//hitY = transform_.position_.y + CHIP_SIZE - 1;//そのまま足すと落ちていくから-1
+	////hitY = transform_.position_.y + CHIP_SIZE / 4;
+	//if (pStage != nullptr) {
+	//	int push = pStage->CollisionLeft(hitX, hitY);//左側の当たり判定
+	//	transform_.position_.x += push;//のめりこんでる分戻す
+	//}
 
 	//if (prevMoveKey_ == 0) {//右向き
 	//	//プレイヤーの右側のステージとの当たり判定
@@ -696,7 +723,8 @@ void Player::Draw()
 	//足元の点
 	DrawCircle(x + CHIP_SIZE / 15 * 7, y + CHIP_SIZE, 2.0f, GetColor(0, 0, 255), TRUE);
 	DrawCircle(x + CHIP_SIZE / 7, y + CHIP_SIZE, 2.0f, GetColor(0, 0, 255), TRUE);
-
+	DrawCircle(x + CHIP_SIZE / 15 * 7, y + CHIP_SIZE / 4,2.0f,GetColor(0,0,255),TRUE);
+	DrawCircle(x + CHIP_SIZE / 7, y + CHIP_SIZE / 4, 2.0f, GetColor(0, 0, 255), TRUE);
 	//残弾数がわかりやすいように
 	DrawExtendGraph(120, -130, 610, 200, bImage_, TRUE);//バナー
 
