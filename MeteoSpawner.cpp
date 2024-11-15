@@ -45,7 +45,7 @@ void MeteoSpawner::Update()
 			type = 1;
 			MR->SetMoveType(type);
 			break;
-		case3:
+		case 3:
 			//Meteorite * MR = Instantiate<Meteorite>(GetParent());
 			MR->SetPosition(x, y);
 			//ŽOŽí—Þ‚©‚çƒ‰ƒ“ƒ_ƒ€‚Å‘I‘ð

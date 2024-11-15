@@ -246,6 +246,12 @@ void Player::Update()
 		x = 3600;
 		cam->SetValueX((int)transform_.position_.x - x);
 	}*/
+
+	if (transform_.position_.y <= 0) {
+		jumpSpeed_ = 0;
+		//transform_.position_.y = 1;
+	}
+	
 }
 
 void Player::UpdateNormal()
@@ -539,7 +545,7 @@ void Player::UpdateMove()
 			animFrame_ = 1;
 		}
 	}
-	else if (!onGround_ && jumpSpeed_ > 0) {//地面にいなくて、ジャンプで下がっているなら
+	else if (!onGround_ && jumpSpeed_ >= 0) {//地面にいなくて、ジャンプで下がっているなら
 		if (prevMoveKey_ == 0) {//右向きなら
 			animType_ = 2;
 			/*animFrame_ = 2;
@@ -663,43 +669,43 @@ void Player::UpdateDie()
 	//死んだ時に地面にいないなら地面に落としてから〇す
 	if (!onGround_) {
 		transform_.position_.y += 3.0f;
-		animFrame_ = 1;
-		/*if (prevMoveKey_ == 0) {
+		//animFrame_ = 1;
+		if (prevMoveKey_ == 0) {
 			animFrame_ = 1;
 		}
 		else {
 			animFrame_ = 4;
-		}*/
+		}
 	}
 	else {
-		if (animFrame_ + 1 == 6) {//最後のフレームになったら
-			Die();//〇ぬ
-			animFrame_ = 0;
-		}
-		if (time_ > 0.2f) {
-			animFrame_ = animFrame_ % 5 + 1;
-			time_ = 0.0f;
-		}
-		//if (prevMoveKey_ == 0) {
-		//	if (animFrame_ + 1 == 6) {//最後のフレームになったら
-		//		Die();//〇ぬ
-		//		animFrame_ = 0;
-		//	}
-		//	if (time_ > 0.2f) {
-		//		animFrame_ = animFrame_ % 5 + 1;
-		//		time_ = 0.0f;
-		//	}
+		//if (animFrame_ + 1 == 6) {//最後のフレームになったら
+		//	Die();//〇ぬ
+		//	animFrame_ = 0;
 		//}
-		//else {
-		//	if (animFrame_ == 0) {//最後のフレームになったら
-		//		Die();//〇ぬ
-		//		animFrame_ = 5;
-		//	}
-		//	if (time_ > 0.2f) {
-		//		animFrame_--;
-		//		time_ = 0.0f;
-		//	}
+		//if (time_ > 0.2f) {
+		//	animFrame_ = animFrame_ % 5 + 1;
+		//	time_ = 0.0f;
 		//}
+		if (prevMoveKey_ == 0) {
+			if (animFrame_ + 1 == 6) {//最後のフレームになったら
+				Die();//〇ぬ
+				animFrame_ = 0;
+			}
+			if (time_ > 0.2f) {
+				animFrame_ = animFrame_ % 5 + 1;
+				time_ = 0.0f;
+			}
+		}
+		else {
+			if (animFrame_ == 0) {//最後のフレームになったら
+				Die();//〇ぬ
+				animFrame_ = 5;
+			}
+			if (time_ > 0.2f) {
+				animFrame_--;
+				time_ = 0.0f;
+			}
+		}
 	}
 }
 
@@ -793,19 +799,31 @@ void Player::Attack(int angleA, int angleB)
 	int x = (int)transform_.position_.x;
 	int y = (int)transform_.position_.y;
 
-	if (prevMoveKey_ == 0) {
+	/*if (prevMoveKey_ == 0) {
 		attack->SetPosition(x + CHIP_SIZE, y);
 	}
 	else {
 		attack->SetPosition(x, y);
-	}
+	}*/
 
 	//横に撃つか、斜めに撃つか
 	if (isTypeA == true) {//横に撃つ
 		attack->SetAngle(XM_PI*angleA);//角度の設定
+		if (prevMoveKey_ == 0) {
+			attack->SetPosition(x + CHIP_SIZE, y);
+		}
+		else {
+			attack->SetPosition(x, y);
+		}
 	}
 	if (isTypeB == true) {//斜め上に撃つ
 		attack->SetAngle(XM_PI / -4 * angleB);//角度を設定
+		if (prevMoveKey_ == 0) {
+			attack->SetPosition(x + CHIP_SIZE / 5 * 2, y);
+		}
+		else {
+			attack->SetPosition(x + CHIP_SIZE / 5, y);
+		}
 	}
 	currentNum_--;
 	time_ = 0.0f;
