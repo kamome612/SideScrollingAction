@@ -18,6 +18,7 @@ Banner::~Banner()
 void Banner::Initialize()
 {
 	bImage_ = LoadGraph("Assets/Image/font.png");
+	//bImage_ = LoadGraph("Assets/Image/font2.png");
 	assert(bImage_ > 0);
 }
 
@@ -37,12 +38,15 @@ void Banner::Update()
 void Banner::Draw()
 {
 	if (view_ == ViewID::V_Start)
-		DrawRectGraph(200, 400, 0, 0, 256, 64, bImage_, TRUE);//スタート
+		DrawRectGraph(200, 400, 0, 0, 429, 64, bImage_, TRUE);//スタート
+		//DrawRectGraph(200, 400, 0, 0, 256, 64, bImage_, TRUE);//スタート
 	else if (view_ == ViewID::V_Clear)
-		DrawRectGraph(200, 400, 0, 64, 256, 64, bImage_, TRUE);//クリア
+		DrawRectGraph(200, 400, 0, 64, 429, 64, bImage_, TRUE);//クリア
+		//DrawRectGraph(200, 400, 0, 64, 256, 64, bImage_, TRUE);//クリア
 	else if (view_ == ViewID::V_GameOver) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, transparency_);
-		DrawRectGraph(200, gameOverY, 0, 128, 256, 128, bImage_, TRUE);//ゲームオーバー
+		DrawRectGraph(200, gameOverY, 0, 128, 429, 64, bImage_, TRUE);//ゲームオーバー
+		//DrawRectGraph(200, gameOverY, 0, 128, 256, 128, bImage_, TRUE);//ゲームオーバー
 	}
 }
 

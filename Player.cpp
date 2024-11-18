@@ -27,6 +27,7 @@ namespace {
 	const float FINV_TIME = 1.0f;  //無敵が終わる時間
 	const int MAX_BULLET = 10;     //ミサイルの発射可能数
 	const float INTERVAL = 5.0f;   //リロード時間
+	const int MAX_X = 7680;        //X座標のマックス
 
 	//重力メモ:月...1.62,火星...3.71
 }
@@ -248,9 +249,9 @@ void Player::Update()
 	if (transform_.position_.x < 0) {
 		transform_.position_.x = 0;
 	}
-	/*if (transform_.position_.x > 4320) {
-		transform_.position_.x = 4320;
-	}*/
+	if (transform_.position_.x > MAX_X) {
+		transform_.position_.x = MAX_X;
+	}
 
 	//ここでカメラ位置の調整
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -337,7 +338,9 @@ void Player::UpdateNormal()
 	//ミサイルを飛ばしての攻撃
 	//if (onGround_) {//地面に立っている時しか使えないようにする場合
 	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//横に飛ばす
-		ReadyAttack(isTypeA);//弾の準備
+		if (!reloading_) {
+			ReadyAttack(isTypeA);//弾の準備
+		}
 	}
 	else {
 		prevAttackKey_ = false;
@@ -345,7 +348,9 @@ void Player::UpdateNormal()
 	}
 
 	if ((CheckHitKey(KEY_INPUT_K) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
-		ReadyAttack(isTypeB);//弾の準備
+		if (!reloading_) {
+			ReadyAttack(isTypeB);//弾の準備
+		}
 	}
 	else {
 		prevAttackKey_ = false;
@@ -355,7 +360,7 @@ void Player::UpdateNormal()
 
 	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
-		if (currentNum_ != MAX_BULLET) {
+		if (currentNum_ != MAX_BULLET && reloading_ != true) {
 			reloading_ = true;
 		}
 	}
@@ -389,11 +394,11 @@ void Player::UpdateMove()
 	//コントローラ操作(なぜかスティックを左に倒しても左にいかない)
 	DINPUT_JOYSTATE input;
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
-	if (input.X < 0) {
-		moveX += (float)input.X / 1000.0f; //取ってきた値を使えるように小さくする
-	}
+	//if (input.X < 0) {
+	//	moveX += (float)input.X / 1000.0f; //取ってきた値を使えるように小さくする
+	//}
 
-	moveX += (float)input.X / 1000.0f; //取ってきた値を使えるように小さくする
+	moveX += (float)input.X / 1000.0f * (SPEED * Time::DeltaTime()); //取ってきた値を使えるように小さくする
 	
 	if (moveX < 0.3f && moveX > -0.3f) {//中心付近の誤差をのぞく
 		 moveX = 0.0f;
@@ -600,7 +605,9 @@ void Player::UpdateMove()
 	//ミサイルを飛ばしての攻撃
 	//if (onGround_) {//地面に立っている時しか使えないようにする場合
 		if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
-			ReadyAttack(isTypeA);//弾の準備
+			if (!reloading_) {
+				ReadyAttack(isTypeA);//弾の準備
+			}
 		}
 		else {
 			prevAttackKey_ = false;
@@ -608,7 +615,9 @@ void Player::UpdateMove()
 		}
 
 		if ((CheckHitKey(KEY_INPUT_K) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
-			ReadyAttack(isTypeB);//弾の準備
+			if (!reloading_) {
+				ReadyAttack(isTypeB);//弾の準備
+			}
 		}
 		else {
 			prevAttackKey_ = false;
@@ -618,7 +627,7 @@ void Player::UpdateMove()
 	//}
 	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
-		if (currentNum_ != MAX_BULLET) {
+		if (currentNum_ != MAX_BULLET && reloading_ != true) {
 			reloading_ = true;
 		}
 	}
