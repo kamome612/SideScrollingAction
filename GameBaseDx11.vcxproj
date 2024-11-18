@@ -152,6 +152,7 @@
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Flag.cpp" />
     <ClCompile Include="FlyEnemy.cpp" />
+    <ClCompile Include="Health.cpp" />
     <ClCompile Include="Meteorite.cpp" />
     <ClCompile Include="MeteoSpawner.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Flag.h" />
     <ClInclude Include="FlyEnemy.h" />
+    <ClInclude Include="Health.h" />
     <ClInclude Include="Meteo.h" />
     <ClInclude Include="Meteorite.h" />
     <ClInclude Include="MeteoSpawner.h" />

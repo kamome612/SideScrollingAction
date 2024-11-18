@@ -82,6 +82,9 @@
     <ClCompile Include="FlyEnemy.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Health.cpp">
+      <Filter>Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -156,6 +159,9 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="FlyEnemy.h">
+      <Filter>Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Health.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
   </ItemGroup>

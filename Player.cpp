@@ -9,6 +9,7 @@
 #include "Flag.h"
 #include "Enemy.h"
 #include "FlyEnemy.h"
+#include "Health.h"
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
@@ -75,7 +76,7 @@ void Player::Initialize()
 	assert(pImage_ >= 0); 
 
 	//体力画像の読み込み
-	lImage_ = LoadGraph("Assets\\Image\\Life.png");
+	lImage_ = LoadGraph("Assets\\Image\\Life4.png");
 	assert(lImage_ > 0);
 
 	//体力削られたところに使う画像の読み込み
@@ -194,6 +195,27 @@ void Player::Update()
 			}
 		}
 	}
+
+	//回復アイテムとの当たり判定
+	std::list<Health*> pHealth = GetParent()->FindGameObjects<Health>();
+	for (Health* pHealth : pHealth) {
+		if (pHealth->CollideCircle(colX, colY, colR)) {
+			//体力が3の時は増やさない
+			if (pLife_ < 3) {
+				pLife_ += 1;
+			}
+			pHealth->KillMe();
+		}
+	}
+
+	////防御アイテムとの当たり判定
+	//std::list<Shield*> pShield = GetParent()->FindGameObjects<Shield>();
+	//for (Shield* pShield : pShield) {
+	//	if (pShield->CollideCircle(colX, colY, colR)) {
+	//		getShield_ = true;
+	//		pShield->KillMe();
+	//	}
+	//}
 
 	//敵が当たったら少しの間無敵になる
 	if (hitFlag_ == true) {
