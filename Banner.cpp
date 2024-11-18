@@ -41,7 +41,7 @@ void Banner::Draw()
 		DrawRectGraph(200, 400, 0, 0, 429, 64, bImage_, TRUE);//スタート
 		//DrawRectGraph(200, 400, 0, 0, 256, 64, bImage_, TRUE);//スタート
 	else if (view_ == ViewID::V_Clear)
-		DrawRectGraph(200, 400, 0, 64, 429, 64, bImage_, TRUE);//クリア
+		DrawRectGraph(300, 200, 0, 64, 429, 64, bImage_, TRUE);//クリア
 		//DrawRectGraph(200, 400, 0, 64, 256, 64, bImage_, TRUE);//クリア
 	else if (view_ == ViewID::V_GameOver) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, transparency_);

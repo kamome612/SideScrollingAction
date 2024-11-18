@@ -19,7 +19,7 @@ namespace {
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
-	const int SPEED = 200;    //スピード
+	const int SPEED = 800;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
 	const int L_MARGIN = 1;
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
