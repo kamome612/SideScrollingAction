@@ -70,7 +70,8 @@ private:
     bool isTypeB{ false }; //〃(斜め上)
     int prevMoveKey_;      //左右どっちのキーが前回押されたか
     int currentNum_;       //現在の弾数
-    float ReloadTime_;     //リロードの時間
+    float reloadTime_;     //リロードの時間
+    bool reloading_;       //リロード中か
 
     enum State {
         S_Normal = 0, //通常時

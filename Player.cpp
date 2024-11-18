@@ -26,18 +26,18 @@ namespace {
 	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
 	const float FINV_TIME = 1.0f;  //無敵が終わる時間
 	const int MAX_BULLET = 10;     //ミサイルの発射可能数
-	const float INTERVAL = 1.0f;   //リロード時間
+	const float INTERVAL = 5.0f;   //リロード時間
 
 	//重力メモ:月...1.62,火星...3.71
 }
 
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), pImage_(-1), gravity_(INIT_GRAVITY),
-	 jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
-	 animFrame_(0),prevAttackKey_(false), pLife_(3),
-	 invTime_(0), hitFlag_(false),lImage_(-1),dImage_(-1),ground_(0),
-	 prevMoveKey_(0),currentNum_(MAX_BULLET),ReloadTime_(0),mImage_(-1),
-	 bImage_(-1)
+	jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
+	animFrame_(0), prevAttackKey_(false), pLife_(3),
+	invTime_(0), hitFlag_(false), lImage_(-1), dImage_(-1), ground_(0),
+	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
+	bImage_(-1), reloading_(false)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -274,6 +274,10 @@ void Player::Update()
 		//transform_.position_.y = 1;
 	}
 	
+	//リロード中なら
+	if (reloading_) {
+		Reload();
+	}
 }
 
 void Player::UpdateNormal()
@@ -351,7 +355,9 @@ void Player::UpdateNormal()
 
 	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
-		Reload();
+		if (currentNum_ != MAX_BULLET) {
+			reloading_ = true;
+		}
 	}
 }
 
@@ -612,7 +618,9 @@ void Player::UpdateMove()
 	//}
 	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)//弾のリロード
 	{
-		Reload();
+		if (currentNum_ != MAX_BULLET) {
+			reloading_ = true;
+		}
 	}
 }
 
@@ -788,13 +796,19 @@ void Player::SetGravity(float _gravity)
 void Player::Reload()
 {
 	//インターバルを超えたら一弾補充
-	if (ReloadTime_ > INTERVAL) {
+	/*if (reloadTime_ > INTERVAL) {
 		if (currentNum_ != MAX_BULLET) {
 			currentNum_++;
 		}
-		ReloadTime_ = 0;
+		reloadTime_ = 0;
 	}
-	ReloadTime_ += Time::DeltaTime();
+	reloadTime_ += Time::DeltaTime();*/
+	reloadTime_ += Time::DeltaTime();
+	if (reloadTime_ > INTERVAL) {
+		currentNum_ = MAX_BULLET;
+		reloading_ = false;
+		reloadTime_ = 0.0f;
+	}
 }
 
 void Player::ReadyAttack(bool &_isType)
