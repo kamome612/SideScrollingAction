@@ -803,6 +803,8 @@ void Player::Reload()
 		reloadTime_ = 0;
 	}
 	reloadTime_ += Time::DeltaTime();*/
+
+	//インターバルを超えたら、全部補充
 	reloadTime_ += Time::DeltaTime();
 	if (reloadTime_ > INTERVAL) {
 		currentNum_ = MAX_BULLET;
