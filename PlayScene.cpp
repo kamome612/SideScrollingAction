@@ -50,8 +50,9 @@ void PlayScene::Draw()
 		//ステージ選択の画像表示(画像はまだ仮)
 		DrawGraph(0, 0, pPict_, FALSE);
 		//選ぶ時の三角形の表示
-		int tmp = (mapNo_ - 1) * 440;
-		DrawTriangle(200 + tmp, 540, 200 + tmp + 20, 570, 200 + tmp - 20, 570,
+		int tmp = (mapNo_ - 1) * 332;
+		int len = 330;
+		DrawTriangle(len + tmp, 540, len + tmp + 23, 570, len + tmp - 23, 570,
 			GetColor(255, 255, 0), TRUE);
 	}
 }
