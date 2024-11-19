@@ -7,6 +7,7 @@
 #include "Stage.h"
 #include "FlyEnemy.h"
 #include "Health.h"
+#include "Shield.h"
 #include <random>
 
 namespace {
@@ -67,15 +68,15 @@ void AttackSkill::Update()
 
 			//弾が当たったらランダムでアイテムをドロップ
 			//ここをいじって確率を変える。
-			int type = rand() % 2;
+			int type = rand() % 5;
 			if (type == 1) {
 				Health* pHealth = Instantiate<Health>(GetParent());
 				pHealth->SetPosition(transform_.position_.x, transform_.position_.y);
 			}
-			/*if (type == 2) {
+			if (type == 2) {
 				Shield* pShield = Instantiate<Shield>(GetParent());
 				pShield->SetPosition(transform_.position_.x, transform_.position_.y);
-			}*/
+			}
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
 			KillMe();

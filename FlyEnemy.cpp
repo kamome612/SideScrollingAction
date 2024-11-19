@@ -115,7 +115,7 @@ void FlyEnemy::UpdateNormal()
 
 	//上下入れ替え時間の計測と入れ替えの判定（地面に当たった時も入れ替える）
 	moveTime_ += Time::DeltaTime();
-	if (moveTime_ >= MOVE_INTERVAL) {
+	if (moveTime_ >= MOVE_INTERVAL || transform_.position_.y <= 0) {
 		moveTime_ = 0.0f;
 		moveDirection_ *= -1;
 	}
@@ -252,6 +252,35 @@ void FlyEnemy::UpdateAttack()
 	else {
 		//視界外に出たらS_Normalに
 		state_ = S_Normal;
+	}
+
+	Stage* pStage = GetParent()->FindGameObject<Stage>();
+	//新・右側のステージとの当たり判定
+	int pushT, pushB, pushM, push;
+	int hitX = transform_.position_.x + CHIP_SIZE / 2 - 10;
+	int hitY = transform_.position_.y + CHIP_SIZE / 2 + 6;
+	if (pStage != nullptr) {
+		pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+		hitY = transform_.position_.y + CHIP_SIZE - 1;
+		pushB = pStage->CollisionRight(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 4 * 3;
+		pushM = pStage->CollisionRight(hitX, hitY);
+		push = max(pushT, pushB);
+		push = max(push, pushM);
+		transform_.position_.x -= push;//のめりこんでる分戻す
+	}
+	//新・左側のステージとの当たり判定
+	hitX = transform_.position_.x + 14;
+	hitY = transform_.position_.y + CHIP_SIZE / 2 + 6;
+	if (pStage != nullptr) {
+		pushT = pStage->CollisionLeft(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE - 1;
+		pushB = pStage->CollisionLeft(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 4 * 3;
+		pushM = pStage->CollisionLeft(hitX, hitY);
+		push = max(pushT, pushB);
+		push = max(push, pushM);
+		transform_.position_.x += push;//のめりこんでる分戻す
 	}
 
 	time_ += Time::DeltaTime();

@@ -85,6 +85,7 @@
     <ClCompile Include="Health.cpp">
       <Filter>Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Shield.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -164,5 +165,6 @@
     <ClInclude Include="Health.h">
       <Filter>Scene\PlayScene</Filter>
     </ClInclude>
+    <ClInclude Include="Shield.h" />
   </ItemGroup>
 </Project>

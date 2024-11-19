@@ -55,6 +55,7 @@ private:
     int dImage_; //体力のダメージ受けた部分の画像
     int mImage_; //残弾数表示用の画像
     int bImage_; //弾表示のバナー
+    int sImage_; //シールド持ってる時の画像
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
@@ -72,6 +73,7 @@ private:
     int currentNum_;       //現在の弾数
     float reloadTime_;     //リロードの時間
     bool reloading_;       //リロード中か
+    bool getShield_;       //シールド持ってるかどうか
 
     enum State {
         S_Normal = 0, //通常時

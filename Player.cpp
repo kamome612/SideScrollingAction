@@ -10,6 +10,7 @@
 #include "Enemy.h"
 #include "FlyEnemy.h"
 #include "Health.h"
+#include "Shield.h"
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
@@ -19,7 +20,7 @@ namespace {
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
-	const int SPEED = 800;    //スピード
+	const int SPEED = 200;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
 	const int L_MARGIN = 1;
 	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
@@ -38,7 +39,7 @@ Player::Player(GameObject* parent)
 	animFrame_(0), prevAttackKey_(false), pLife_(3),
 	invTime_(0), hitFlag_(false), lImage_(-1), dImage_(-1), ground_(0),
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
-	bImage_(-1), reloading_(false)
+	bImage_(-1), reloading_(false),getShield_(false)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -68,6 +69,10 @@ Player::~Player()
 		DeleteGraph(bImage_);
 		bImage_ = -1;
 	}
+	if (sImage_ > 0) {
+		DeleteGraph(sImage_);
+		sImage_ = -1;
+	}
 }
 
 void Player::Initialize()
@@ -81,7 +86,7 @@ void Player::Initialize()
 	assert(lImage_ > 0);
 
 	//体力削られたところに使う画像の読み込み
-	dImage_ = LoadGraph("Assets\\Image\\Damege.png");
+	dImage_ = LoadGraph("Assets\\Image\\Damage2.png");
 	assert(dImage_ > 0);
 
 	//残弾表示に使う画像の読み込み
@@ -90,6 +95,11 @@ void Player::Initialize()
 
 	//弾のバナーの読み込み
 	bImage_ = LoadGraph("Assets\\Image\\banner.png");
+	assert(bImage_ > 0);
+
+	//シールド所持
+	sImage_ = LoadGraph("Assets\\Image\\Shield.png");
+	assert(sImage_ > 0);
 }
 
 void Player::Update()
@@ -159,7 +169,7 @@ void Player::Update()
 	//隕石との当たり判定
 	std::list<Meteorite*> pMeteos = GetParent()->FindGameObjects<Meteorite>();
 	for (Meteorite* pMeteo : pMeteos) {
-		if (pMeteo->CollideCircle(colX, colY,colR)) {
+		if (pMeteo->CollideCircle(colX, colY, colR)) {
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x, transform_.position_.y - CHIP_SIZE / 2);
@@ -169,7 +179,15 @@ void Player::Update()
 			else {
 				animFrame_ = 5;
 			}
-			state_ = S_Die;
+
+			if (getShield_ == false) {
+				state_ = S_Die;
+			}
+			else {
+				hitFlag_ = true;
+				getShield_ = false;
+			}
+
 		}
 	}
 
@@ -177,10 +195,14 @@ void Player::Update()
 	std::list<Enemy*> pEnemys = GetParent()->FindGameObjects<Enemy>();
 	for (Enemy* pEnemy : pEnemys) {
 		if (hitFlag_ == false) {
-			if (pEnemy->CollideCircle(colX,colY,colR)) {
-				pLife_ -= 1;
+			if (pEnemy->CollideCircle(colX, colY, colR)) {
+				if (getShield_ == false) {
+					pLife_ -= 1;
+				}
+				else {
+					getShield_ = false;
+				}
 				hitFlag_ = true;
-				pEnemy->KillMe();
 			}
 		}
 	}
@@ -190,9 +212,13 @@ void Player::Update()
 	for (FlyEnemy* fEnemy : fEnemys) {
 		if (hitFlag_ == false) {
 			if (fEnemy->CollideCircle(colX, colY, colR)) {
-				pLife_ -= 1;
+				if (getShield_ == false) {
+					pLife_ -= 1;
+				}
+				else {
+					getShield_ = false;
+				}
 				hitFlag_ = true;
-				fEnemy->KillMe();
 			}
 		}
 	}
@@ -209,14 +235,14 @@ void Player::Update()
 		}
 	}
 
-	////防御アイテムとの当たり判定
-	//std::list<Shield*> pShield = GetParent()->FindGameObjects<Shield>();
-	//for (Shield* pShield : pShield) {
-	//	if (pShield->CollideCircle(colX, colY, colR)) {
-	//		getShield_ = true;
-	//		pShield->KillMe();
-	//	}
-	//}
+	//防御アイテムとの当たり判定
+	std::list<Shield*> pShield = GetParent()->FindGameObjects<Shield>();
+	for (Shield* pShield : pShield) {
+		if (pShield->CollideCircle(colX, colY, colR)) {
+			getShield_ = true;
+			pShield->KillMe();
+		}
+	}
 
 	//敵が当たったら少しの間無敵になる
 	if (hitFlag_ == true) {
@@ -483,24 +509,30 @@ void Player::UpdateMove()
 	//}
 
 	//新・右側のステージとの当たり判定
-	int pushT, pushB, push;
+	int pushT, pushB, pushM ,push;
 	int hitX = transform_.position_.x + CHIP_SIZE / 15 * 7;
-	int hitY = transform_.position_.y + CHIP_SIZE - 1;
+	int hitY = transform_.position_.y + CHIP_SIZE / 4;
 	if (pStage != nullptr) {
 	    pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
-		hitY = transform_.position_.y + CHIP_SIZE / 4;
+		hitY = transform_.position_.y + CHIP_SIZE - 1;
 		pushB = pStage->CollisionRight(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 2;
+		pushM = pStage->CollisionRight(hitX, hitY);
 		push = max(pushT, pushB);
+		push = max(push, pushM);
 		transform_.position_.x -= push;//のめりこんでる分戻す
 	}
 	//新・左側のステージとの当たり判定
 	hitX = transform_.position_.x + CHIP_SIZE / 7;
-	hitY = transform_.position_.y + CHIP_SIZE - 1;
+	hitY = hitY = transform_.position_.y + CHIP_SIZE / 4;
 	if (pStage != nullptr) {
 		pushT = pStage->CollisionLeft(hitX, hitY);
-		hitY = transform_.position_.y + CHIP_SIZE / 4;
+		hitY = transform_.position_.y + CHIP_SIZE - 1;
 		pushB = pStage->CollisionLeft(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 2;
+		pushM = pStage->CollisionLeft(hitX, hitY);
 		push = max(pushT, pushB);
+		push = max(push, pushM);
 		transform_.position_.x += push;//のめりこんでる分戻す
 	}
 
@@ -787,6 +819,11 @@ void Player::Draw()
 	}
 	for (int i = 0; i < pLife_; i++) {
 		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
+	}
+
+	//シールドのアイコン表示位置
+	if (getShield_ == true) {
+		DrawGraph(10, 80, sImage_, TRUE);
 	}
 }
 
