@@ -11,6 +11,7 @@
 #include "FlyEnemy.h"
 #include "Health.h"
 #include "Shield.h"
+#include "MissileItem.h"
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
@@ -23,12 +24,14 @@ namespace {
 	const int SPEED = 200;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
 	const int L_MARGIN = 1;
-	const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
+	const int IMAGE_SIZE = 64;//体力画像サイズ
+	//const int LIFE_IMAGE_SIZE = 64;//体力画像サイズ
 	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
 	const float FINV_TIME = 1.0f;  //無敵が終わる時間
 	const int MAX_BULLET = 10;     //ミサイルの発射可能数
 	const float INTERVAL = 5.0f;   //リロード時間
 	const int MAX_X = 7680;        //X座標のマックス
+	const float FIN_ITEM_TIME = 10.0f; //ミサイルアイテムが終わる時間
 
 	//重力メモ:月...1.62,火星...3.71
 }
@@ -39,7 +42,8 @@ Player::Player(GameObject* parent)
 	animFrame_(0), prevAttackKey_(false), pLife_(3),
 	invTime_(0), hitFlag_(false), lImage_(-1), dImage_(-1), ground_(0),
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
-	bImage_(-1), reloading_(false),getShield_(false)
+	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
+	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -73,6 +77,10 @@ Player::~Player()
 		DeleteGraph(sImage_);
 		sImage_ = -1;
 	}
+	if (iImage_ > 0) {
+		DeleteGraph(iImage_);
+		iImage_ = -1;
+	}
 }
 
 void Player::Initialize()
@@ -100,6 +108,11 @@ void Player::Initialize()
 	//シールド所持
 	sImage_ = LoadGraph("Assets\\Image\\Shield.png");
 	assert(sImage_ > 0);
+
+	//ミサイルアイテム所持
+	iImage_ = LoadGraph("Assets\\Image\\Missile_Item.png");
+	assert(iImage_ > 0);
+
 }
 
 void Player::Update()
@@ -244,6 +257,20 @@ void Player::Update()
 		}
 	}
 
+	//ミサイルアイテム都の当たり判定
+	std::list<MissileItem*> pMissileItem = GetParent()->FindGameObjects<MissileItem>();
+	for (MissileItem* pMissileItem : pMissileItem) {
+		if (pMissileItem->CollideCircle(colX, colY, colR)) {
+			getMissileItem_ = true;
+			currentNum_ = MAX_BULLET;
+			pMissileItem->KillMe();
+		}
+	}
+	//ミサイルアイテムをとった時の処理
+	if (getMissileItem_ == true) {
+		Icon();
+	}
+
 	//敵が当たったら少しの間無敵になる
 	if (hitFlag_ == true) {
 		invTime_ += Time::DeltaTime();
@@ -296,10 +323,10 @@ void Player::Update()
 		cam->SetValueX((int)transform_.position_.x - x);
 	}*/
 
-	if (transform_.position_.y <= 0) {
-		jumpSpeed_ = 0;
-		//transform_.position_.y = 1;
-	}
+	//if (transform_.position_.y <= 0) {
+	//	jumpSpeed_ = 0;
+	//	//transform_.position_.y = 1;
+	//}
 	
 	//リロード中なら
 	if (reloading_) {
@@ -815,15 +842,20 @@ void Player::Draw()
 
 	//ライフとライフの下に黒くしたライフを描画
 	for (int j = 0; j < 3; j++) {
-		DrawGraph(LIFE_IMAGE_SIZE * j, 0, dImage_, TRUE);
+		DrawGraph(IMAGE_SIZE * j, 0, dImage_, TRUE);
 	}
 	for (int i = 0; i < pLife_; i++) {
-		DrawGraph(LIFE_IMAGE_SIZE * i, 0, lImage_, TRUE);
+		DrawGraph(IMAGE_SIZE * i, 0, lImage_, TRUE);
 	}
 
 	//シールドのアイコン表示位置
 	if (getShield_ == true) {
 		DrawGraph(10, 80, sImage_, TRUE);
+	}
+
+	//ミサイルアイテムのアイコン表示位置
+	if (getMissileItem_ == true) {
+		DrawRectGraph(10, 160, mAnimFrame_ * IMAGE_SIZE, 0, IMAGE_SIZE, IMAGE_SIZE, iImage_, TRUE);
 	}
 }
 
@@ -856,6 +888,24 @@ void Player::Reload()
 		currentNum_ = MAX_BULLET;
 		reloading_ = false;
 		reloadTime_ = 0.0f;
+	}
+}
+
+void Player::Icon()
+{
+	//一定時間経過で点滅して消える
+	itemTime_ += Time::DeltaTime();
+	float tmp = 7;
+	if (itemTime_ >= tmp) {
+		//tmp = disTime_ - 1;
+		iTime_ += Time::DeltaTime();
+		if (iTime_ >= 0.2) {
+			iTime_ = 0;
+			mAnimFrame_ = mAnimFrame_ % 3 + 1;
+		}
+	}
+	if (itemTime_ > FIN_ITEM_TIME) {
+		getMissileItem_ = false;
 	}
 }
 
@@ -910,7 +960,11 @@ void Player::Attack(int angleA, int angleB)
 			attack->SetPosition(x + CHIP_SIZE / 5, y);
 		}
 	}
-	currentNum_--;
+
+	//ミサイルアイテムをとったら弾が無限
+	if (getMissileItem_ == false) {
+		currentNum_--;
+	}
 	time_ = 0.0f;
 	animFrame_ = 0;
 	if (onGround_) {

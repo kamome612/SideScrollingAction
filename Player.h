@@ -49,6 +49,9 @@ public:
     //〇ぬ
     void Die();
 
+    //ミサイルアイコンのアニメーション処理
+    void Icon();
+
 private:
     int pImage_; //プレイヤーの画像
     int lImage_; //プレイヤーの体力を表す画像
@@ -56,6 +59,7 @@ private:
     int mImage_; //残弾数表示用の画像
     int bImage_; //弾表示のバナー
     int sImage_; //シールド持ってる時の画像
+    int iImage_; //ミサイルアイテムの画像
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
@@ -74,6 +78,10 @@ private:
     float reloadTime_;     //リロードの時間
     bool reloading_;       //リロード中か
     bool getShield_;       //シールド持ってるかどうか
+    bool getMissileItem_;  //ミサイルアイテムを持ってるかどうか
+    float itemTime_;         //ミサイルアイテムの経過時間
+    float iTime_;
+    int mAnimFrame_;       //ミサイルアイコン用のフレーム
 
     enum State {
         S_Normal = 0, //通常時
