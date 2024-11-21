@@ -14,7 +14,7 @@ namespace {
 	static const int SCREEN_WIDTH = 1280;
 	const XMFLOAT3 INIT_POS = { 200,575,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 9.8 / 90.0f;
+	const float INIT_GRAVITY = 9.8;
 	const float MAX_POS = 400;
 	const int SPEED = 150;
 	//重力メモ:月...1.62,火星...3.71
@@ -182,7 +182,7 @@ void Enemy::UpdateNormal()
 		}
 	}
 	
-	jumpSpeed_ += gravity_;//速度 += 重力
+	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 }

@@ -56,7 +56,7 @@ void FlyEnemy::Update()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		x -= cam->GetValueX();
-		y -= cam->GetValueY();
+		//y -= cam->GetValueY();
 	}
 
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
@@ -98,6 +98,35 @@ void FlyEnemy::Update()
 		else if(push == 0) {
 			underbrock_ = false;
 		}
+	}
+
+	//Stage* pStage = GetParent()->FindGameObject<Stage>();
+	//新・右側のステージとの当たり判定
+	int pushT, pushB, pushM, push;
+	int hitX = transform_.position_.x + CHIP_SIZE / 2 - 10;
+	int hitY = transform_.position_.y + CHIP_SIZE / 2 + 6;
+	if (pStage != nullptr) {
+		pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+		hitY = transform_.position_.y + CHIP_SIZE - 1;
+		pushB = pStage->CollisionRight(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 4 * 3;
+		pushM = pStage->CollisionRight(hitX, hitY);
+		push = max(pushT, pushB);
+		push = max(push, pushM);
+		transform_.position_.x -= push;//のめりこんでる分戻す
+	}
+	//新・左側のステージとの当たり判定
+	hitX = transform_.position_.x + 14;
+	hitY = transform_.position_.y + CHIP_SIZE / 2 + 6;
+	if (pStage != nullptr) {
+		pushT = pStage->CollisionLeft(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE - 1;
+		pushB = pStage->CollisionLeft(hitX, hitY);
+		hitY = transform_.position_.y + CHIP_SIZE / 4 * 3;
+		pushM = pStage->CollisionLeft(hitX, hitY);
+		push = max(pushT, pushB);
+		push = max(push, pushM);
+		transform_.position_.x += push;//のめりこんでる分戻す
 	}
 
 	//前フレームの位置を持っておく
@@ -254,35 +283,6 @@ void FlyEnemy::UpdateAttack()
 		state_ = S_Normal;
 	}
 
-	Stage* pStage = GetParent()->FindGameObject<Stage>();
-	//新・右側のステージとの当たり判定
-	int pushT, pushB, pushM, push;
-	int hitX = transform_.position_.x + CHIP_SIZE / 2 - 10;
-	int hitY = transform_.position_.y + CHIP_SIZE / 2 + 6;
-	if (pStage != nullptr) {
-		pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
-		hitY = transform_.position_.y + CHIP_SIZE - 1;
-		pushB = pStage->CollisionRight(hitX, hitY);
-		hitY = transform_.position_.y + CHIP_SIZE / 4 * 3;
-		pushM = pStage->CollisionRight(hitX, hitY);
-		push = max(pushT, pushB);
-		push = max(push, pushM);
-		transform_.position_.x -= push;//のめりこんでる分戻す
-	}
-	//新・左側のステージとの当たり判定
-	hitX = transform_.position_.x + 14;
-	hitY = transform_.position_.y + CHIP_SIZE / 2 + 6;
-	if (pStage != nullptr) {
-		pushT = pStage->CollisionLeft(hitX, hitY);
-		hitY = transform_.position_.y + CHIP_SIZE - 1;
-		pushB = pStage->CollisionLeft(hitX, hitY);
-		hitY = transform_.position_.y + CHIP_SIZE / 4 * 3;
-		pushM = pStage->CollisionLeft(hitX, hitY);
-		push = max(pushT, pushB);
-		push = max(push, pushM);
-		transform_.position_.x += push;//のめりこんでる分戻す
-	}
-
 	time_ += Time::DeltaTime();
 	//アニメーション
 	if (time_ > 0.1f) {
@@ -304,6 +304,9 @@ void FlyEnemy::Draw()
 	
 	//当たり判定見るよう
 	//DrawCircle( x + CHIP_SIZE/2-X_MARGIN, y + CHIP_SIZE/2+Y_MARGIN, 16.0f, GetColor(0, 0, 255), FALSE);
+	
+	//地面との当たり判定見るよう
+	//DrawBox(x + 14, y + CHIP_SIZE / 2 + 6, x + CHIP_SIZE / 2 - 10, y + CHIP_SIZE, GetColor(0, 0, 0), FALSE);
 }
 
 void FlyEnemy::SetPosition(float _x, float _y)

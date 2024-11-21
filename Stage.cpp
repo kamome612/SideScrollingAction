@@ -166,6 +166,7 @@ void Stage::StageSet()
 	//csv‚©‚ç“Ç‚İ‚İ
 	CsvReader csv;
 	bool ret = csv.Load((folder + "Stage" + n + ".csv").c_str());
+	//bool ret = csv.Load((folder + "Stage" + "test" + ".csv").c_str());
 
 	//V‚µ‚¢’n–Ê—p
 	//bool ret = csv.Load((folder + "Stage100.csv").c_str());
@@ -243,10 +244,10 @@ void Stage::StageSet()
 				Enemy* sEnemy = Instantiate<Enemy>(GetParent());
 				sEnemy->SetPosition(w * CHIP_SIZE, h * CHIP_SIZE);
 				if (mapNo_ == 2) {
-					sEnemy->SetGravity(1.62 / 90.0f);
+					sEnemy->SetGravity(1.62);
 				}
 				else if (mapNo_ == 3) {
-					sEnemy->SetGravity(3.71 / 90.0f);
+					sEnemy->SetGravity(3.71);
 				}
 				break;
 			}
