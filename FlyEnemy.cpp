@@ -80,16 +80,16 @@ void FlyEnemy::Update()
 	//ƒXƒe[ƒW‚Æ‚Ìã‰º‚Ì“–‚½‚è”»’è
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 	if (pStage != nullptr) {
-		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE - X_MARGIN, transform_.position_.y + CHIP_SIZE);
-		int pushL = pStage->CollisionDown(transform_.position_.x + X_MARGIN, transform_.position_.y + CHIP_SIZE);
+		int pushR = pStage->CollisionDown(transform_.position_.x + CHIP_SIZE / 2 - 10, transform_.position_.y + CHIP_SIZE);
+		int pushL = pStage->CollisionDown(transform_.position_.x + 14, transform_.position_.y + CHIP_SIZE);
 		int push = max(pushR, pushL);//‚Q‚Â‚Ì‘«Œ³‚Ì‚ß‚èž‚Ý‚Ì‘å‚«‚¢•û
 		if (push >= 1) {
 			transform_.position_.y -= push - 1;
 			onGround_ = true;
 		}
 
-		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE - X_MARGIN, transform_.position_.y + CHIP_SIZE /2);
-		pushL = pStage->CollisionUp(transform_.position_.x + X_MARGIN, transform_.position_.y + CHIP_SIZE / 2);
+		pushR = pStage->CollisionUp(transform_.position_.x + CHIP_SIZE / 2 - 10, transform_.position_.y + CHIP_SIZE /2);
+		pushL = pStage->CollisionUp(transform_.position_.x + 14, transform_.position_.y + CHIP_SIZE / 2);
 		push = max(pushR, pushL);//‚Q‚Â‚Ì‘«Œ³‚Ì‚ß‚èž‚Ý‚Ì‘å‚«‚¢•û
 		if (push >= 1) {
 			transform_.position_.y += push + 1;

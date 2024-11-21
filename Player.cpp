@@ -12,6 +12,7 @@
 #include "Health.h"
 #include "Shield.h"
 #include "MissileItem.h"
+#include "ReloadGauge.h"
 
 namespace {
 	const float CHIP_SIZE = 64.0f;//キャラの画像サイズ
@@ -19,7 +20,7 @@ namespace {
 	const float ROBO_WIDTH = 48;  //キャラの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 9.8/ 90.0f; //重力
+	const float INIT_GRAVITY = 9.8; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
 	const int SPEED = 200;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
@@ -111,7 +112,7 @@ void Player::Initialize()
 	assert(sImage_ > 0);
 
 	//ミサイルアイテム所持
-	iImage_ = LoadGraph("Assets\\Image\\Missile_Item.png");
+	iImage_ = LoadGraph("Assets\\Image\\Missile_Icon.png");
 	assert(iImage_ > 0);
 
 }
@@ -368,19 +369,6 @@ void Player::UpdateNormal()
 		if (onGround_) {
 			animFrame_ = animFrame_ % 3 + 1;
 			time_ = 0.0f;
-			/*if (prevMoveKey_ == 0) {
-				animFrame_ = animFrame_ % 3 + 1;
-				time_ = 0.0f;
-			}
-			else {
-				if (animFrame_ == 2) {
-					animFrame_ = 5;
-				}
-				else {
-					animFrame_--;
-				}
-				time_ = 0.0f;
-			}*/
 		}
 	}
 
@@ -501,30 +489,6 @@ void Player::UpdateMove()
 		}
 	}
 
-	//if (prevMoveKey_ == 0) {//右向きなら
-	//	//アニメーション
-	//	if (time_ > 0.15f) {
-	//		if (onGround_) {
-	//			animFrame_ = animFrame_ % 5 + 1;
-	//			time_ = 0.0f;
-	//		}
-	//	}
-	//}
-	//else {//左向きなら
-	//	//左向きの歩き
-	//	if (time_ > 0.15f) {
-	//		if (onGround_) {
-	//			if (animFrame_ == 0) {
-	//				animFrame_ = 5;
-	//			}
-	//			else {
-	//				animFrame_--;
-	//			}
-	//			time_ = 0.0f;
-	//		}
-	//	}
-	//}
-
 	Stage* pStage = GetParent()->FindGameObject<Stage>();
 
 	//新・右側のステージとの当たり判定
@@ -559,7 +523,7 @@ void Player::UpdateMove()
 	if (onGround_) {
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -sqrtf(2 * (gravity_)*JUMP_HEIGHT);
+			jumpSpeed_ = -sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
 			onGround_ = false;//地面にいない
 		}
 	}
@@ -606,7 +570,7 @@ void Player::UpdateMove()
 		}
 	}
 
-	jumpSpeed_ += gravity_;//速度 += 重力
+	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	//ミサイル攻撃(横向き)
@@ -682,7 +646,7 @@ void Player::UpdateAttack()
 		time_ = 0.0f;
 	}
 
-	jumpSpeed_ += gravity_;//速度 += 重力
+	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 }
 
@@ -758,10 +722,11 @@ void Player::Draw()
 	DrawCircle(x + CHIP_SIZE / 7, y + CHIP_SIZE / 4, 2.0f, GetColor(0, 0, 255), TRUE);*/
 	
 	//残弾数の表示
-	DrawExtendGraph(120, -130, 610, 200, bImage_, TRUE);//バナー
-	for (int i = 0; i < currentNum_; i++) {
+	int lenX = 870;//バナーのX移動
+	DrawExtendGraph(lenX, -135, lenX + 490, 200, bImage_, TRUE);//バナー
 
-		DrawGraph((i * MISSILE_SIZE) + 180, 10, mImage_, TRUE);
+	for (int i = 0; i < currentNum_; i++) {
+		DrawGraph((i * MISSILE_SIZE) + lenX + 65, 10, mImage_, TRUE);
 	}
 
 	//ライフとライフの下に黒くしたライフを描画
@@ -800,6 +765,9 @@ void Player::SetGravity(float _gravity)
 
 void Player::Reload()
 {
+	int x = (int)transform_.position_.x;
+	int y = (int)transform_.position_.y;
+
 	//インターバルを超えたら一弾補充
 	/*if (reloadTime_ > INTERVAL) {
 		if (currentNum_ != MAX_BULLET) {
@@ -811,10 +779,18 @@ void Player::Reload()
 
 	//インターバルを超えたら、全部補充
 	reloadTime_ += Time::DeltaTime();
+	ReloadGauge* RG = GetParent()->FindGameObject<ReloadGauge>();
+	if (RG == nullptr) {
+		RG = Instantiate<ReloadGauge>(GetParent());
+	}
+	RG->SetPosition(x, y);
+	RG->SetProgress(reloadTime_ / INTERVAL);
+
 	if (reloadTime_ > INTERVAL) {
 		currentNum_ = MAX_BULLET;
 		reloading_ = false;
 		reloadTime_ = 0.0f;
+		RG->KillMe();
 	}
 }
 
