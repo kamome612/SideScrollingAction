@@ -267,7 +267,7 @@ void Player::Update()
 		}
 	}
 
-	//ミサイルアイテム都の当たり判定
+	//ミサイルアイテムとの当たり判定
 	std::list<MissileItem*> pMissileItem = GetParent()->FindGameObjects<MissileItem>();
 	for (MissileItem* pMissileItem : pMissileItem) {
 		if (pMissileItem->CollideCircle(colX, colY, colR)) {
@@ -332,11 +332,6 @@ void Player::Update()
 		x = 3600;
 		cam->SetValueX((int)transform_.position_.x - x);
 	}*/
-
-	//if (transform_.position_.y <= 0) {
-	//	jumpSpeed_ = 0;
-	//	//transform_.position_.y = 1;
-	//}
 	
 	//リロード中なら
 	if (reloading_) {
@@ -523,7 +518,7 @@ void Player::UpdateMove()
 	if (onGround_) {
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
+			jumpSpeed_ = -sqrtf(2 * (gravity_/90.0f)*JUMP_HEIGHT);
 			onGround_ = false;//地面にいない
 		}
 	}
@@ -572,7 +567,10 @@ void Player::UpdateMove()
 
 	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
-
+	if (transform_.position_.y <= 0) {
+		transform_.position_.y = 0;
+		jumpSpeed_ = 0;
+	}
 	//ミサイル攻撃(横向き)
 	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
 		if (!reloading_) {
