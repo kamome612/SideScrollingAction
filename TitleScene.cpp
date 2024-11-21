@@ -2,7 +2,8 @@
 #include "Engine/Scenemanager.h"
 
 TitleScene::TitleScene(GameObject* parent)
-	:GameObject(parent,"TitleScene"),tPict_(-1),select_(0)
+	:GameObject(parent,"TitleScene"),tPict_(-1),select_(0),
+	 prevUpKey_(false),prevDownKey_(false),prevEnterKey_(false)
 {
 }
 
