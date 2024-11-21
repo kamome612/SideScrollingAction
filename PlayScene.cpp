@@ -10,7 +10,7 @@
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
-	                                ,mapNo_(-1)
+	                                ,mapNo_(-1),prevRightKey_(false),prevLeftKey_(false)
 {
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	prevEnterKey_ = scenemanager->keyFlag_;

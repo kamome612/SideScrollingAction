@@ -80,8 +80,12 @@ private:
     bool getShield_;       //シールド持ってるかどうか
     bool getMissileItem_;  //ミサイルアイテムを持ってるかどうか
     float itemTime_;         //ミサイルアイテムの経過時間
-    float iTime_;
+    float iTime_;            //ミサイルアイテム用のアニメーションタイム
     int mAnimFrame_;       //ミサイルアイコン用のフレーム
+
+    //ちょっとfps確認用
+    int fps_;
+    float fpsTimer_;
 
     enum State {
         S_Normal = 0, //通常時
