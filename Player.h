@@ -82,8 +82,6 @@ private:
     float itemTime_;         //ミサイルアイテムの経過時間
     float iTime_;            //ミサイルアイテム用のアニメーションタイム
     int mAnimFrame_;       //ミサイルアイコン用のフレーム
-    float jumpTime_;       //ジャンプの時間
-    float jumpHeight_;     //ジャンプの高さ
 
     //ちょっとfps確認用
     int fps_;
