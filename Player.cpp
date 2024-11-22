@@ -19,8 +19,8 @@ namespace {
 	const int MAP_HEIGHT = 720;   //高さ
 	const float ROBO_WIDTH = 48;  //キャラの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
-	const float INIT_JUMP_HEIGHT = 36;//ジャンプの高さ
-	const float INIT_GRAVITY = 0.98; //重力
+	const float INIT_JUMP_HEIGHT = 192;//ジャンプの高さ
+	const float INIT_GRAVITY = 9.8 / 90.0f; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
 	const int SPEED = 200;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
@@ -524,14 +524,14 @@ void Player::UpdateMove()
 		jumpTime_ = 0.0f;
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -sqrtf(2 * (gravity_)*jumpHeight_);
+			jumpSpeed_ = -sqrtf(2 * (gravity_)*INIT_JUMP_HEIGHT);
 			onGround_ = false;//地面にいない
 		}
 	}
 
 	//ジャンプの時と降りてる時のアニメーションの変更
 	if (!onGround_) {
-		jumpTime_ += Time::DeltaTime();
+		//jumpTime_ += Time::DeltaTime();
 		if (jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
 			if (prevMoveKey_ == 0) {//右向きなら
 				animType_ = 2;
@@ -575,16 +575,14 @@ void Player::UpdateMove()
 	}
 	//jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
 	//transform_.position_.y += jumpSpeed_; //座標 += 速度
-	jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
+	//jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
+	//transform_.position_.y += jumpSpeed_; //座標 += 速度
+	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	//ジャンプでマップ外にでないように
 	if (transform_.position_.y <= 0) {
 		transform_.position_.y = 0;
-		jumpSpeed_ = 0;
-	}
-	else if (onGround_ && transform_.position_.y > ground_) {
-		transform_.position_.y = ground_;
 		jumpSpeed_ = 0;
 	}
 
@@ -661,10 +659,11 @@ void Player::UpdateAttack()
 		time_ = 0.0f;
 	}
 
-	if (!onGround_) {
+	/*if (!onGround_) {
 		jumpTime_ += Time::DeltaTime();
-	}
-	jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
+	}*/
+	//jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
+	jumpSpeed_ += gravity_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 }
 
