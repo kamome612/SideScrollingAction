@@ -125,12 +125,12 @@ void Player::Update()
 		return;           //なにもしない
 
 	//fps確認用
-	if (fpsTimer_ >= 1.0f) {
+	/*if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
 		fps_ = 0;
 	}
 	fpsTimer_ += Time::DeltaTime();
-	fps_++;
+	fps_++;*/
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
@@ -766,7 +766,7 @@ void Player::Draw()
 	}
 
 	//fps描画
-	DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
+	//DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
 }
 
 void Player::SetPosition(float _x, float _y)
