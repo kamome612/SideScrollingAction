@@ -19,8 +19,8 @@ namespace {
 	const int MAP_HEIGHT = 720;   //高さ
 	const float ROBO_WIDTH = 48;  //キャラの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
-	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
-	const float INIT_GRAVITY = 9.8; //重力
+	const float INIT_JUMP_HEIGHT = 36;//ジャンプの高さ
+	const float INIT_GRAVITY = 0.98; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
 	const int SPEED = 200;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
@@ -45,7 +45,7 @@ Player::Player(GameObject* parent)
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
 	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
 	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f),
-    fps_(0), fpsTimer_(0.0f)
+    fps_(0), fpsTimer_(0.0f),jumpTime_(0.0f),jumpHeight_(INIT_JUMP_HEIGHT)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -114,23 +114,23 @@ void Player::Initialize()
 	//ミサイルアイテム所持
 	iImage_ = LoadGraph("Assets\\Image\\Missile_Icon.png");
 	assert(iImage_ > 0);
-
 }
 
 void Player::Update()
 {
+	jumpHeight_ = INIT_JUMP_HEIGHT * (INIT_GRAVITY / gravity_);
 	//プレイシーンから動いていいのかどうかを確認する
 	PlayScene* scene = dynamic_cast<PlayScene*>(GetParent());
 	if (!scene->canMove())//動いちゃダメの場合
 		return;           //なにもしない
 
 	//fps確認用
-	/*if (fpsTimer_ >= 1.0f) {
+	if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
 		fps_ = 0;
 	}
 	fpsTimer_ += Time::DeltaTime();
-	fps_++;*/
+	fps_++;
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
@@ -491,15 +491,18 @@ void Player::UpdateMove()
 	int hitX = transform_.position_.x + CHIP_SIZE / 15 * 7;
 	int hitY = transform_.position_.y + CHIP_SIZE / 4;
 	if (pStage != nullptr) {
-	    pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
+		pushT = pStage->CollisionRight(hitX, hitY);//右側の当たり判定
 		hitY = transform_.position_.y + CHIP_SIZE - 1;
 		pushB = pStage->CollisionRight(hitX, hitY);
 		hitY = transform_.position_.y + CHIP_SIZE / 2;
 		pushM = pStage->CollisionRight(hitX, hitY);
 		push = max(pushT, pushB);
 		push = max(push, pushM);
-		transform_.position_.x -= push;//のめりこんでる分戻す
+		if (push >= 1) {
+			transform_.position_.x -= push;//のめりこんでる分戻す
+		}
 	}
+
 	//新・左側のステージとの当たり判定
 	hitX = transform_.position_.x + CHIP_SIZE / 7;
 	hitY = hitY = transform_.position_.y + CHIP_SIZE / 4;
@@ -511,66 +514,80 @@ void Player::UpdateMove()
 		pushM = pStage->CollisionLeft(hitX, hitY);
 		push = max(pushT, pushB);
 		push = max(push, pushM);
-		transform_.position_.x += push;//のめりこんでる分戻す
+		if (push >= 1) {
+			transform_.position_.x += push;//のめりこんでる分戻す
+		}
 	}
 
     //地面にいるか
 	if (onGround_) {
+		jumpTime_ = 0.0f;
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -sqrtf(2 * (gravity_/90.0f)*JUMP_HEIGHT);
+			jumpSpeed_ = -sqrtf(2 * (gravity_)*jumpHeight_);
 			onGround_ = false;//地面にいない
 		}
 	}
 
 	//ジャンプの時と降りてる時のアニメーションの変更
-	if (!onGround_ && jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
-		if (prevMoveKey_ == 0) {//右向きなら
-			animType_ = 2;
-			if (time_ > 0.5) {
-				animFrame_ = 1;
+	if (!onGround_) {
+		jumpTime_ += Time::DeltaTime();
+		if (jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
+			if (prevMoveKey_ == 0) {//右向きなら
+				animType_ = 2;
+				if (time_ > 0.5) {
+					animFrame_ = 1;
+				}
+				else {
+					animFrame_ = 0;
+				}
 			}
-			else {
-				animFrame_ = 0;
+			else if (prevMoveKey_ == 1) {//左向きなら
+				animType_ = 12;
+				if (time_ > 0.5) {
+					animFrame_ = 2;
+				}
+				else {
+					animFrame_ = 3;
+				}
 			}
 		}
-		else if (prevMoveKey_ == 1) {//左向きなら
-			animType_ = 12;
-			if (time_ > 0.5) {
-				animFrame_ = 2;
+		else if (jumpSpeed_ >= 0) {//地面にいなくて、ジャンプで下がっているなら
+			if (prevMoveKey_ == 0) {//右向きなら
+				animType_ = 2;
+				if (time_ > 0.5) {
+					animFrame_ = 3;
+				}
+				else {
+					animFrame_ = 2;
+				}
 			}
-			else {
-				animFrame_ = 3;
+			else if (prevMoveKey_ == 1) {//左向きなら
+				animType_ = 12;
+				if (time_ > 0.5) {
+					animFrame_ = 0;
+				}
+				else {
+					animFrame_ = 1;
+				}
 			}
 		}
 	}
-	else if (!onGround_ && jumpSpeed_ >= 0) {//地面にいなくて、ジャンプで下がっているなら
-		if (prevMoveKey_ == 0) {//右向きなら
-			animType_ = 2;
-			if (time_ > 0.5) {
-				animFrame_ = 3;
-			}
-			else {
-				animFrame_ = 2;
-			}
-		}
-		else if (prevMoveKey_ == 1) {//左向きなら
-			animType_ = 12;
-			if (time_ > 0.5) {
-				animFrame_ = 0;
-			}
-			else {
-				animFrame_ = 1;
-			}
-		}
-	}
-
-	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
+	//jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
+	//transform_.position_.y += jumpSpeed_; //座標 += 速度
+	jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
+
+	//ジャンプでマップ外にでないように
 	if (transform_.position_.y <= 0) {
 		transform_.position_.y = 0;
 		jumpSpeed_ = 0;
 	}
+	else if (onGround_ && transform_.position_.y > ground_) {
+		transform_.position_.y = ground_;
+		jumpSpeed_ = 0;
+	}
+
 	//ミサイル攻撃(横向き)
 	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
 		if (!reloading_) {
@@ -644,7 +661,10 @@ void Player::UpdateAttack()
 		time_ = 0.0f;
 	}
 
-	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
+	if (!onGround_) {
+		jumpTime_ += Time::DeltaTime();
+	}
+	jumpSpeed_ += gravity_ * jumpTime_;//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
 }
 
@@ -746,7 +766,7 @@ void Player::Draw()
 	}
 
 	//fps描画
-	//DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
+	DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
 }
 
 void Player::SetPosition(float _x, float _y)

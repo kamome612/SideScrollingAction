@@ -229,10 +229,10 @@ void Stage::StageSet()
 				switch (mapNo_)
 				{
 				case 2:
-					sPlayer->SetGravity(1.62);
+					sPlayer->SetGravity(0.162);
 					break;
 				case 3:
-					sPlayer->SetGravity(3.71);
+					sPlayer->SetGravity(0.371);
 					break;
 				default:
 					break;
