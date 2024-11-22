@@ -16,7 +16,7 @@ namespace {
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ƒWƒƒƒ“ƒv‚Ì‚‚³
 	const float INIT_GRAVITY = 9.8;
 	const float MAX_POS = 400;
-	const int SPEED = 150;
+	const int SPEED = 250;
 	//d—Íƒƒ‚:Œ...1.62,‰Î¯...3.71
 }
 

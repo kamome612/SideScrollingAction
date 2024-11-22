@@ -22,7 +22,7 @@ namespace {
 	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
 	const float INIT_GRAVITY = 9.8; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
-	const int SPEED = 200;    //スピード
+	const int SPEED = 250;    //スピード
 	const int R_MARGIN = 24;    //プレイヤーのチップの余白
 	const int L_MARGIN = 1;
 	const int IMAGE_SIZE = 64;//体力画像サイズ
@@ -30,7 +30,7 @@ namespace {
 	const int MISSILE_SIZE = 30;   //ミサイル画像サイズ
 	const float FINV_TIME = 1.0f;  //無敵が終わる時間
 	const int MAX_BULLET = 10;     //ミサイルの発射可能数
-	const float INTERVAL = 5.0f;   //リロード時間
+	const float INTERVAL = 3.0f;   //リロード時間
 	const int MAX_X = 7680;        //X座標のマックス
 	const float FIN_ITEM_TIME = 10.0f; //ミサイルアイテムが終わる時間
 
@@ -45,7 +45,7 @@ Player::Player(GameObject* parent)
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
 	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
 	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f),
-    fps_(0), fpsTimer_(0.0f)
+    fps_(0), fpsTimer_(0.0f),fImage_(-1)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -83,6 +83,10 @@ Player::~Player()
 		DeleteGraph(iImage_);
 		iImage_ = -1;
 	}
+	if (fImage_ > 0) {
+		DeleteGraph(fImage_);
+		fImage_ = -1;
+	}
 }
 
 void Player::Initialize()
@@ -114,6 +118,10 @@ void Player::Initialize()
 	//ミサイルアイテム所持
 	iImage_ = LoadGraph("Assets\\Image\\Missile_Icon.png");
 	assert(iImage_ > 0);
+
+	//ライフバナー
+	fImage_ = LoadGraph("Assets\\Image\\LifeFrame.png");
+	assert(fImage_ > 0);
 
 }
 
@@ -267,7 +275,7 @@ void Player::Update()
 		}
 	}
 
-	//ミサイルアイテム都の当たり判定
+	//ミサイルアイテムとの当たり判定
 	std::list<MissileItem*> pMissileItem = GetParent()->FindGameObjects<MissileItem>();
 	for (MissileItem* pMissileItem : pMissileItem) {
 		if (pMissileItem->CollideCircle(colX, colY, colR)) {
@@ -734,22 +742,31 @@ void Player::Draw()
 		DrawGraph((i * MISSILE_SIZE) + lenX + 65, 10, mImage_, TRUE);
 	}
 
+	//ライフの枠
+	int lenF = -120;//x移動
+	DrawExtendGraph(lenF, -175, lenF + 510, 245, fImage_, TRUE);
+
 	//ライフとライフの下に黒くしたライフを描画
+	int lenYff = 95;//ハートフレームだけのx移動
+	int lenY = 36;   //Y移動
 	for (int j = 0; j < 3; j++) {
-		DrawGraph(IMAGE_SIZE * j, 0, dImage_, TRUE);
+		//DrawGraph((IMAGE_SIZE * j) + 40, 30, dImage_, TRUE);
+		DrawExtendGraph((IMAGE_SIZE * j) + lenYff, lenY, (IMAGE_SIZE * j) + lenYff - 60, lenY + 45, dImage_, TRUE);
 	}
+
 	for (int i = 0; i < pLife_; i++) {
-		DrawGraph(IMAGE_SIZE * i, 0, lImage_, TRUE);
+		//DrawGraph((IMAGE_SIZE * i) + 40, 30, lImage_, TRUE);
+		DrawExtendGraph((IMAGE_SIZE * i) + 100, lenY, (IMAGE_SIZE * i) - 40, lenY + 45, lImage_, TRUE);
 	}
 
 	//シールドのアイコン表示位置
 	if (getShield_ == true) {
-		DrawGraph(10, 80, sImage_, TRUE);
+		DrawGraph(10, 100, sImage_, TRUE);
 	}
 
 	//ミサイルアイテムのアイコン表示位置
 	if (getMissileItem_ == true) {
-		DrawRectGraph(10, 160, mAnimFrame_ * IMAGE_SIZE, 0, IMAGE_SIZE, IMAGE_SIZE, iImage_, TRUE);
+		DrawRectGraph(10, 180, mAnimFrame_ * IMAGE_SIZE, 0, IMAGE_SIZE, IMAGE_SIZE, iImage_, TRUE);
 	}
 
 	//fps描画

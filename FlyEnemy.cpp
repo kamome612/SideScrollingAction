@@ -12,7 +12,7 @@ namespace {
 	static const int SCREEN_WIDTH = 1280;
 	const XMFLOAT3 INIT_POS = { 0,0,0 };//最初の位置
 	const float MAX_POS = 400;
-	const int FLY_SPEED = 115;//飛ぶスピード
+	const int FLY_SPEED = 175;//飛ぶスピード
 	const int FLY_HEIGHT =300;//飛ぶ高さ
 	const float MOVE_INTERVAL = 2.0f;//上下入れ替え時間
 	const int X_MARGIN = 24;//Xの余白
@@ -144,7 +144,7 @@ void FlyEnemy::UpdateNormal()
 
 	//上下入れ替え時間の計測と入れ替えの判定（地面に当たった時も入れ替える）
 	moveTime_ += Time::DeltaTime();
-	if (moveTime_ >= MOVE_INTERVAL || transform_.position_.y <= 0) {
+	if (moveTime_ >= MOVE_INTERVAL || transform_.position_.y < 0) {
 		moveTime_ = 0.0f;
 		moveDirection_ *= -1;
 	}
@@ -277,6 +277,9 @@ void FlyEnemy::UpdateAttack()
 
 		transform_.position_.x += moveX;
 		transform_.position_.y += moveY;
+		if (transform_.position_.y < 0) {
+			transform_.position_.y = 0;
+		}
 	}
 	else {
 		//視界外に出たらS_Normalに

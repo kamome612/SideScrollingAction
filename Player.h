@@ -60,6 +60,7 @@ private:
     int bImage_; //弾表示のバナー
     int sImage_; //シールド持ってる時の画像
     int iImage_; //ミサイルアイテムの画像
+    int fImage_;         //ライフバナー
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ

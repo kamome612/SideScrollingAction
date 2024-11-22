@@ -69,8 +69,8 @@ void AttackSkill::Update()
 
 			//弾が当たったらランダムでアイテムをドロップ
 			//ここをいじって確率を変える。
-			int type = rand() % 5;
-			if (type == 1) {
+			int type = rand() % 10;
+			if (type == 1 || type == 5) {
 				Health* pHealth = Instantiate<Health>(GetParent());
 				pHealth->SetPosition(transform_.position_.x, transform_.position_.y);
 			}
@@ -91,10 +91,18 @@ void AttackSkill::Update()
 			fEnemy->KillMe();
 			//弾が当たったらランダムでアイテムをドロップ
 			// //ここをいじって確率を変える。
-			int type = rand() % 3;
+			int type = rand() % 15;
 			if (type == 0) {
 				MissileItem* pMissileItem = Instantiate<MissileItem>(GetParent());
 				pMissileItem->SetPosition(transform_.position_.x, transform_.position_.y);
+			}
+			if (type == 1 || type == 5) {
+				Health* pHealth = Instantiate<Health>(GetParent());
+				pHealth->SetPosition(transform_.position_.x, transform_.position_.y);
+			}
+			if (type == 2) {
+				Shield* pShield = Instantiate<Shield>(GetParent());
+				pShield->SetPosition(transform_.position_.x, transform_.position_.y);
 			}
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
