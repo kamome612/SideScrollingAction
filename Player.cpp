@@ -19,7 +19,9 @@ namespace {
 	const int MAP_HEIGHT = 720;   //高さ
 	const float ROBO_WIDTH = 48;  //キャラの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
-	const float JUMP_HEIGHT = 64.0f * 3.0f;//ジャンプの高さ
+	//const float JUMP_HEIGHT = 64.0f * 2.5f;//ジャンプの高さ
+	const float JUMP_HEIGHT = 1.27f;
+	const float JUMP_SPEED = 10;
 	const float INIT_GRAVITY = 9.8; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
 	const int SPEED = 250;    //スピード
@@ -45,7 +47,7 @@ Player::Player(GameObject* parent)
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
 	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
 	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f),
-    fps_(0), fpsTimer_(0.0f),fImage_(-1)
+    fps_(0), fpsTimer_(0.0f),fImage_(-1),canJump_(true)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -531,8 +533,10 @@ void Player::UpdateMove()
 	if (onGround_) {
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
+			//jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
+			jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
 			onGround_ = false;//地面にいない
+			canJump_ = false;
 		}
 	}
 
@@ -578,14 +582,27 @@ void Player::UpdateMove()
 		}
 	}
 
-	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
-	transform_.position_.y += jumpSpeed_; //座標 += 速度
+	//jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
+	//transform_.position_.y += jumpSpeed_; //座標 += 速度
 	
+	jumpSpeed_ = jumpSpeed_ + JUMP_SPEED * Time::DeltaTime();
+	transform_.position_.y += jumpSpeed_;
+
+	//if (!canJump_ && transform_.position_.y >= ground_ - JUMP_HEIGHT) {
+	//	moveY = jumpSpeed_ + JUMP_SPEED * Time::DeltaTime();//速度 += 重力
+	//}
+	//else {
+	//	canJump_ = true;
+	//	moveY = jumpSpeed_ + JUMP_SPEED * Time::DeltaTime();
+	//}
+	//transform_.position_.y += moveY; //座標 += 速度
+
 	//ジャンプでマップ外にでないように
 	if (transform_.position_.y <= 0) {
 		transform_.position_.y = 0;
 		jumpSpeed_ = 0;
 	}
+
 	//ミサイル攻撃(横向き)
 	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
 		if (!reloading_) {

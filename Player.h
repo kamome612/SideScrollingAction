@@ -60,7 +60,7 @@ private:
     int bImage_; //弾表示のバナー
     int sImage_; //シールド持ってる時の画像
     int iImage_; //ミサイルアイテムの画像
-    int fImage_;         //ライフバナー
+    int fImage_;      //ライフバナー
     float gravity_;   //重力
     float jumpSpeed_; //ジャンプの速さ
     float ground_;    //地面の高さ
@@ -80,9 +80,10 @@ private:
     bool reloading_;       //リロード中か
     bool getShield_;       //シールド持ってるかどうか
     bool getMissileItem_;  //ミサイルアイテムを持ってるかどうか
-    float itemTime_;         //ミサイルアイテムの経過時間
-    float iTime_;            //ミサイルアイテム用のアニメーションタイム
+    float itemTime_;       //ミサイルアイテムの経過時間
+    float iTime_;          //ミサイルアイテム用のアニメーションタイム
     int mAnimFrame_;       //ミサイルアイコン用のフレーム
+    bool canJump_;
 
     //ちょっとfps確認用
     int fps_;
