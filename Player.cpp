@@ -133,12 +133,12 @@ void Player::Update()
 		return;           //なにもしない
 
 	//fps確認用
-	/*if (fpsTimer_ >= 1.0f) {
+	if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
 		fps_ = 0;
 	}
 	fpsTimer_ += Time::DeltaTime();
-	fps_++;*/
+	fps_++;
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
@@ -531,7 +531,7 @@ void Player::UpdateMove()
 	if (onGround_) {
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
+			jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
 			onGround_ = false;//地面にいない
 		}
 	}
@@ -580,7 +580,7 @@ void Player::UpdateMove()
 
 	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	transform_.position_.y += jumpSpeed_; //座標 += 速度
-
+	
 	//ジャンプでマップ外にでないように
 	if (transform_.position_.y <= 0) {
 		transform_.position_.y = 0;
@@ -770,7 +770,7 @@ void Player::Draw()
 	}
 
 	//fps描画
-	//DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
+	DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
 }
 
 void Player::SetPosition(float _x, float _y)
