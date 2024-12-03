@@ -37,6 +37,10 @@ private:
 	int mapNo_;  //ステージを指定するときに使う
 	bool prevRightKey_;
 	bool prevLeftKey_;
+	int sHandle_; //選択音ハンドル
+	int eHandle_; //決定音ハンドル
+	int rHandle_; //戻り音ハンドル
+	int cHandle_; //クリア音ハンドル
 
 	void UpdateSelect();
 	void UpdateReady();

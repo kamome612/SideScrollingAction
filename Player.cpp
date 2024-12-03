@@ -47,7 +47,8 @@ Player::Player(GameObject* parent)
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
 	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
 	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f),
-    fps_(0), fpsTimer_(0.0f),fImage_(-1),canJump_(true)
+    fps_(0), fpsTimer_(0.0f),fImage_(-1),canJump_(true),eSound_(-1),
+	mSound_(-1),rSound_(-1), SEJump_(-1), SEItem_(-1), SEDamage_(-1)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -125,6 +126,29 @@ void Player::Initialize()
 	fImage_ = LoadGraph("Assets\\Image\\LifeFrame.png");
 	assert(fImage_ > 0);
 
+	//爆発音のロード
+	eSound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
+	assert(eSound_ > 0);
+
+	//ミサイル音のロード
+	mSound_ = LoadSoundMem("Assets/Sound/Missile.mp3");
+	assert(mSound_ > 0);
+
+	//リロード音のロード
+	rSound_ = LoadSoundMem("Assets/Sound/Reload.mp3");
+	assert(rSound_ > 0);
+
+	//ジャンプ音のロード
+	SEJump_ = LoadSoundMem("Assets\\Sound\\jump.mp3");
+	assert(SEJump_ > 0);
+
+	//アイテム取得の効果音ロード
+	SEItem_ = LoadSoundMem("Assets\\Sound\\Item.mp3");
+	assert(SEItem_ > 0);
+
+	//ダメージ音のロード
+	SEDamage_ = LoadSoundMem("Assets\\Sound\\damage.mp3");
+	assert(SEDamage_ > 0);
 }
 
 void Player::Update()
@@ -220,7 +244,9 @@ void Player::Update()
 				hitFlag_ = true;
 				getShield_ = false;
 			}
-
+			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
+			// 音量の設定
+			ChangeVolumeSoundMem(255 * 50 / 100, mSound_);
 		}
 	}
 
@@ -236,6 +262,7 @@ void Player::Update()
 					getShield_ = false;
 				}
 				hitFlag_ = true;
+				PlaySoundMem(SEDamage_, DX_PLAYTYPE_BACK);
 			}
 		}
 	}
@@ -264,6 +291,7 @@ void Player::Update()
 			if (pLife_ < 3) {
 				pLife_ += 1;
 			}
+			PlaySoundMem(SEItem_, DX_PLAYTYPE_BACK);
 			pHealth->KillMe();
 		}
 	}
@@ -273,6 +301,7 @@ void Player::Update()
 	for (Shield* pShield : pShield) {
 		if (pShield->CollideCircle(colX, colY, colR)) {
 			getShield_ = true;
+			PlaySoundMem(SEItem_, DX_PLAYTYPE_BACK);
 			pShield->KillMe();
 		}
 	}
@@ -283,6 +312,7 @@ void Player::Update()
 		if (pMissileItem->CollideCircle(colX, colY, colR)) {
 			getMissileItem_ = true;
 			currentNum_ = MAX_BULLET;
+			PlaySoundMem(SEItem_, DX_PLAYTYPE_BACK);
 			pMissileItem->KillMe();
 		}
 	}
@@ -535,6 +565,7 @@ void Player::UpdateMove()
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
 			//jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
 			jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
+			PlaySoundMem(SEJump_, DX_PLAYTYPE_BACK);
 			onGround_ = false;//地面にいない
 			canJump_ = false;
 		}
@@ -606,6 +637,9 @@ void Player::UpdateMove()
 	//ミサイル攻撃(横向き)
 	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {//攻撃のキーを押すのと、残弾があるなら
 		if (!reloading_) {
+			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
+			// 音量の設定
+			ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
 			ReadyAttack(isTypeA);//弾の準備
 		}
 	}
@@ -617,6 +651,9 @@ void Player::UpdateMove()
 	//ミサイル攻撃(斜め前向き)
 	if ((CheckHitKey(KEY_INPUT_K) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {//斜め前に飛ばす
 		if (!reloading_) {
+			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
+			// 音量の設定
+			ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
 			ReadyAttack(isTypeB);//弾の準備
 		}
 	}
@@ -827,6 +864,9 @@ void Player::Reload()
 
 	if (reloadTime_ > INTERVAL) {
 		currentNum_ = MAX_BULLET;
+		PlaySoundMem(rSound_, DX_PLAYTYPE_BACK);
+		// 音量の設定
+		ChangeVolumeSoundMem(255 * 50 / 100, rSound_);
 		reloading_ = false;
 		reloadTime_ = 0.0f;
 		RG->KillMe();

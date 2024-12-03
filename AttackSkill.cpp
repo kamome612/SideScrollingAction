@@ -57,6 +57,11 @@ void AttackSkill::Update()
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x-32.0, transform_.position_.y-64.0);
+			Sound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
+			assert(Sound_ != -1);
+			PlaySoundMem(Sound_, DX_PLAYTYPE_BACK);
+			// âπó ÇÃê›íË
+			ChangeVolumeSoundMem(255 * 50 / 100, Sound_);
 			KillMe();
 		}
 	}
@@ -80,6 +85,11 @@ void AttackSkill::Update()
 			}
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
+			Sound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
+			assert(Sound_ != -1);
+			PlaySoundMem(Sound_, DX_PLAYTYPE_BACK);
+			// âπó ÇÃê›íË
+			ChangeVolumeSoundMem(255 * 30 / 100, Sound_);
 			KillMe();
 		}
 	}
@@ -106,6 +116,11 @@ void AttackSkill::Update()
 			}
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
+			Sound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
+			assert(Sound_ != -1);
+			PlaySoundMem(Sound_, DX_PLAYTYPE_BACK);
+			// âπó ÇÃê›íË
+			ChangeVolumeSoundMem(255 * 30 / 100, Sound_);
 			KillMe();
 		}
 	}

@@ -84,6 +84,12 @@ private:
     float iTime_;          //ミサイルアイテム用のアニメーションタイム
     int mAnimFrame_;       //ミサイルアイコン用のフレーム
     bool canJump_;
+    int eSound_;     //爆発音
+    int mSound_;     //ミサイル音
+    int rSound_;     //リロード音
+    int SEJump_;     //ジャンプ効果音
+    int SEItem_;     //アイテム取得効果音
+    int SEDamage_;   //ダメージ音
 
     //ちょっとfps確認用
     int fps_;

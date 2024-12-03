@@ -24,5 +24,9 @@ private:
 	bool prevUpKey_;
 	bool prevDownKey_;
 	bool prevEnterKey_;
+	int sHandle_; //選択音ハンドル
+	int eHandle_; //決定音ハンドル
+	int rHandle_; //戻り音ハンドル
+	bool SoundFlag_; //サウンドがなっているか
 };
 

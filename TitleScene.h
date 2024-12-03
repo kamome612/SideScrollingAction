@@ -26,5 +26,9 @@ private:
 	bool prevUpKey_;    //前フレームの上キー状態
 	bool prevDownKey_;  //前フレームの下キー状態
 	bool prevEnterKey_; //前フレームの決定キー状態
+	int sHandle_; //選択音ハンドル
+	int eHandle_; //決定音ハンドル
+	int rHandle_; //戻り音ハンドル
+	bool SoundFlag_;//サウンドがなっているか
 };
 

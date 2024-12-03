@@ -28,5 +28,6 @@ private:
     int aImage_;
     float BulletTime_;
     float angle_;
+    int Sound_;
 };
 

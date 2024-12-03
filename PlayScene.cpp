@@ -30,6 +30,13 @@ void PlayScene::Initialize()
 	//Player* pPlayer = Instantiate<Player>(this);
 	//pStage->StageSet();
 	//Instantiate<Banner>(this);
+	sHandle_ = LoadSoundMem("Assets/Sound/SelectSound.mp3");
+	eHandle_ = LoadSoundMem("Assets/Sound/EnterSound.mp3");
+	cHandle_ = LoadSoundMem("Assets/Sound/ClearSound2.mp3");
+	ChangeVolumeSoundMem(255 * 70 / 100, sHandle_);
+	ChangeVolumeSoundMem(255 * 70 / 100, eHandle_);
+	ChangeVolumeSoundMem(255 * 30 / 100, cHandle_);
+	//rHandle_ = LoadSoundMem("Assets/Sound/ReturnSound.mp3");
 }
 
 void PlayScene::Update()
@@ -79,6 +86,7 @@ void PlayScene::UpdateSelect()
 			|| input.X >= 500 || input.POV[0] == 9000) {//右を押したら
 			if (!prevRightKey_) {
 				mapNo_ += 1;
+				PlaySoundMem(sHandle_, DX_PLAYTYPE_BACK);//選択音を流す
 			}
 			prevRightKey_ = true;
 		}
@@ -91,6 +99,7 @@ void PlayScene::UpdateSelect()
 			|| input.X <= -500 || input.POV[0] == 27000) {//左を押したら
 			if (!prevLeftKey_) {
 				mapNo_ -= 1;
+				PlaySoundMem(sHandle_, DX_PLAYTYPE_BACK);//選択音を流す
 			}
 			prevLeftKey_ = true;
 		}
@@ -101,6 +110,7 @@ void PlayScene::UpdateSelect()
 	//エンターでステージを決定
 	if (CheckHitKey(KEY_INPUT_RETURN) || (input.Buttons[1] & 0x80) != 0) {
 		if (!prevEnterKey_) {
+			PlaySoundMem(eHandle_, DX_PLAYTYPE_BACK); //決定音を流す
 			StartReady();
 			prevEnterKey_ = true;
 		}
@@ -152,6 +162,7 @@ void PlayScene::StartClear()
 	state_ = S_Clear;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_Clear);
+	PlaySoundMem(cHandle_, DX_PLAYTYPE_BACK);//クリア音を流す
 	timer_ = 2.0f;
 }
 

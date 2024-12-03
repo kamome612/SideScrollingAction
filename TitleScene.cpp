@@ -3,7 +3,7 @@
 
 TitleScene::TitleScene(GameObject* parent)
 	:GameObject(parent,"TitleScene"),tPict_(-1),select_(0),
-	 prevUpKey_(false),prevDownKey_(false),prevEnterKey_(false)
+	 prevUpKey_(false),prevDownKey_(false),prevEnterKey_(false),SoundFlag_(false)
 {
 }
 
@@ -14,6 +14,11 @@ void TitleScene::Initialize()
 	assert(tPict_ >= 0);
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	prevEnterKey_ = scenemanager->keyFlag_;
+	sHandle_ = LoadSoundMem("Assets/Sound/SelectSound.mp3");
+	eHandle_ = LoadSoundMem("Assets/Sound/EnterSound.mp3");
+	ChangeVolumeSoundMem(255 * 70 / 100, sHandle_);
+	ChangeVolumeSoundMem(255 * 70 / 100, eHandle_);
+	//rHandle_ = LoadSoundMem("Assets/Sound/ReturnSound.mp3");
 }
 
 void TitleScene::Update()
@@ -28,6 +33,7 @@ void TitleScene::Update()
 			|| input.Y <= -500 || input.POV[0] == 0) {//ã‚ª‰Ÿ‚³‚ê‚½‚ç
 			if (!prevUpKey_) {
 				select_ -= 1;
+				PlaySoundMem(sHandle_, DX_PLAYTYPE_BACK);
 			}
 			prevUpKey_ = true;
 		}
@@ -40,6 +46,7 @@ void TitleScene::Update()
 			|| input.Y >= 500 || input.POV[0] == 18000) {//‰º‚ª‰Ÿ‚³‚ê‚½‚ç
 			if (!prevDownKey_) {
 				select_ += 1;
+				PlaySoundMem(sHandle_, DX_PLAYTYPE_BACK);
 			}
 			prevDownKey_ = true;
 		}
@@ -48,15 +55,22 @@ void TitleScene::Update()
 	}
 
 	//ƒGƒ“ƒ^[‚ÅŒˆ’è!
-	if (CheckHitKey(KEY_INPUT_RETURN)|| (input.Buttons[1] & 0x80) != 0) {
+	if (CheckHitKey(KEY_INPUT_RETURN) || (input.Buttons[1] & 0x80) != 0) {
+		SoundFlag_ = true;
 		if (!prevEnterKey_) {
 			SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 			switch (select_) {
 			case 0:
+				if (SoundFlag_ == true) {
+					PlaySoundMem(eHandle_, DX_PLAYTYPE_BACK);
+				}
 				pSceneManager->ChangeScene(SCENE_ID_PLAY, true);
 				break;
 			case 1:
-				pSceneManager->ChangeScene(SCENE_ID_EXPLANATION,true);
+				if (SoundFlag_ == true) {
+					PlaySoundMem(eHandle_, DX_PLAYTYPE_BACK);
+				}
+				pSceneManager->ChangeScene(SCENE_ID_EXPLANATION, true);
 				break;
 			case 2:
 				DxLib_End();
