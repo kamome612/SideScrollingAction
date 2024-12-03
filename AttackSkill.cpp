@@ -34,6 +34,10 @@ void AttackSkill::Initialize()
 	//画像のロード
 	aImage_ = LoadGraph("Assets/Image/missile.png");
 	assert(aImage_ > 0);
+	//音のロード
+	aSound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
+	assert(aSound_ != -1);
+	ChangeVolumeSoundMem(255 * 40 / 100, aSound_);
 }
 
 void AttackSkill::Update()
@@ -57,11 +61,9 @@ void AttackSkill::Update()
 			pMeteo->KillMe();
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x-32.0, transform_.position_.y-64.0);
-			Sound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
-			assert(Sound_ != -1);
-			PlaySoundMem(Sound_, DX_PLAYTYPE_BACK);
+			PlaySoundMem(aSound_, DX_PLAYTYPE_BACK);
 			// 音量の設定
-			ChangeVolumeSoundMem(255 * 50 / 100, Sound_);
+			//ChangeVolumeSoundMem(255 * 40 / 100, aSound_);
 			KillMe();
 		}
 	}
@@ -85,11 +87,9 @@ void AttackSkill::Update()
 			}
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
-			Sound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
-			assert(Sound_ != -1);
-			PlaySoundMem(Sound_, DX_PLAYTYPE_BACK);
+			PlaySoundMem(aSound_, DX_PLAYTYPE_BACK);
 			// 音量の設定
-			ChangeVolumeSoundMem(255 * 30 / 100, Sound_);
+			//ChangeVolumeSoundMem(255 * 30 / 100, aSound_);
 			KillMe();
 		}
 	}
@@ -116,11 +116,9 @@ void AttackSkill::Update()
 			}
 			Explosion* pEx = Instantiate<Explosion>(GetParent());
 			pEx->SetPosition(transform_.position_.x - 32.0f, transform_.position_.y - 64.0f);
-			Sound_ = LoadSoundMem("Assets/Sound/Explosion.mp3");
-			assert(Sound_ != -1);
-			PlaySoundMem(Sound_, DX_PLAYTYPE_BACK);
+			PlaySoundMem(aSound_, DX_PLAYTYPE_BACK);
 			// 音量の設定
-			ChangeVolumeSoundMem(255 * 30 / 100, Sound_);
+			//ChangeVolumeSoundMem(255 * 30 / 100, aSound_);
 			KillMe();
 		}
 	}

@@ -139,15 +139,15 @@ void Player::Initialize()
 	assert(rSound_ > 0);
 
 	//ジャンプ音のロード
-	SEJump_ = LoadSoundMem("Assets\\Sound\\jump.mp3");
+	SEJump_ = LoadSoundMem("Assets/Sound/jump.mp3");
 	assert(SEJump_ > 0);
 
 	//アイテム取得の効果音ロード
-	SEItem_ = LoadSoundMem("Assets\\Sound\\Item.mp3");
+	SEItem_ = LoadSoundMem("Assets/Sound/Item.mp3");
 	assert(SEItem_ > 0);
 
 	//ダメージ音のロード
-	SEDamage_ = LoadSoundMem("Assets\\Sound\\damage.mp3");
+	SEDamage_ = LoadSoundMem("Assets/Sound/damage.mp3");
 	assert(SEDamage_ > 0);
 }
 
@@ -244,9 +244,9 @@ void Player::Update()
 				hitFlag_ = true;
 				getShield_ = false;
 			}
-			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
+			PlaySoundMem(eSound_, DX_PLAYTYPE_BACK);
 			// 音量の設定
-			ChangeVolumeSoundMem(255 * 50 / 100, mSound_);
+			ChangeVolumeSoundMem(255 * 50 / 100, eSound_);
 		}
 	}
 
@@ -279,6 +279,7 @@ void Player::Update()
 					getShield_ = false;
 				}
 				hitFlag_ = true;
+				PlaySoundMem(SEDamage_, DX_PLAYTYPE_BACK);
 			}
 		}
 	}
@@ -428,6 +429,10 @@ void Player::UpdateNormal()
 	//ミサイル攻撃（横向き）
 	if ((CheckHitKey(KEY_INPUT_J) || (input.Buttons[1] & 0x80) != 0) && currentNum_ > 0) {
 		if (!reloading_) {
+			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
+			// 音量の設定
+			ChangeVolumeSoundMem(255 * 40 / 100, mSound_);
+			//ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
 			ReadyAttack(isTypeA);//弾の準備
 		}
 	}
@@ -439,6 +444,10 @@ void Player::UpdateNormal()
 	//ミサイル攻撃（斜め前向き）
 	if ((CheckHitKey(KEY_INPUT_K) || (input.Buttons[3] & 0x80) != 0) && currentNum_ > 0) {
 		if (!reloading_) {
+			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
+			// 音量の設定
+			ChangeVolumeSoundMem(255 * 40 / 100, mSound_);
+			//ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
 			ReadyAttack(isTypeB);//弾の準備
 		}
 	}
@@ -639,7 +648,8 @@ void Player::UpdateMove()
 		if (!reloading_) {
 			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
 			// 音量の設定
-			ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
+			ChangeVolumeSoundMem(255 * 40 / 100, mSound_);
+			//ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
 			ReadyAttack(isTypeA);//弾の準備
 		}
 	}
@@ -653,7 +663,8 @@ void Player::UpdateMove()
 		if (!reloading_) {
 			PlaySoundMem(mSound_, DX_PLAYTYPE_BACK);
 			// 音量の設定
-			ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
+			ChangeVolumeSoundMem(255 * 40 / 100, mSound_);
+			//ChangeVolumeSoundMem(255 * 20 / 100, mSound_);
 			ReadyAttack(isTypeB);//弾の準備
 		}
 	}
