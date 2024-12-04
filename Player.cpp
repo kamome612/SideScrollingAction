@@ -19,8 +19,7 @@ namespace {
 	const int MAP_HEIGHT = 720;   //高さ
 	const float ROBO_WIDTH = 48;  //キャラの横幅
 	const XMFLOAT3 INIT_POS = { 30,580,0 };//最初の位置
-	//const float JUMP_HEIGHT = 64.0f * 2.5f;//ジャンプの高さ
-	const float JUMP_HEIGHT = 1.27f;
+	const float JUMP_HEIGHT = 64.0f * 2.5f;//ジャンプの高さ
 	const float JUMP_SPEED = 10;
 	const float INIT_GRAVITY = 9.8; //重力
 	const float MAX_POS = 400;//カメラが動かずにいける最大の位置
@@ -47,7 +46,7 @@ Player::Player(GameObject* parent)
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
 	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
 	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f),
-    fps_(0), fpsTimer_(0.0f),fImage_(-1),canJump_(true),eSound_(-1),
+    fps_(0), fpsTimer_(0.0f),fImage_(-1),canJump_(true),eSound_(-1),jTime_(0),
 	mSound_(-1),rSound_(-1), SEJump_(-1), SEItem_(-1), SEDamage_(-1)
 {
 	//初期位置の調整
@@ -573,12 +572,14 @@ void Player::UpdateMove()
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
 			//jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
-			jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
+			//jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
 			PlaySoundMem(SEJump_, DX_PLAYTYPE_BACK);
 			onGround_ = false;//地面にいない
 			canJump_ = false;
+			jTime_ = 0;
 		}
 	}
+
 
 	//ジャンプの時と降りてる時のアニメーションの変更
 	if (!onGround_ && jumpSpeed_ < 0) {//地面にいなくてジャンプの上に行く途中なら
@@ -624,18 +625,24 @@ void Player::UpdateMove()
 
 	//jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	//transform_.position_.y += jumpSpeed_; //座標 += 速度
-	
-	jumpSpeed_ = jumpSpeed_ + JUMP_SPEED * Time::DeltaTime();
-	transform_.position_.y += jumpSpeed_;
 
-	//if (!canJump_ && transform_.position_.y >= ground_ - JUMP_HEIGHT) {
-	//	moveY = jumpSpeed_ + JUMP_SPEED * Time::DeltaTime();//速度 += 重力
-	//}
-	//else {
-	//	canJump_ = true;
-	//	moveY = jumpSpeed_ + JUMP_SPEED * Time::DeltaTime();
-	//}
-	//transform_.position_.y += moveY; //座標 += 速度
+	if (jTime_ > 1.0f) {
+		canJump_ = true;
+	}
+
+	if (jTime_ <= 1.0f && !canJump_) {
+		jTime_ += Time::DeltaTime();
+	}
+	else if(jTime_ >1.0f && jTime_ > 0) {
+		jTime_ -= Time::DeltaTime();
+	}
+	jumpSpeed_ = jTime_ * JUMP_HEIGHT;
+	if (!canJump_) {
+		transform_.position_.y = ground_ - jumpSpeed_;
+	}
+	else {
+		transform_.position_.y +=
+	}
 
 	//ジャンプでマップ外にでないように
 	if (transform_.position_.y <= 0) {
@@ -724,8 +731,8 @@ void Player::UpdateAttack()
 		time_ = 0.0f;
 	}
 
-	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
-	transform_.position_.y += jumpSpeed_; //座標 += 速度
+	//jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
+	//transform_.position_.y += jumpSpeed_; //座標 += 速度
 }
 
 void Player::UpdateDie()
@@ -836,6 +843,7 @@ void Player::Draw()
 
 	//fps描画
 	DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
+	DrawFormatString(0, 60, GetColor(0, 0, 0), "Y:%f", transform_.position_.y);
 }
 
 void Player::SetPosition(float _x, float _y)
