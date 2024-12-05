@@ -572,7 +572,8 @@ void Player::UpdateMove()
 	if (onGround_) {
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
+			//jumpSpeed_ = -6.47;
+			jumpSpeed_ = -sqrtf(2 * (gravity_ / (fps_ * 0.5))*JUMP_HEIGHT);
 			//jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
 			PlaySoundMem(SEJump_, DX_PLAYTYPE_BACK);
 			onGround_ = false;//地面にいない
