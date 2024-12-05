@@ -85,6 +85,7 @@ private:
     int mAnimFrame_;       //ミサイルアイコン用のフレーム
     bool canJump_;
     float jTime_;
+    float prevY_;
     int eSound_;     //爆発音
     int mSound_;     //ミサイル音
     int rSound_;     //リロード音

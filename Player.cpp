@@ -44,10 +44,10 @@ Player::Player(GameObject* parent)
 	animFrame_(0), prevAttackKey_(false), pLife_(3),
 	invTime_(0), hitFlag_(false), lImage_(-1), dImage_(-1), ground_(0),
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
-	bImage_(-1), reloading_(false),getShield_(false),sImage_(-1),iImage_(-1),
-	getMissileItem_(false),itemTime_(0.0f),mAnimFrame_(0),iTime_(0.0f),
-    fps_(0), fpsTimer_(0.0f),fImage_(-1),canJump_(true),eSound_(-1),jTime_(0),
-	mSound_(-1),rSound_(-1), SEJump_(-1), SEItem_(-1), SEDamage_(-1)
+	bImage_(-1), reloading_(false), getShield_(false), sImage_(-1), iImage_(-1),
+	getMissileItem_(false), itemTime_(0.0f), mAnimFrame_(0), iTime_(0.0f),
+	fps_(0), fpsTimer_(0.0f), fImage_(-1), canJump_(true), eSound_(-1), jTime_(0),
+	mSound_(-1), rSound_(-1), SEJump_(-1), SEItem_(-1), SEDamage_(-1), prevY_(0)
 {
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
@@ -573,10 +573,12 @@ void Player::UpdateMove()
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
 			//jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
 			//jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
+			jumpSpeed_ = 40;
 			PlaySoundMem(SEJump_, DX_PLAYTYPE_BACK);
 			onGround_ = false;//地面にいない
 			canJump_ = false;
 			jTime_ = 0;
+			prevY_ = transform_.position_.y;
 		}
 	}
 
@@ -622,27 +624,30 @@ void Player::UpdateMove()
 			}
 		}
 	}
-
+	jTime_ += Time::DeltaTime();
+	transform_.position_.y = 0.5 * gravity_ * jTime_ * jTime_ - jumpSpeed_ * jTime_ + prevY_;
 	//jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
 	//transform_.position_.y += jumpSpeed_; //座標 += 速度
 
-	if (jTime_ > 1.0f) {
+	/*if (jTime_ > 1.0f) {
 		canJump_ = true;
 	}
 
 	if (jTime_ <= 1.0f && !canJump_) {
 		jTime_ += Time::DeltaTime();
 	}
-	else if(jTime_ >1.0f && jTime_ > 0) {
+	else if(canJump_ && jTime_ > 0) {
 		jTime_ -= Time::DeltaTime();
 	}
 	jumpSpeed_ = jTime_ * JUMP_HEIGHT;
-	if (!canJump_) {
+	transform_.position_.y = ground_ - jumpSpeed_;*/
+
+	/*if (!canJump_) {
 		transform_.position_.y = ground_ - jumpSpeed_;
 	}
 	else {
-		transform_.position_.y +=
-	}
+		transform_.position_.y += jumpSpeed_;
+	}*/
 
 	//ジャンプでマップ外にでないように
 	if (transform_.position_.y <= 0) {
