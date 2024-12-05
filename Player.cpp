@@ -41,7 +41,7 @@ namespace {
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), pImage_(-1), gravity_(INIT_GRAVITY),
 	jumpSpeed_(0.0f), onGround_(true), time_(0.0f), animType_(0),
-	animFrame_(0), prevAttackKey_(false), pLife_(3),
+	animFrame_(0), prevAttackKey_(false), pLife_(3),fpsCount_(0),
 	invTime_(0), hitFlag_(false), lImage_(-1), dImage_(-1), ground_(0),
 	prevMoveKey_(0), currentNum_(MAX_BULLET), reloadTime_(0), mImage_(-1),
 	bImage_(-1), reloading_(false), getShield_(false), sImage_(-1), iImage_(-1),
@@ -160,10 +160,11 @@ void Player::Update()
 	//fps確認用
 	if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
-		fps_ = 0;
+		fps_ = fpsCount_;
+		fpsCount_ = 0;
 	}
 	fpsTimer_ += Time::DeltaTime();
-	fps_++;
+	fpsCount_++;
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
@@ -571,9 +572,8 @@ void Player::UpdateMove()
 	if (onGround_) {
 		//SPACEキーを押すとジャンプ
 		if (CheckHitKey(KEY_INPUT_SPACE) || (input.Buttons[0] & 0x80) != 0) {
-			//jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
+			jumpSpeed_ = -6.47;//-sqrtf(2 * (gravity_ / 90.0f)*JUMP_HEIGHT);
 			//jumpSpeed_ = -sqrtf(2 * gravity_ * JUMP_HEIGHT);
-			jumpSpeed_ = 40;
 			PlaySoundMem(SEJump_, DX_PLAYTYPE_BACK);
 			onGround_ = false;//地面にいない
 			canJump_ = false;
@@ -624,10 +624,10 @@ void Player::UpdateMove()
 			}
 		}
 	}
-	jTime_ += Time::DeltaTime();
-	transform_.position_.y = 0.5 * gravity_ * jTime_ * jTime_ - jumpSpeed_ * jTime_ + prevY_;
-	//jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
-	//transform_.position_.y += jumpSpeed_; //座標 += 速度
+	/*jTime_ += Time::DeltaTime();
+	transform_.position_.y = 0.5 * gravity_ * jTime_ * jTime_ - jumpSpeed_ * jTime_ + prevY_;*/
+	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
+	transform_.position_.y += jumpSpeed_; //座標 += 速度
 
 	/*if (jTime_ > 1.0f) {
 		canJump_ = true;

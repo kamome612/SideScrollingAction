@@ -94,6 +94,7 @@ private:
     int SEDamage_;   //ダメージ音
 
     //ちょっとfps確認用
+    int fpsCount_;
     int fps_;
     float fpsTimer_;
 
