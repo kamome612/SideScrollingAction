@@ -72,3 +72,11 @@ void SceneManager::ChangeScene(SCENE_ID next, bool tmp)
 	clearFlag_ = tmp;
 	keyFlag_ = tmp;
 }
+
+void SceneManager::ChangeScene(SCENE_ID next, bool tmp, int fps)
+{
+	nextSceneID_ = next;
+	clearFlag_ = tmp;
+	keyFlag_ = tmp;
+	fps_ = fps;
+}

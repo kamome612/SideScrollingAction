@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Engine/SceneManager.h"
 #include "Engine/time.h"
 #include "Camera.h"
 #include "Stage.h"
@@ -52,6 +53,9 @@ Player::Player(GameObject* parent)
 	//初期位置の調整
 	transform_.position_ = INIT_POS;
 	state_ = S_Normal;
+
+	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
+	fps_ = scenemanager->fps_;
 }
 
 Player::~Player()
@@ -737,8 +741,8 @@ void Player::UpdateAttack()
 		time_ = 0.0f;
 	}
 
-	//jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
-	//transform_.position_.y += jumpSpeed_; //座標 += 速度
+	jumpSpeed_ += gravity_ * 1.6 * Time::DeltaTime();//速度 += 重力
+	transform_.position_.y += jumpSpeed_; //座標 += 速度
 }
 
 void Player::UpdateDie()

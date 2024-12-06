@@ -1,9 +1,11 @@
 #include "TitleScene.h"
 #include "Engine/Scenemanager.h"
+#include "Engine/time.h"
 
 TitleScene::TitleScene(GameObject* parent)
 	:GameObject(parent,"TitleScene"),tPict_(-1),select_(0),
-	 prevUpKey_(false),prevDownKey_(false),prevEnterKey_(false),SoundFlag_(false)
+	 prevUpKey_(false),prevDownKey_(false),prevEnterKey_(false),SoundFlag_(false),
+	 fps_(0),fpsTimer_(0.0f),fpsCount_(0)
 {
 }
 
@@ -23,6 +25,15 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
+	//fps確認用
+	if (fpsTimer_ >= 1.0f) {
+		fpsTimer_ = 0.0f;
+		fps_ = fpsCount_;
+		fpsCount_ = 0;
+	}
+	fpsTimer_ += Time::DeltaTime();
+	fpsCount_++;
+
 	//コントローラの情報とる
 	DINPUT_JOYSTATE input;
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
@@ -64,7 +75,7 @@ void TitleScene::Update()
 				if (SoundFlag_ == true) {
 					PlaySoundMem(eHandle_, DX_PLAYTYPE_BACK);
 				}
-				pSceneManager->ChangeScene(SCENE_ID_PLAY, true);
+				pSceneManager->ChangeScene(SCENE_ID_PLAY, true,fps_);
 				break;
 			case 1:
 				if (SoundFlag_ == true) {

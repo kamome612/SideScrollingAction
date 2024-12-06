@@ -30,5 +30,8 @@ private:
 	int eHandle_; //決定音ハンドル
 	int rHandle_; //戻り音ハンドル
 	bool SoundFlag_;//サウンドがなっているか
+	int fps_;
+	float fpsTimer_;
+	int fpsCount_;
 };
 

@@ -20,6 +20,7 @@ class SceneManager : public GameObject
 public:
 	bool clearFlag_;
 	bool keyFlag_;
+	int fps_;
 
 	//コンストラクタ
 	//引数：parent	親オブジェクト（基本的にゲームマネージャー）
@@ -36,6 +37,9 @@ public:
 
 	//シーンの切り替え(boolも受け取れる)
 	void ChangeScene(SCENE_ID next, bool tmp);
+
+	//シーンの切り替え(intも受け取れる)
+	void ChangeScene(SCENE_ID next, bool tmp, int fps);
 
 private:
 	SCENE_ID currentSceneID_;	//現在のシーン
