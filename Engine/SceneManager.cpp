@@ -18,6 +18,7 @@ void SceneManager::Initialize()
 {
 	clearFlag_ = false;
 	keyFlag_ = false;
+	fps_ = 0;
 	//タイマーの初期化
 	Time::Init();
 	//最初のシーンを準備

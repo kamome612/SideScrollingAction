@@ -9,7 +9,7 @@
 #include <random>
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select)
+	:GameObject(parent, "PlayScene"), pPict_(-1), timer_(0.0f),state_(S_Select),fpsTimer_(0.0f)
 	                                ,mapNo_(-1),prevRightKey_(false),prevLeftKey_(false)
 {
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");

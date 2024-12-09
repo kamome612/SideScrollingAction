@@ -161,7 +161,9 @@ void Player::Update()
 	if (!scene->canMove())//動いちゃダメの場合
 		return;           //なにもしない
 
-	fps_ = scene->fps_;
+	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
+	fps_ = scenemanager->fps_;
+	
 	//fps確認用
 	/*if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
@@ -853,7 +855,7 @@ void Player::Draw()
 	}
 
 	//fps描画
-	//DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
+	DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
 	//DrawFormatString(0, 60, GetColor(0, 0, 0), "Y:%f", transform_.position_.y);
 }
 
