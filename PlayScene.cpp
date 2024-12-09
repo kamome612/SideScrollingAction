@@ -14,6 +14,7 @@ PlayScene::PlayScene(GameObject* parent)
 {
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	prevEnterKey_ = scenemanager->keyFlag_;
+	fps_ = scenemanager->fps_;
 }
 
 void PlayScene::Initialize()
@@ -33,14 +34,27 @@ void PlayScene::Initialize()
 	sHandle_ = LoadSoundMem("Assets/Sound/SelectSound.mp3");
 	eHandle_ = LoadSoundMem("Assets/Sound/EnterSound.mp3");
 	cHandle_ = LoadSoundMem("Assets/Sound/ClearSound2.mp3");
+	gHandle_ = LoadSoundMem("Assets/Sound/GameOverSound.mp3");
+	pHandle_ = LoadSoundMem("Assets/Sound/PlayScene.mp3");
 	ChangeVolumeSoundMem(255 * 70 / 100, sHandle_);
 	ChangeVolumeSoundMem(255 * 70 / 100, eHandle_);
 	ChangeVolumeSoundMem(255 * 30 / 100, cHandle_);
+	ChangeVolumeSoundMem(255 * 80 / 100, gHandle_);
+	ChangeVolumeSoundMem(255 * 75 / 100, pHandle_);
 	//rHandle_ = LoadSoundMem("Assets/Sound/ReturnSound.mp3");
 }
 
 void PlayScene::Update()
 {
+	//fps確認用
+	if (fpsTimer_ >= 1.0f) {
+		fpsTimer_ = 0.0f;
+		fps_ = fpsCount_;
+		fpsCount_ = 0;
+	}
+	fpsTimer_ += Time::DeltaTime();
+	fpsCount_++;
+
 	srand(time(NULL));
 	switch (state_) {
 	case S_Select:UpdateSelect(); break;
@@ -146,6 +160,7 @@ void PlayScene::UpdateReady()
 
 void PlayScene::StartPlay()
 {
+	PlaySoundMem(pHandle_, DX_PLAYTYPE_LOOP);//プレイ中BGMを流す
 	state_ = S_Play;
 	Banner* pBanner = FindGameObject<Banner>();
 	//Banner* pBanner = Instantiate<Banner>(this);
@@ -159,6 +174,7 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::StartClear()
 {
+	StopSoundMem(pHandle_);//プレイ中BGMを止める
 	state_ = S_Clear;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_Clear);
@@ -182,6 +198,7 @@ void PlayScene::UpdateClear()
 
 void PlayScene::StartGameOver()
 {
+	StopSoundMem(pHandle_);//プレイ中BGMを止める
 	state_ = S_GameOver;
 	Banner* pBanner = FindGameObject<Banner>();
 	pBanner->View(Banner::ViewID::V_GameOver);
@@ -196,5 +213,6 @@ void PlayScene::UpdateGameOver()
 		timer_ = 0.0f;
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_RESULT, false);
+		PlaySoundMem(gHandle_, DX_PLAYTYPE_BACK);//ゲームオーバ音を流す
 	}
 }

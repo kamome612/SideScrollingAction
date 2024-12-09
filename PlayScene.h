@@ -41,6 +41,12 @@ private:
 	int eHandle_; //決定音ハンドル
 	int rHandle_; //戻り音ハンドル
 	int cHandle_; //クリア音ハンドル
+	int gHandle_; //ゲームオーバー音ハンドル
+	int pHandle_; //ゲームプレイ音ハンドル
+
+	//ちょっとfps確認用
+	int fpsCount_;
+	float fpsTimer_;
 
 	void UpdateSelect();
 	void UpdateReady();
@@ -54,5 +60,6 @@ public:
 	void StartClear();
 	void StartGameOver();
 	bool prevEnterKey_;
+	int fps_;
 };
 

@@ -5,7 +5,7 @@
 TitleScene::TitleScene(GameObject* parent)
 	:GameObject(parent,"TitleScene"),tPict_(-1),select_(0),
 	 prevUpKey_(false),prevDownKey_(false),prevEnterKey_(false),SoundFlag_(false),
-	 fps_(0),fpsTimer_(0.0f),fpsCount_(0)
+	 fps_(0),fpsTimer_(0.0f),fpsCount_(0),tSoundFlag_(false)
 {
 }
 
@@ -18,8 +18,11 @@ void TitleScene::Initialize()
 	prevEnterKey_ = scenemanager->keyFlag_;
 	sHandle_ = LoadSoundMem("Assets/Sound/SelectSound.mp3");
 	eHandle_ = LoadSoundMem("Assets/Sound/EnterSound.mp3");
+	tHandle_ = LoadSoundMem("Assets/Sound/TitleSound.mp3");
 	ChangeVolumeSoundMem(255 * 70 / 100, sHandle_);
 	ChangeVolumeSoundMem(255 * 70 / 100, eHandle_);
+	ChangeVolumeSoundMem(255 * 80 / 100, tHandle_);
+	PlaySoundMem(tHandle_, DX_PLAYTYPE_LOOP);
 	//rHandle_ = LoadSoundMem("Assets/Sound/ReturnSound.mp3");
 }
 
@@ -76,12 +79,14 @@ void TitleScene::Update()
 					PlaySoundMem(eHandle_, DX_PLAYTYPE_BACK);
 				}
 				pSceneManager->ChangeScene(SCENE_ID_PLAY, true,fps_);
+				StopSoundMem(tHandle_);
 				break;
 			case 1:
 				if (SoundFlag_ == true) {
 					PlaySoundMem(eHandle_, DX_PLAYTYPE_BACK);
 				}
 				pSceneManager->ChangeScene(SCENE_ID_EXPLANATION, true);
+				StopSoundMem(tHandle_);
 				break;
 			case 2:
 				DxLib_End();

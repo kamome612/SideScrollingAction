@@ -161,14 +161,15 @@ void Player::Update()
 	if (!scene->canMove())//動いちゃダメの場合
 		return;           //なにもしない
 
+	fps_ = scene->fps_;
 	//fps確認用
-	if (fpsTimer_ >= 1.0f) {
+	/*if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
 		fps_ = fpsCount_;
 		fpsCount_ = 0;
 	}
 	fpsTimer_ += Time::DeltaTime();
-	fpsCount_++;
+	fpsCount_++;*/
 
 	//ステートを使って普通の状態と攻撃の状態などを呼び分ける
 	switch (state_){
