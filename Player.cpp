@@ -852,8 +852,8 @@ void Player::Draw()
 	}
 
 	//fps•`‰æ
-	DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
-	DrawFormatString(0, 60, GetColor(0, 0, 0), "Y:%f", transform_.position_.y);
+	//DrawFormatString(0, 0, GetColor(0, 0, 0), "FPS:%d", fps_);
+	//DrawFormatString(0, 60, GetColor(0, 0, 0), "Y:%f", transform_.position_.y);
 }
 
 void Player::SetPosition(float _x, float _y)
