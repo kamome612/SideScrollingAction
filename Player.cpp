@@ -464,7 +464,7 @@ void Player::UpdateNormal()
 	}
 
 	//弾のリロード
-	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)
+	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0 || currentNum_ == 0)
 	{
 		if (currentNum_ != MAX_BULLET && reloading_ != true) {
 			reloading_ = true;
@@ -694,7 +694,7 @@ void Player::UpdateMove()
 	}
 
     //弾のリロード
-	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0)
+	if (CheckHitKey(KEY_INPUT_L) || (input.Buttons[2] & 0x80) != 0 || currentNum_ == 0)
 	{
 		if (currentNum_ != MAX_BULLET && reloading_ != true) {
 			reloading_ = true;
