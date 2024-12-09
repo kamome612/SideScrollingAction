@@ -15,6 +15,7 @@ PlayScene::PlayScene(GameObject* parent)
 	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	prevEnterKey_ = scenemanager->keyFlag_;
 	fps_ = scenemanager->fps_;
+	fpsCount_ = fps_;
 }
 
 void PlayScene::Initialize()
@@ -36,20 +37,24 @@ void PlayScene::Initialize()
 	cHandle_ = LoadSoundMem("Assets/Sound/ClearSound2.mp3");
 	gHandle_ = LoadSoundMem("Assets/Sound/GameOverSound.mp3");
 	pHandle_ = LoadSoundMem("Assets/Sound/PlayScene.mp3");
+	cgHandle_ = LoadSoundMem("Assets/Sound/ooatari2.mp3");
 	ChangeVolumeSoundMem(255 * 70 / 100, sHandle_);
 	ChangeVolumeSoundMem(255 * 70 / 100, eHandle_);
 	ChangeVolumeSoundMem(255 * 30 / 100, cHandle_);
 	ChangeVolumeSoundMem(255 * 80 / 100, gHandle_);
 	ChangeVolumeSoundMem(255 * 75 / 100, pHandle_);
+	ChangeVolumeSoundMem(255 * 75 / 100, cgHandle_);
 	//rHandle_ = LoadSoundMem("Assets/Sound/ReturnSound.mp3");
 }
 
 void PlayScene::Update()
 {
+	SceneManager* scenemanager = (SceneManager*)FindObject("SceneManager");
 	//fps確認用
 	if (fpsTimer_ >= 1.0f) {
 		fpsTimer_ = 0.0f;
 		fps_ = fpsCount_;
+		scenemanager->fps_ = fps_;
 		fpsCount_ = 0;
 	}
 	fpsTimer_ += Time::DeltaTime();
@@ -189,6 +194,7 @@ void PlayScene::UpdateClear()
 		timer_ = 0.0f;
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_RESULT, true);
+		PlaySoundMem(cgHandle_, DX_PLAYTYPE_BACK);//クリアシーン音を流す
 	}
 	/*if (CheckHitKey(KEY_INPUT_R)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");

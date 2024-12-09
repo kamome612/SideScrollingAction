@@ -43,6 +43,7 @@ private:
 	int cHandle_; //クリア音ハンドル
 	int gHandle_; //ゲームオーバー音ハンドル
 	int pHandle_; //ゲームプレイ音ハンドル
+	int cgHandle_; //クリアシーンの音ハンドル
 
 	//ちょっとfps確認用
 	int fpsCount_;
